@@ -434,7 +434,7 @@ body.en-quiz nav.bas{display:none}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.2";
+const VERSION_APP = "2.3";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -449,6 +449,7 @@ const TOTAL = ETAPES[ETAPES.length-1].min;
 const NOM_COURT = {"Namche Bazaar":"Namche","Camp 4":"Camp 4, col Sud"};
 function position(m){
   m = Math.max(0, Math.min(TOTAL, m));
+  if (m >= TOTAL - 1e-6){ const S=ETAPES[ETAPES.length-1]; return {i:ETAPES.length-1,u:0,a:S.a,km:S.km,depuis:S,vers:null}; }
   for (let i=0;i<ETAPES.length-1;i++){
     const A=ETAPES[i], B=ETAPES[i+1];
     if (m <= B.min){ const u=(m-A.min)/(B.min-A.min||1); return {i, u, a:A.a+(B.a-A.a)*u, km:A.km+(B.km-A.km)*u, depuis:A, vers:B}; }
@@ -621,7 +622,8 @@ function repondre(k, bouton){
   } else {
     s.ko++; s.b=0; s.d=0;
     bouton.classList.add("faux"); z.querySelector(`[data-k="${q.bonne}"]`).classList.add("juste");
-    if (Z.mode!=="technique" && q.niveau===0){ E.minutes=Math.max(0,E.minutes-1/3); note="Piste verte ratée : vous glissez un peu."; }
+    if (estProfCode(E.acces)) note="Compte professeur : vous restez au sommet.";
+    else if (Z.mode!=="technique" && q.niveau===0){ E.minutes=Math.max(0,E.minutes-1/3); note="Piste verte ratée : vous glissez un peu."; }
     else note = Z.mode==="technique" ? "Passage technique raté : vous restez sur place." : piste(q.niveau).nom+" : pas de recul.";
   }
   E.q[q.id]=s; noterEtapes(); sauver();
@@ -747,20 +749,23 @@ async function chargerClasse(){
 function rendreExpedition(sansCharger){
   dessinerVoie();
   const autorises = ACCES ? new Set(ACCES.codes.map(c=>c.h)) : null;
-  let liste = (GRIMPEURS||[]).filter(g=>g.h!==E.acces && (!autorises || autorises.has(g.h))).map(g=>({prenom:g.prenom||"?", minutes:Math.min(TOTAL,g.minutes||0), moi:false}));
-  liste.push({prenom:E.prenom||"Vous", minutes:E.minutes, moi:true});
-  liste.sort((a,b)=>b.minutes-a.minutes);
+  let liste = (GRIMPEURS||[]).filter(g=>g.h!==E.acces && (!autorises || autorises.has(g.h))).map(g=>({prenom:g.prenom||"?", minutes:estProfCode(g.h)?TOTAL:Math.min(TOTAL,g.minutes||0), moi:false, prof:estProfCode(g.h)}));
+  liste.push({prenom:E.prenom||"Vous", minutes:E.minutes, moi:true, prof:estProfCode(E.acces)});
+  liste.sort((a,b)=>(b.prof-a.prof)||(b.minutes-a.minutes));
+  let rangEleve=0; liste.forEach(g=>{ g.rang = g.prof ? "" : ++rangEleve; });
   // points (noms affichés : vous et les trois premiers)
   let pts="";
-  liste.slice().reverse().forEach((g,k)=>{ const [x,y]=expPos(g.minutes); const rang=liste.indexOf(g);
-    const col=g.moi?"#E8541C":"#F8FAFB";
-    pts+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${g.moi?6.5:4.5}" fill="${col}" stroke="#1E2D4F" stroke-width="2"/>`;
-    if (g.moi || rang<3) pts+=`<text x="${x.toFixed(1)}" y="${(y-(g.moi?14:11)).toFixed(1)}" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="${g.moi?12:10.5}" font-weight="700" fill="${col}" paint-order="stroke" stroke="#1E2D4F" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)}</text>`; });
+  liste.slice().reverse().forEach((g,k)=>{ const [x,y]=expPos(g.minutes); const rang=g.prof?0:g.rang-1;
+    const col=g.moi?"#E8541C":(g.prof?"#E8B53A":"#F8FAFB");
+    pts+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${g.moi||g.prof?6.5:4.5}" fill="${col}" stroke="#1E2D4F" stroke-width="2"/>`;
+    if (g.prof) pts+=`<text x="${(x-11).toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="end" font-family="Public Sans,sans-serif" font-size="11" font-weight="700" fill="#1E2D4F" paint-order="stroke" stroke="#E6EEF4" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)} (prof)</text>`;
+    else if (g.moi || rang<3) pts+=`<text x="${x.toFixed(1)}" y="${(y-(g.moi?14:11)).toFixed(1)}" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="${g.moi?12:10.5}" font-weight="700" fill="${col}" paint-order="stroke" stroke="#1E2D4F" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)}</text>`; });
   $("#exp-points").innerHTML=pts;
-  $("#exp-info").textContent = (liste.length>1 ? liste.length+" grimpeurs" : "Votre position") + (majGrimpeurs ? ", positions du "+new Date(majGrimpeurs).toLocaleString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}) : "");
+  const nbEleves = liste.filter(g=>!g.prof).length;
+  $("#exp-info").textContent = (liste.length>1 ? nbEleves+" grimpeur"+(nbEleves>1?"s":"") : "Votre position") + (majGrimpeurs ? ", positions du "+new Date(majGrimpeurs).toLocaleString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}) : "");
   const msg = !CFG ? "Le classement commun n'est pas encore configuré." : (!window.AltiCloud||navigator.onLine===false) && !GRIMPEURS ? "Connectez-vous à Internet pour voir la position de la classe." : "";
   $("#exp-message").innerHTML = msg ? `<p class="info">${msg}</p>` : "";
-  $("#exp-liste").innerHTML = liste.map((g,i)=>`<div class="rang${g.moi?" moi":""}"><span class="r">${i+1}</span><span class="n">${esc(g.prenom)}${g.moi&&E.prenom?" (vous)":""}<small> ${esc(lieuTexte(g.minutes).replace(/^À /,"à ").replace(/^Entre /,"entre ").replace(/^Départ de /,"à ").replace(/^Au sommet de l'Everest/,"au sommet"))}</small></span><span class="a">${nf(position(g.minutes).a)} m</span></div>`).join("");
+  $("#exp-liste").innerHTML = liste.map((g,i)=>`<div class="rang${g.moi?" moi":""}"><span class="r">${g.prof?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8B53A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="Professeur"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>':g.rang}</span><span class="n">${esc(g.prenom)}${g.prof?" (prof)":""}${g.moi&&E.prenom?" (vous)":""}<small> ${esc(lieuTexte(g.minutes).replace(/^À /,"à ").replace(/^Entre /,"entre ").replace(/^Départ de /,"à ").replace(/^Au sommet de l'Everest/,"au sommet"))}</small></span><span class="a">${nf(position(g.minutes).a)} m</span></div>`).join("");
   if (!sansCharger && Date.now()-majGrimpeurs>60000) chargerClasse();
 }
 $("#exp-maj").addEventListener("click",()=>chargerClasse());
@@ -809,9 +814,11 @@ function sha256(msg){
 const norm = c => String(c).toUpperCase().normalize("NFD").replace(/[^A-Z0-9]/g,"");
 let ACCES = window.ACCES;
 const valide = h => !ACCES || (h && ACCES.codes.some(c=>c.h===h));
+const estProfCode = h => !!(ACCES && h && ACCES.codes.some(c=>c.h===h && c.prof));
+function placerProf(){ if (estProfCode(E.acces) && E.minutes<TOTAL){ E.minutes=TOTAL; noterEtapes(); sauver(); } }
 async function listeFraiche(){
   try { const r=await fetch("eleves.js?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return false; const t=await r.text();
-    const sel=(t.match(/sel\s*:\s*"([^"]+)"/)||[])[1]; const codes=[...t.matchAll(/h\s*:\s*"([0-9a-f]{64})"/g)].map(m=>({h:m[1]}));
+    const sel=(t.match(/sel\s*:\s*"([^"]+)"/)||[])[1]; const codes=[...t.matchAll(/\{[^{}]*?h\s*:\s*"([0-9a-f]{64})"([^{}]*)\}/g)].map(m=>({h:m[1], prof:/prof\s*:\s*true/.test(m[2])}));
     if(!sel||!codes.length) return false; ACCES={sel,codes}; return true; } catch(e){ return false; }
 }
 let etapePorte="code", occupe=false;
@@ -830,7 +837,7 @@ $("#porte-form").addEventListener("submit", async e=>{
     let h=sha256(ACCES.sel+norm(brut));
     if (!valide(h)){ occupe=true; $("#porte-erreur").textContent="Vérification…"; if (await listeFraiche()) h=sha256(ACCES.sel+norm(brut)); occupe=false; }
     if (!valide(h)){ $("#porte-erreur").textContent="Code inconnu. Vérifiez-le ou demandez-le à votre professeur."; const p=$("#porte"); p.classList.remove("secoue"); void p.offsetWidth; p.classList.add("secoue"); return; }
-    E.acces=h; sauver();
+    E.acces=h; placerProf(); sauver();
     $("#porte-erreur").textContent="Connexion…"; await attendreCloud(2500); await restaurer();
     if (!E.prenom) ouvrirPorte("prenom"); else fermerPorte();
   } else {
@@ -856,7 +863,7 @@ if ("serviceWorker" in navigator){ try {
 } catch(e){} }
 
 /* ================= Démarrage ================= */
-majJour(); noterEtapes(); sauver();
+majJour(); placerProf(); noterEtapes(); sauver();
 rendreCours(); preparer(); aller("ascension"); chargerMeteo();
 if (!valide(E.acces)) ouvrirPorte("code");
 else if (!E.prenom) ouvrirPorte("prenom");
