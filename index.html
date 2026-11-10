@@ -271,7 +271,7 @@ body.en-quiz nav.bas{display:none}
       <div class="meteo inconnu" id="meteo"></div>
       <div class="choix-chap"><span class="petit">Questions :</span><div class="chips" id="chap-choix"></div></div>
       <div class="deux">
-        <button class="btn-marche btn-normal" data-mode="normal"><b>Marche normale</b><span>pistes vertes et rouges</span></button>
+        <button class="btn-marche btn-normal" data-mode="normal"><b>Marche normale</b><span>pistes vertes et bleues</span></button>
         <button class="btn-marche btn-tech" data-mode="technique" id="btn-tech"><b>Passage technique</b><span id="tech-sous">pistes rouges et noires, gain double</span></button>
       </div>
       <div class="objectif">
@@ -389,8 +389,8 @@ body.en-quiz nav.bas{display:none}
       <div class="carte" style="font-size:14.5px">
         <p style="margin:0 0 8px">Chaque bonne réponse correspond à une minute de marche, calculée avec la règle de Naismith utilisée par les randonneurs : une heure pour 5 km, plus une heure pour 600 m de montée.</p>
         <p style="margin:0 0 8px">Météo de Noisy-le-Sec : par temps de pluie ou de vent, le gain est divisé par deux ; par tempête, il est divisé par quatre et les passages techniques sont fermés.</p>
-        <p style="margin:0 0 8px">Les questions sont classées comme les pistes de ski : <span class="piste" style="--pc:#2C7A57;margin:0"><i></i>verte</span> <span class="piste" style="--pc:#C8202F;margin:0"><i></i>rouge</span> <span class="piste" style="--pc:#141B2B;margin:0"><i></i>noire</span>.</p>
-        <p style="margin:0 0 8px">Marche normale : pistes vertes et rouges. Passage technique : pistes rouges et noires, gain double, aucune progression en cas d'erreur.</p>
+        <p style="margin:0 0 8px">Les questions sont classées comme les pistes de ski : <span class="piste" style="--pc:#2C7A57;margin:0"><i></i>verte</span> <span class="piste" style="--pc:#2361B8;margin:0"><i></i>bleue</span> <span class="piste" style="--pc:#C8202F;margin:0"><i></i>rouge</span> <span class="piste" style="--pc:#141B2B;margin:0"><i></i>noire</span>. À partir de la piste rouge, il faut souvent écrire un peu au brouillon.</p>
+        <p style="margin:0 0 8px">Marche normale : pistes vertes et bleues. Passage technique : pistes rouges et noires, gain double, aucune progression en cas d'erreur.</p>
         <p style="margin:0">Une erreur sur une piste verte fait reculer de 20 secondes de marche.</p>
       </div>
       <h2 class="d" style="font-size:28px;margin:18px 0 6px">Installer l'application</h2>
@@ -434,7 +434,7 @@ body.en-quiz nav.bas{display:none}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.1";
+const VERSION_APP = "2.2";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -465,8 +465,8 @@ const QUESTIONS = CHAPS.flatMap(ch=>ch.questions.map(q=>Object.assign({id:ch.id+
 const FICHES = CHAPS.flatMap(ch=>ch.fiches.map(f=>Object.assign({id:ch.id+"-f"+hash(f.recto), ch:ch.id},f)));
 const THEMES = Object.fromEntries(CHAPS.flatMap(ch=>ch.themes.map(t=>[t.id,Object.assign({ch:ch.id},t)])));
 const CHAP = Object.fromEntries(CHAPS.map(ch=>[ch.id,ch]));
-const PISTES = [{nom:"Piste verte",c:"#2C7A57"},{nom:"Piste rouge",c:"#C8202F"},{nom:"Piste noire",c:"#141B2B"}];
-const piste = n => PISTES[Math.min(2,Math.max(0,n||0))];
+const PISTES = [{nom:"Piste verte",c:"#2C7A57"},{nom:"Piste bleue",c:"#2361B8"},{nom:"Piste rouge",c:"#C8202F"},{nom:"Piste noire",c:"#141B2B"}];
+const piste = n => PISTES[Math.min(3,Math.max(0,n||0))];
 function badgePiste(n){ const p=piste(n); return `<span class="piste" style="--pc:${p.c}"><i></i>${p.nom}</span>`; }
 
 /* ================= Sauvegarde ================= */
@@ -586,7 +586,7 @@ function lancer(mode, theme){
   const POOL = QUESTIONS.filter(q=>!E.chap||E.chap==="tous"||q.ch===E.chap);
   let qs=POOL, titre="Marche normale";
   if (mode==="normal") qs=POOL.filter(q=>q.niveau<=1);
-  if (mode==="technique"){ if (METEO.cat==="tempete") return toast("Passages techniques fermés par la tempête"); qs=POOL.filter(q=>q.niveau>=1); titre="Passage technique"; }
+  if (mode==="technique"){ if (METEO.cat==="tempete") return toast("Passages techniques fermés par la tempête"); qs=POOL.filter(q=>q.niveau>=2); titre="Passage technique"; }
   if (mode==="erreurs"){ qs=erreurs(); titre="Révision des erreurs"; }
   if (mode==="theme"){ qs=QUESTIONS.filter(q=>q.theme===theme); titre=THEMES[theme].titre; }
   if (!qs.length) return toast(mode==="erreurs" ? "Aucune erreur à revoir" : "Aucune question disponible");
@@ -622,7 +622,7 @@ function repondre(k, bouton){
     s.ko++; s.b=0; s.d=0;
     bouton.classList.add("faux"); z.querySelector(`[data-k="${q.bonne}"]`).classList.add("juste");
     if (Z.mode!=="technique" && q.niveau===0){ E.minutes=Math.max(0,E.minutes-1/3); note="Piste verte ratée : vous glissez un peu."; }
-    else note = Z.mode==="technique" ? "Passage technique raté : vous restez sur place." : "Piste rouge : pas de recul.";
+    else note = Z.mode==="technique" ? "Passage technique raté : vous restez sur place." : piste(q.niveau).nom+" : pas de recul.";
   }
   E.q[q.id]=s; noterEtapes(); sauver();
   const dm=Math.round((position(E.minutes).km-kmAvant)*1000);
