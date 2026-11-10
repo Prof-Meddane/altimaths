@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AltiMaths</title>
+<meta name="theme-color" content="#1E2D4F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AltiMaths">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+:root{
+  --nuit:#1E2D4F; --nuit2:#16223D; --nuit3:#2A3C63; --glace:#CFDDE6; --neige:#F8FAFB; --orange:#E8541C; --drapeau:#E8B53A;
+  --loin:#9DB4C7; --pente:#5B7895; --vert:#2C7A57; --vert-pale:#E4F1EA; --rouge:#B8322A; --rouge-pale:#F8E3E1;
+  --gris:#5D6B78; --trait:#DDE3E8; --brume:#B9C7D6;
+  --d:"Big Shoulders Display", "Arial Narrow", sans-serif;
+  --t:"Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --haut:env(safe-area-inset-top,0px); --bas:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;font-family:var(--t);font-size:16px;line-height:1.45;color:var(--nuit);background:var(--neige)}
+body{min-height:100vh}
+body.sombre{background:var(--nuit)}
+#v-resultat{color:var(--neige)}
+button,input{font:inherit;color:inherit}
+button{border:0;background:none;cursor:pointer;padding:0}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--drapeau);outline-offset:2px}
+.app{max-width:560px;margin:0 auto;padding-bottom:calc(var(--bas) + 90px);position:relative}
+.vue{display:none}
+.vue.active{display:block}
+h1,h2,h3{margin:0}
+.d{font-family:var(--d);font-weight:800;line-height:1}
+.pad{padding:0 20px}
+.petit{font-size:13.5px;color:var(--gris)}
+.sombre .petit{color:var(--brume)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- Accueil (ascension) ---------- */
+.hero{position:relative;color:var(--neige)}
+.hero svg{display:block;width:100%;height:auto}
+.hero .alti{position:absolute;left:4.6%;top:69.5%;margin:0;font-family:var(--d);font-weight:800;font-size:clamp(96px,34vw,150px);line-height:.8;letter-spacing:-2px;color:var(--neige);pointer-events:none}
+.hero .alti small{font-size:.3em;font-weight:600;letter-spacing:0;margin-left:6px}
+.hero .jour{position:absolute;right:16px;top:calc(var(--haut) + 14px);background:var(--neige);color:var(--nuit);border-radius:999px;padding:4px 11px;font-size:13px;font-weight:700}
+.hero .moi{position:absolute;z-index:2;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--orange);border:3px solid var(--neige);box-shadow:0 0 0 2px var(--nuit)}
+.bloc-asc{background:var(--nuit);color:var(--neige);padding:14px 20px 8px;display:flex;flex-direction:column;gap:12px}
+.lieu{font-family:var(--d);font-weight:600;font-size:27px;line-height:1.1}
+.meteo{border-radius:14px;padding:11px 13px;display:flex;gap:11px;align-items:center;color:var(--nuit)}
+.meteo.beau{background:#D8E9DF}.meteo.mauvais{background:var(--drapeau)}.meteo.tempete{background:#F3B7A3}.meteo.inconnu{background:var(--glace)}
+.meteo p{margin:0;font-size:13.5px;line-height:1.35}
+.meteo svg{flex:none}
+.deux{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.btn-marche{border-radius:16px;min-height:64px;padding:9px 14px;text-align:left;display:flex;flex-direction:column;justify-content:center}
+.btn-marche b{font-family:var(--d);font-weight:800;font-size:23px;line-height:1}
+.btn-marche span{font-size:12px;margin-top:3px}
+.btn-normal{background:var(--orange);color:#fff}
+.btn-tech{border:2px solid var(--neige);color:var(--neige)}
+.btn-tech[disabled]{opacity:.4;cursor:not-allowed}
+.objectif{display:flex;flex-direction:column;gap:6px}
+.jauge{height:8px;border-radius:999px;background:var(--nuit3);overflow:hidden}
+.jauge i{display:block;height:100%;background:var(--drapeau);border-radius:999px;transition:width .5s}
+.clair .jauge{background:var(--trait)}
+.ligne-bouton{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--nuit3);border-radius:14px;padding:12px 14px;color:var(--neige)}
+.ligne-bouton .sym{width:40px;height:40px;flex:none;border-radius:50%;background:var(--nuit);display:grid;place-items:center;font-family:var(--d);font-weight:800;font-size:18px;color:var(--drapeau)}
+.ligne-bouton .txt{flex:1;min-width:0}
+.ligne-bouton b{display:block;font-weight:600}
+.ligne-bouton .pc{font-family:var(--d);font-weight:800;font-size:20px}
+.sous-titre{font-family:var(--d);font-weight:800;font-size:24px;margin:14px 0 2px}
+
+/* ---------- Quiz ---------- */
+.tete-quiz{background:var(--nuit);color:var(--neige);border-radius:0 0 24px 24px;padding:calc(var(--haut) + 14px) 18px 16px;display:flex;align-items:center;gap:14px}
+.rond{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--pente);display:grid;place-items:center;flex:none}
+.pastilles{display:flex;gap:4px}
+.pastilles span{flex:1;height:8px;border-radius:999px;background:var(--nuit3)}
+.pastilles span.fait{background:var(--orange)}
+.question{font-size:21px;line-height:1.35;font-weight:600;margin:6px 0 0;overflow-x:auto}
+.choix{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.choix button{display:flex;gap:12px;align-items:center;text-align:left;min-height:58px;padding:10px 14px;border-radius:16px;border:2px solid var(--trait);background:#fff;font-size:17px}
+.choix .lettre{width:32px;height:32px;border-radius:50%;background:var(--glace);display:grid;place-items:center;font-family:var(--d);font-weight:800;font-size:18px;flex:none}
+.choix .cont{flex:1;min-width:0;overflow-x:auto}
+.choix button.juste{border-color:var(--vert);background:var(--vert-pale)}
+.choix button.juste .lettre{background:var(--vert);color:#fff}
+.choix button.faux{border-color:var(--rouge);background:var(--rouge-pale)}
+.choix button.faux .lettre{background:var(--rouge);color:#fff}
+.choix.repondu button{pointer-events:none}
+.choix.repondu button:not(.juste):not(.faux){opacity:.55}
+.retour{position:fixed;left:0;right:0;bottom:0;z-index:30;transform:translateY(105%);visibility:hidden;transition:transform .28s cubic-bezier(.2,.9,.3,1),visibility .28s}
+.retour.visible{transform:none;visibility:visible}
+.retour .in{max-width:560px;margin:0 auto;border-radius:26px 26px 0 0;padding:18px 20px calc(var(--bas) + 22px);color:#fff;display:flex;flex-direction:column;gap:9px}
+.retour.ok .in{background:var(--vert)}.retour.ko .in{background:var(--rouge)}
+.retour .haut{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.retour .verdict{font-family:var(--d);font-weight:800;font-size:34px;line-height:1}
+.retour .gain{font-family:var(--d);font-weight:800;font-size:24px;line-height:1;text-align:right}
+.retour .expl{max-height:32vh;overflow:auto;font-size:15px}
+.retour .note{font-size:13px;opacity:.88;margin:0}
+.retour .btn-cont{border-radius:999px;background:var(--neige);min-height:52px;font-family:var(--d);font-weight:800;font-size:22px}
+.retour.ok .btn-cont{color:var(--vert)}.retour.ko .btn-cont{color:var(--rouge)}
+
+/* ---------- Résultat ---------- */
+.res{padding:calc(var(--haut) + 30px) 20px 0;text-align:center}
+.res .grand{font-family:var(--d);font-weight:800;font-size:92px;line-height:.9}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:20px 0}
+.stat{background:var(--nuit3);border-radius:16px;padding:12px 6px}
+.clair .stat{background:#fff;border:1px solid var(--trait)}
+.stat b{display:block;font-family:var(--d);font-weight:800;font-size:28px;line-height:1.05}
+.stat span{font-size:12px}
+.annonce{background:var(--drapeau);color:var(--nuit);border-radius:16px;padding:12px 14px;margin:8px 0;text-align:left;display:flex;gap:12px;align-items:center}
+.btn-plein{display:flex;align-items:center;justify-content:center;width:100%;min-height:54px;border-radius:999px;font-family:var(--d);font-weight:800;font-size:23px}
+.btn-orange{background:var(--orange);color:#fff}
+.btn-ligne{border:2px solid currentColor}
+
+/* ---------- Pages claires ---------- */
+.entete{padding:calc(var(--haut) + 20px) 20px 8px}
+.entete h1{font-family:var(--d);font-weight:800;font-size:40px;line-height:1}
+.carte{background:#fff;border:1px solid var(--trait);border-radius:16px;padding:14px 16px;margin:12px 0}
+.cours h2.section{font-family:var(--d);font-weight:800;font-size:30px;margin:26px 0 6px;color:var(--pente)}
+.cours h3.sous{font-size:18px;margin:18px 0 4px}
+.bloc{border-radius:16px;padding:14px 16px;margin:10px 0;background:#fff;border:1px solid var(--trait);overflow-x:auto}
+.bloc .etiquette{display:block;font-weight:700;font-size:14px;margin-bottom:6px;color:var(--pente)}
+.bloc.exemple{background:#EAF1F6;border-color:transparent}
+.bloc.attention{background:#FDE7DD;border-color:transparent}
+.bloc.attention .etiquette{color:var(--orange)}
+.bloc.remarque{background:#FBF1D9;border-color:transparent}
+.bloc .ligne{margin:8px 0}
+.bloc ol{padding-left:20px;margin:6px 0}.bloc li{margin:6px 0}
+.trou{display:inline-block;vertical-align:middle;min-width:88px;min-height:32px;padding:3px 10px;margin:2px;border-radius:12px;border:2px dashed var(--orange);background:#FDE7DD;position:relative}
+.trou>span{visibility:hidden}
+.trou::before{content:"Toucher";position:absolute;inset:0;display:grid;place-items:center;font-size:12.5px;font-weight:700;color:var(--orange)}
+.trou.vu{border-style:solid;border-color:var(--vert);background:var(--vert-pale)}
+.trou.vu>span{visibility:visible}.trou.vu::before{content:none}
+.outils{position:sticky;top:calc(var(--haut) + 6px);z-index:5;display:flex;gap:8px;margin:10px 0}
+.outils button{flex:1;background:#fff;border:1px solid var(--trait);border-radius:999px;min-height:44px;font-weight:600;font-size:14px}
+.segment{display:flex;background:var(--trait);border-radius:999px;padding:3px;gap:3px;margin:10px 0}
+.segment button{flex:1;border-radius:999px;min-height:40px;font-weight:600;font-size:14px;color:var(--gris)}
+.segment button.on{background:#fff;color:var(--nuit)}
+.zone-fiche{perspective:1200px;margin:14px 0}
+.fiche{position:relative;height:250px;transition:transform .5s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d;cursor:pointer}
+.fiche.retournee{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;text-align:center;font-size:21px;overflow:auto}
+.face.recto{background:#fff;border:1px solid var(--trait)}
+.face.verso{background:var(--nuit);color:var(--neige);transform:rotateY(180deg)}
+.face .indice{position:absolute;top:14px;font-size:12.5px;opacity:.6}
+.btn-rond{min-height:52px;border-radius:999px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.btn-blanc{background:#fff;border:1.5px solid var(--trait)}
+.btn-nuit{background:var(--nuit);color:var(--neige)}
+
+/* ---------- Expédition ---------- */
+.tete-exp{background:var(--nuit);color:var(--neige);padding:calc(var(--haut) + 18px) 20px 12px}
+.tete-exp h1{font-family:var(--d);font-weight:800;font-size:38px;line-height:1}
+.illus svg{display:block;width:100%;height:auto}
+.rang{display:grid;grid-template-columns:38px 1fr auto;gap:8px;align-items:center;padding:7px 10px;border-radius:12px}
+.rang.moi{background:#FDE7DD}
+.rang .r{font-family:var(--d);font-weight:800;font-size:22px;color:var(--pente)}
+.rang.moi .r{color:var(--orange)}
+.rang .n{font-weight:600}.rang.moi .n{font-weight:700}
+.rang .n small{font-weight:400;color:var(--gris);font-size:13px}
+.rang .a{font-family:var(--d);font-weight:800;font-size:20px}
+.info{border-radius:14px;background:#EAF1F6;padding:10px 12px;font-size:14px;margin:10px}
+
+/* ---------- Carnet ---------- */
+.carnet{list-style:none;margin:0;padding:0}
+.carnet li{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--trait)}
+.carnet li:first-child{border-top:0}
+.carnet .pt{width:14px;height:14px;border-radius:50%;border:2px solid var(--pente);justify-self:center}
+.carnet li.atteint .pt{background:var(--orange);border-color:var(--orange)}
+.carnet li:not(.atteint){color:var(--gris)}
+.champ{width:100%;min-height:48px;padding:10px 14px;border-radius:12px;border:2px solid var(--trait);background:#fff}
+
+/* ---------- Porte (code d'accès) ---------- */
+.porte{position:fixed;inset:0;z-index:80;background:var(--nuit);color:var(--neige);display:none;align-items:center;justify-content:center;padding:calc(var(--haut) + 20px) 24px calc(var(--bas) + 20px);overflow:auto}
+.porte.visible{display:flex}
+.porte form{width:100%;max-width:360px;text-align:center}
+.porte img{width:96px;height:96px;border-radius:24px;margin:0 auto 16px;display:block}
+.porte h1{font-family:var(--d);font-weight:800;font-size:52px;line-height:1}
+.porte p{color:var(--brume);margin:8px 0 22px}
+.porte input{width:100%;min-height:56px;padding:12px;border-radius:16px;border:2px solid transparent;background:var(--neige);color:var(--nuit);font-size:20px;font-weight:700;text-align:center;letter-spacing:.06em}
+.porte input.maj{text-transform:uppercase}
+.porte .btn-plein{margin-top:12px}
+.porte .erreur{min-height:1.5em;margin-top:12px;color:#FFB4A6;font-weight:600}
+.porte.secoue form{animation:secoue .35s}
+@keyframes secoue{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+
+/* ---------- Navigation ---------- */
+nav.bas{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--nuit2);padding:6px 4px calc(var(--bas) + 6px)}
+nav.bas .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+nav.bas button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11px;color:#AFC0D2;border-radius:12px}
+nav.bas button.actif{color:var(--orange);font-weight:700}
+body.en-quiz nav.bas{display:none}
+.toast{position:fixed;left:50%;top:calc(var(--haut) + 12px);transform:translate(-50%,-200%);visibility:hidden;z-index:60;background:var(--nuit);color:#fff;border-radius:999px;padding:10px 18px;font-weight:600;font-size:14px;transition:transform .3s;max-width:92vw;display:flex;gap:10px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.toast.visible{transform:translate(-50%,0);visibility:visible}
+.toast button{background:var(--orange);color:#fff;padding:6px 12px;border-radius:999px;font-weight:700}
+.katex{font-size:1.05em}
+.katex-display{margin:.5em 0;overflow-x:auto;overflow-y:hidden}
+.bloc .katex-display{font-size:.88em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body class="sombre">
+<div class="porte" id="porte">
+  <form id="porte-form" autocomplete="off">
+    <img src="icons/icon-192.png" alt="">
+    <h1>AltiMaths</h1>
+    <div id="etape-code">
+      <p>Entrez le code d'accès donné par votre professeur.</p>
+      <label for="porte-code" class="petit" style="position:absolute;left:-9999px">Code d'accès</label>
+      <input id="porte-code" class="maj" placeholder="ANTO-2026" autocapitalize="characters" autocorrect="off" spellcheck="false">
+    </div>
+    <div id="etape-prenom" style="display:none">
+      <p>Votre prénom, tel qu'il apparaîtra dans l'expédition de la classe.</p>
+      <label for="porte-prenom" class="petit" style="position:absolute;left:-9999px">Prénom</label>
+      <input id="porte-prenom" placeholder="Prénom" maxlength="24" autocomplete="given-name">
+    </div>
+    <button class="btn-plein btn-orange" type="submit" id="porte-btn">Entrer</button>
+    <div class="erreur" id="porte-erreur" role="alert"></div>
+  </form>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<main class="app">
+  <!-- ===== ASCENSION ===== -->
+  <section class="vue active" id="v-ascension">
+    <div class="hero">
+      <svg id="hero-svg" viewBox="0 0 390 430" role="img" aria-label="L'Everest, le col Sud et le Lhotse, avec votre progression sur le sentier"><rect width="390" height="430" fill="#CFDDE6"/>
+<circle cx="58" cy="64" r="22" fill="#E8B53A"/>
+<path d="M0,214 L38,192 L76,176 L112,160 L140,140 L160,134 L184,112 L204,86 L220,62 L229,52 L236,58 L246,72 L254,78 L259,76 L266,88 L278,104 L290,112 L298,110 L308,94 L318,80 L326,70 L332,72 L342,88 L356,104 L372,118 L390,124 L390,430 L0,430Z" fill="#9DB4C7"/>
+<path d="M204,86 L220,62 L229,52 L236,58 L246,72 L254,78 L259,76 L262,84 L250,92 L238,88 L226,96 L214,92Z" fill="#4A5363"/>
+<path d="M210,84 L247,79 L250,84 L212,90Z" fill="#C9A05A" opacity=".9"/>
+<path d="M140,140 L160,134 L184,112 L204,86 L214,92 L200,110 L186,124 L170,134 L156,146Z" fill="#F8FAFB"/>
+<path d="M226,96 L238,88 L250,92 L262,84 L270,96 L262,110 L248,104 L236,112Z" fill="#F8FAFB"/>
+<path d="M298,110 L308,94 L318,80 L326,70 L332,72 L342,88 L334,96 L322,92 L312,104Z" fill="#F8FAFB"/>
+<path d="M236,58 C252,50 274,52 300,46 C284,56 266,58 246,64Z" fill="#F8FAFB" opacity=".85"/>
+<path d="M0,262 L26,240 L48,248 L72,226 L96,232 L118,212 L138,222 L160,206 L184,220 L206,204 L228,214 L252,196 L276,212 L300,200 L326,218 L352,206 L390,222 L390,430 L0,430Z" fill="#5B7895"/>
+<path d="M72,226 L96,232 L118,212 L132,220 L110,226 L96,240Z M160,206 L184,220 L206,204 L218,210 L196,218 L180,230Z M252,196 L276,212 L300,200 L310,206 L286,214 L270,224Z" fill="#F8FAFB" opacity=".9"/>
+<path d="M0,360 L70,322 L120,342 L175,302 L235,336 L300,312 L390,348 L390,430 L0,430Z" fill="#1E2D4F"/>
+<text x="229" y="40" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="10.5" font-weight="700" fill="#1E2D4F">Everest 8 849</text>
+<text x="329" y="58" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="10" font-weight="600" fill="#1E2D4F">Lhotse</text>
+<text x="294" y="128" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="9.5" fill="#1E2D4F">col Sud</text>
+<text x="40" y="282" font-family="Public Sans,sans-serif" font-size="10" font-weight="600" fill="#F8FAFB">Nuptse</text><g id="hero-route"></g></svg>
+      <div class="moi" id="hero-moi" aria-hidden="true"></div>
+      <p class="alti num" id="alti"></p>
+      <span class="jour" id="jour"></span>
+    </div>
+    <div class="bloc-asc">
+      <div>
+        <p class="lieu" id="lieu"></p>
+        <p class="petit" id="prochaine" style="margin:4px 0 0"></p>
+      </div>
+      <div class="meteo inconnu" id="meteo"></div>
+      <div class="deux">
+        <button class="btn-marche btn-normal" data-mode="normal"><b>Marche normale</b><span>10 questions</span></button>
+        <button class="btn-marche btn-tech" data-mode="technique" id="btn-tech"><b>Passage technique</b><span id="tech-sous">gain double, risqué</span></button>
+      </div>
+      <div class="objectif">
+        <div style="display:flex;justify-content:space-between" class="petit"><span>Objectif du jour</span><span id="obj-txt"></span></div>
+        <div class="jauge"><i id="obj-jauge" style="width:0"></i></div>
+      </div>
+      <button class="ligne-bouton" data-mode="erreurs"><span class="sym">↺</span><span class="txt"><b>Revoir mes erreurs</b><span class="petit" id="nb-err"></span></span></button>
+      <p class="sous-titre">S'entraîner par thème</p>
+      <p class="petit" style="margin:-8px 0 2px">Chaque bonne réponse fait aussi avancer.</p>
+      <div id="themes" style="display:flex;flex-direction:column;gap:8px;padding-bottom:10px"></div>
+    </div>
+  </section>
+
+  <!-- ===== QUIZ ===== -->
+  <section class="vue" id="v-quiz">
+    <div class="tete-quiz">
+      <button class="rond" id="quiz-quitter" aria-label="Quitter la série"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div style="flex:1;min-width:0">
+        <div class="pastilles" id="pastilles"></div>
+        <p class="petit" id="quiz-info" style="margin:6px 0 0"></p>
+      </div>
+      <p class="d num" style="margin:0;font-size:30px" id="quiz-alti"></p>
+    </div>
+    <div class="pad" style="padding-top:20px;padding-bottom:20px">
+      <p class="petit" id="quiz-theme" style="margin:0;font-weight:600;color:var(--pente)"></p>
+      <div class="question" id="quiz-question"></div>
+      <div class="choix" id="quiz-choix"></div>
+    </div>
+  </section>
+
+  <!-- ===== RÉSULTAT ===== -->
+  <section class="vue" id="v-resultat">
+    <div class="res">
+      <p class="petit" id="res-titre" style="margin:0"></p>
+      <p class="grand num" id="res-score"></p>
+      <p class="d" style="font-size:30px;margin:8px 0 0" id="res-msg"></p>
+      <div class="stats">
+        <div class="stat"><b class="num" id="res-alt"></b><span>altitude</span></div>
+        <div class="stat"><b class="num" id="res-dist"></b><span>de sentier</span></div>
+        <div class="stat"><b class="num" id="res-total"></b><span>parcourus</span></div>
+      </div>
+      <div id="res-annonces"></div>
+      <button class="btn-plein btn-orange" id="res-rejouer" style="margin-top:12px">Repartir</button>
+      <button class="btn-plein btn-ligne" id="res-accueil" style="margin-top:12px;color:var(--neige)">Retour au camp</button>
+    </div>
+  </section>
+
+  <!-- ===== COURS ===== -->
+  <section class="vue" id="v-cours">
+    <div class="entete"><h1 id="cours-titre"></h1><p class="petit" style="margin:6px 0 0">Touchez les cases en pointillés pour révéler la réponse, après avoir essayé de la retrouver de tête.</p></div>
+    <div class="pad">
+      <div class="outils"><button id="tout-cacher">Tout cacher</button><button id="tout-voir">Tout révéler</button></div>
+      <div class="cours" id="cours-contenu"></div>
+    </div>
+  </section>
+
+  <!-- ===== FICHES ===== -->
+  <section class="vue" id="v-fiches">
+    <div class="entete"><h1>Fiches mémo</h1></div>
+    <div class="pad clair">
+      <div class="segment" id="fiches-filtre"><button data-f="toutes" class="on">Toutes</button><button data-f="revoir">À revoir</button></div>
+      <div style="display:flex;justify-content:space-between" class="petit"><span id="fiche-compteur"></span><span id="fiche-sues"></span></div>
+      <div id="fiche-bloc">
+        <div class="zone-fiche"><div class="fiche" id="fiche" tabindex="0" role="button" aria-label="Retourner la fiche">
+          <div class="face recto"><span class="indice">Toucher pour retourner</span><div id="fiche-recto"></div></div>
+          <div class="face verso"><span class="indice">Réponse</span><div id="fiche-verso"></div></div>
+        </div></div>
+        <div class="deux"><button class="btn-rond btn-blanc" id="fiche-revoir">À revoir</button><button class="btn-rond btn-nuit" id="fiche-sue">Je savais</button></div>
+      </div>
+      <p id="fiche-vide" style="display:none;text-align:center;padding:30px 0" class="petit">Aucune fiche à revoir.</p>
+    </div>
+  </section>
+
+  <!-- ===== EXPÉDITION ===== -->
+  <section class="vue" id="v-expedition">
+    <div class="tete-exp"><h1>L'expédition ECG1</h1><p class="petit" id="exp-info" style="margin:5px 0 0"></p></div>
+    <div class="illus"><svg id="exp-svg" viewBox="0 0 390 420" role="img" aria-label="La voie normale de l'Everest, du trek depuis Lukla jusqu'au sommet, avec la position de chaque élève"><rect width="390" height="420" fill="#CFDDE6"/>
+<path d="M0,130 L50,104 L90,116 L120,96 L170,110 L220,84 L280,96 L330,74 L390,92 L390,200 L0,200Z" fill="#9DB4C7"/>
+<path d="M0,176 L40,150 L80,118 L112,82 L131,58 L141,45 L150,52 L162,62 L178,76 L204,92 L232,100 L256,84 L280,68 L300,58 L306,56 L318,68 L334,84 L360,108 L390,118 L390,420 L0,420Z" fill="#5B7895"/>
+<path d="M141,45 L131,58 L112,82 L98,112 L118,126 L148,150 L166,112 L178,76 L162,62 L150,52Z" fill="#4A5363"/>
+<path d="M118,84 L160,74 L164,80 L116,92Z" fill="#C9A05A" opacity=".85"/>
+<path d="M98,112 L118,126 L108,150 L84,140Z M150,52 L162,62 L156,70 L146,60Z" fill="#F8FAFB" opacity=".9"/>
+<path d="M232,100 L256,84 L280,68 L300,58 L306,56 L318,68 L334,84 L310,170 L270,168 L246,150Z" fill="#F8FAFB"/>
+<path d="M98,252 L132,200 L166,150 L206,118 L232,104 L246,150 L270,168 L238,214 L176,246 L128,262Z" fill="#E6EEF4"/>
+<path d="M0,214 L44,196 L84,226 L98,252 L74,300 L0,310Z" fill="#4C6784"/>
+<path d="M238,238 L274,196 L310,170 L346,160 L390,170 L390,300 L232,300Z" fill="#4C6784"/>
+<path d="M274,196 L310,170 L346,160 L390,170 L390,178 L346,170 L312,180 L280,204Z M44,196 L84,226 L80,232 L42,204Z" fill="#F8FAFB" opacity=".9"/>
+<path d="M60,282 L98,252 L128,262 L150,290 L206,320 L280,348 L390,360 L390,420 L0,420 L0,312Z" fill="#B5C5D3"/>
+<path d="M86,286 l6,-8 l5,6 l6,-9 l5,7 M100,268 l5,-7 l5,5 l6,-8 l5,6" fill="none" stroke="#F8FAFB" stroke-width="1.6" stroke-linejoin="round"/>
+<ellipse cx="300" cy="404" rx="16" ry="5" fill="#7CC4BD"/><ellipse cx="338" cy="398" rx="9" ry="3.5" fill="#7CC4BD"/>
+<path d="M0,346 L60,330 L120,350 L190,372 L270,388 L390,396 L390,420 L0,420Z" fill="#1E2D4F" opacity=".88"/><g id="exp-route"></g><g id="exp-points"></g></svg></div>
+    <div id="exp-message"></div>
+    <div id="exp-liste" style="padding:8px 10px 0;display:flex;flex-direction:column;gap:2px"></div>
+    <div class="pad" style="padding-top:12px"><button class="btn-rond btn-blanc" id="exp-maj" style="width:100%">Actualiser les positions</button></div>
+  </section>
+
+  <!-- ===== PROFIL ===== -->
+  <section class="vue" id="v-profil">
+    <div class="entete"><h1>Mon carnet</h1></div>
+    <div class="pad clair">
+      <div class="carte">
+        <label for="prenom" style="font-weight:600;display:block;margin-bottom:6px">Prénom affiché dans l'expédition</label>
+        <input class="champ" id="prenom" maxlength="24" autocomplete="given-name">
+      </div>
+      <div class="stats">
+        <div class="stat"><b class="num" id="p-justes"></b><span>bonnes réponses</span></div>
+        <div class="stat"><b class="num" id="p-taux"></b><span>de réussite</span></div>
+        <div class="stat"><b class="num" id="p-jours"></b><span>jours de marche</span></div>
+      </div>
+      <h2 class="d" style="font-size:28px;margin:18px 0 6px">Carnet d'étapes</h2>
+      <div class="carte"><ul class="carnet" id="carnet"></ul></div>
+      <h2 class="d" style="font-size:28px;margin:18px 0 6px">Règles de l'ascension</h2>
+      <div class="carte" style="font-size:14.5px">
+        <p style="margin:0 0 8px">Chaque bonne réponse correspond à une minute de marche, calculée avec la règle de Naismith utilisée par les randonneurs : une heure pour 5 km, plus une heure pour 600 m de montée.</p>
+        <p style="margin:0 0 8px">Météo de Noisy-le-Sec : par temps de pluie ou de vent, le gain est divisé par deux ; par tempête, il est divisé par quatre et les passages techniques sont fermés.</p>
+        <p style="margin:0 0 8px">Passage technique : questions plus difficiles, gain double, aucune progression en cas d'erreur.</p>
+        <p style="margin:0">Une erreur sur une question classique fait reculer de 20 secondes de marche.</p>
+      </div>
+      <h2 class="d" style="font-size:28px;margin:18px 0 6px">Installer l'application</h2>
+      <div class="carte" style="font-size:14.5px">
+        <button class="btn-rond btn-nuit" id="btn-installer" style="display:none;width:100%;margin-bottom:10px">Installer sur cet appareil</button>
+        <p style="margin:0 0 6px"><b>Android (Chrome) :</b> menu ⋮, puis « Installer et créer un raccourci », puis « Installer ».</p>
+        <p style="margin:0"><b>iPhone (Safari) :</b> bouton ⋯ puis Partager, puis « Sur l'écran d'accueil ».</p>
+      </div>
+      <button class="btn-rond btn-blanc" id="btn-deco" style="width:100%;margin-top:14px">Se déconnecter</button>
+      <button class="btn-rond btn-blanc" id="btn-reset" style="width:100%;margin-top:10px;color:var(--rouge)">Recommencer l'ascension à zéro</button>
+      <div class="carte" id="reset-confirme" style="display:none"><b>Tout effacer ?</b> <span class="petit">Votre position, vos statistiques et votre carnet seront remis à zéro.</span>
+        <div class="deux" style="margin-top:10px"><button class="btn-rond btn-blanc" id="reset-non">Annuler</button><button class="btn-rond btn-nuit" id="reset-oui" style="background:var(--rouge)">Effacer</button></div></div>
+      <p class="petit" style="text-align:center;margin:20px 0 0" id="version"></p>
+      <p class="petit" style="text-align:center;margin:4px 0 0">Météo : <a href="https://open-meteo.com/" style="color:inherit">Open-Meteo.com</a> (CC BY 4.0)</p>
+    </div>
+  </section>
+</main>
+
+<nav class="bas" aria-label="Navigation principale"><div class="in">
+  <button data-vue="ascension" class="actif"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 20l6-11 4 6 3-4 5 9z"/></svg>Ascension</button>
+  <button data-vue="cours"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4z"/><path d="M13 7a2 2 0 0 1 2-2h5v13h-5a2 2 0 0 0-2 2"/></svg>Cours</button>
+  <button data-vue="fiches"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="7" width="14" height="12" rx="1.5"/><path d="M7 4h13v12"/></svg>Fiches</button>
+  <button data-vue="expedition"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>Expédition</button>
+  <button data-vue="profil"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Carnet</button>
+</div></nav>
+
+<div class="retour" id="retour" aria-live="polite"><div class="in">
+  <div class="haut"><span class="verdict" id="r-verdict"></span><span class="gain" id="r-gain"></span></div>
+  <div class="expl" id="r-expl"></div>
+  <p class="note" id="r-note"></p>
+  <button class="btn-cont" id="r-suivant">Continuer</button>
+</div></div>
+
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="contenu.js"></script>
+<script src="eleves.js"></script>
+<script src="config-firebase.js"></script>
+<script src="firebase-alti.js" async></script>
+<script>
+(function(){
+"use strict";
+const VERSION_APP = "2.0";
+const C = window.CONTENU, CH = C.chapitres[0];
+const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+
+/* ================= Parcours (altitudes et distances réelles, règle de Naismith) ================= */
+const ETAPES_BRUT = [
+  ["Lukla",2860,0],["Phakding",2610,7.8],["Namche Bazaar",3440,11.3],["Tengboche",3867,9.3],["Dingboche",4410,10.8],
+  ["Lobuche",4940,8.0],["Gorak Shep",5164,4.5],["Camp de base",5364,3.5],["Camp 1",6065,2.6],["Camp 2",6400,2.8],
+  ["Camp 3",7200,2.6],["Camp 4",7950,2.4],["Sommet",8849,1.8]];
+const ETAPES = []; { let km=0, min=0;
+  ETAPES_BRUT.forEach(([n,a,d],i)=>{ if(i){ km+=d; min+= d*12 + Math.max(0,a-ETAPES_BRUT[i-1][1])/10; } ETAPES.push({n,a,km,min}); }); }
+const TOTAL = ETAPES[ETAPES.length-1].min;
+const NOM_COURT = {"Namche Bazaar":"Namche","Camp 4":"Camp 4, col Sud"};
+function position(m){
+  m = Math.max(0, Math.min(TOTAL, m));
+  for (let i=0;i<ETAPES.length-1;i++){
+    const A=ETAPES[i], B=ETAPES[i+1];
+    if (m <= B.min){ const u=(m-A.min)/(B.min-A.min||1); return {i, u, a:A.a+(B.a-A.a)*u, km:A.km+(B.km-A.km)*u, depuis:A, vers:B}; }
+  }
+  const S=ETAPES[ETAPES.length-1]; return {i:ETAPES.length-1,u:1,a:S.a,km:S.km,depuis:S,vers:null};
+}
+function etapeAtteinte(m){ let r=ETAPES[0]; ETAPES.forEach(e=>{ if(m>=e.min-1e-6) r=e; }); return r; }
+const nf = n => Math.round(n).toLocaleString("fr-FR").replace(/ /g," ");
+const kmTxt = k => (Math.round(k*10)/10).toLocaleString("fr-FR")+" km";
+
+/* ================= Questions et fiches ================= */
+function hash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)}
+const QUESTIONS = CH.questions.map(q=>Object.assign({id:CH.id+"-"+hash(q.q)},q));
+const FICHES = CH.fiches.map(f=>Object.assign({id:CH.id+"-f"+hash(f.recto)},f));
+const THEMES = Object.fromEntries(CH.themes.map(t=>[t.id,t]));
+
+/* ================= Sauvegarde ================= */
+const CLE = "altimaths.v2";
+const VIDE = () => ({prenom:"",acces:"",minutes:0,justes:0,total:0,jours:0,dernierJour:"",jour:"",jourJustes:0,q:{},f:{},etapes:{},serie:0});
+let E;
+try { E = JSON.parse(localStorage.getItem(CLE)||"null"); } catch(e){ E=null; }
+if (!E){ E = VIDE(); try { const v1 = JSON.parse(localStorage.getItem("mathsECG1.v1")||"null");
+  if (v1){ E.prenom=v1.prenom||""; E.acces=v1.acces||""; E.q=v1.q||{}; E.f=v1.f||{}; E.justes=v1.justes||0; E.total=v1.total||0; E.minutes=Math.min(TOTAL, v1.justes||0); } } catch(e){} }
+E = Object.assign(VIDE(), E);
+function sauver(){ try{ localStorage.setItem(CLE, JSON.stringify(E)); }catch(e){} }
+function auj(d){ d=d||new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function hier(){ const d=new Date(); d.setDate(d.getDate()-1); return auj(d); }
+function majJour(){ if (E.jour!==auj()){ E.jour=auj(); E.jourJustes=0; } }
+function activite(){ if (E.dernierJour===auj()) return; E.serie = E.dernierJour===hier() ? E.serie+1 : 1; E.jours++; E.dernierJour=auj(); }
+function noterEtapes(){ ETAPES.forEach(e=>{ if (E.minutes>=e.min-1e-6 && !E.etapes[e.n]) E.etapes[e.n]=auj(); }); }
+
+/* ================= Météo de Noisy-le-Sec (Open-Meteo) ================= */
+const LIB = {0:"ciel dégagé",1:"ciel plutôt dégagé",2:"quelques nuages",3:"ciel couvert",45:"brouillard",48:"brouillard givrant",51:"bruine",53:"bruine",55:"bruine dense",56:"bruine verglaçante",57:"bruine verglaçante",61:"pluie faible",63:"pluie",65:"forte pluie",66:"pluie verglaçante",67:"pluie verglaçante",71:"neige faible",73:"neige",75:"forte neige",77:"grésil",80:"averses",81:"averses",82:"averses violentes",85:"averses de neige",86:"fortes averses de neige",95:"orages",96:"orages de grêle",99:"orages de grêle"};
+const TEMPETE=[65,67,75,82,86,95,96,99], MAUVAIS=[45,48,51,53,55,56,57,61,63,66,71,73,77,80,81,85];
+const EFFET = {beau:"Conditions idéales : progression normale.", mauvais:"Montée ralentie : chaque bonne réponse compte moitié.", tempete:"Tempête : progression très ralentie, passages techniques fermés.", inconnu:"Météo indisponible : progression normale."};
+const FACTEUR = {beau:1, mauvais:0.5, tempete:0.25, inconnu:1};
+let METEO = {cat:"inconnu", texte:""};
+try { const m = JSON.parse(localStorage.getItem("altimaths.meteo")||"null"); if (m && m.date===auj()) METEO=m; } catch(e){}
+async function chargerMeteo(){
+  if (METEO.date===auj() && METEO.cat!=="inconnu") return;
+  try {
+    const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=48.8908&longitude=2.4594&daily=weather_code,wind_gusts_10m_max,temperature_2m_max&timezone=Europe%2FParis&forecast_days=1");
+    const j = await r.json(); const code=j.daily.weather_code[0], raf=j.daily.wind_gusts_10m_max[0], t=j.daily.temperature_2m_max[0];
+    let cat = TEMPETE.includes(code)||raf>=70 ? "tempete" : (MAUVAIS.includes(code)||raf>=50 ? "mauvais" : "beau");
+    let lib = LIB[code] || "temps variable"; if (raf>=50 && !TEMPETE.includes(code)) lib += ", rafales à "+Math.round(raf)+" km/h";
+    METEO = {date:auj(), cat, texte: lib.charAt(0).toUpperCase()+lib.slice(1)+" à Noisy-le-Sec, "+Math.round(t)+" °C."};
+    try{ localStorage.setItem("altimaths.meteo", JSON.stringify(METEO)); }catch(e){}
+    if (vueCourante==="ascension") rendreAscension();
+  } catch(e){}
+}
+const ICO_METEO = {
+  beau:'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>',
+  mauvais:'<path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15z"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/>',
+  tempete:'<path d="M7 14a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 14"/><path d="M12.5 12l-2.5 4.5h3.5L11 21"/>',
+  inconnu:'<path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15z"/>'};
+
+/* ================= Rendu des maths ================= */
+function prep(t){ return String(t).replace(/\$\$[\s\S]+?\$\$|\$[^$]+?\$/g, m=>m.replace(/</g,"&lt;").replace(/>/g,"&gt;")); }
+function maths(el){ if (window.renderMathInElement){ try{ renderMathInElement(el,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false}); }catch(e){} } }
+function html(el,c){ el.innerHTML=prep(c); maths(el); }
+function melanger(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/* ================= Navigation ================= */
+let vueCourante="ascension";
+const SOMBRES=["ascension","resultat"];
+function aller(v){
+  vueCourante=v;
+  $$(".vue").forEach(s=>s.classList.toggle("active", s.id==="v-"+v));
+  $$("nav.bas button").forEach(b=>b.classList.toggle("actif", b.dataset.vue===v));
+  document.body.classList.toggle("en-quiz", v==="quiz");
+  document.body.classList.toggle("sombre", SOMBRES.includes(v));
+  window.scrollTo(0,0);
+  ({ascension:rendreAscension, profil:rendreProfil, fiches:rendreFiche, expedition:rendreExpedition}[v]||(()=>{}))();
+}
+$$("nav.bas button").forEach(b=>b.addEventListener("click",()=>aller(b.dataset.vue)));
+
+/* ================= Accueil : l'ascension ================= */
+const HERO_PTS=[[34,430],[64,398],[104,384],[146,356],[186,334],[212,310],[226,286],[240,262],[258,230],[276,190],[288,150],[294,116],[268,92],[250,76],[229,52]];
+function surLigne(pts,f){
+  const L=[0]; for(let i=1;i<pts.length;i++) L.push(L[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+  const t=f*L[L.length-1]; let i=0; while(i<L.length-2 && L[i+1]<t) i++;
+  const u=(t-L[i])/((L[i+1]-L[i])||1); const p=[pts[i][0]+(pts[i+1][0]-pts[i][0])*u, pts[i][1]+(pts[i+1][1]-pts[i][1])*u];
+  return {p, avant: pts.slice(0,i+1).concat([p]), apres: [p].concat(pts.slice(i+1))};
+}
+const chemin = pts => "M"+pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" L");
+function lieuTexte(m){
+  const P=position(m);
+  if (!P.vers) return "Au sommet de l'Everest";
+  if (m - P.depuis.min < 0.5) return P.depuis.n==="Lukla" ? "Départ de Lukla" : "À "+P.depuis.n;
+  return "Entre "+(NOM_COURT[P.depuis.n]||P.depuis.n).replace(", col Sud","")+" et "+(NOM_COURT[P.vers.n]||P.vers.n).replace(", col Sud","");
+}
+function carteTheme(t){
+  const qs=QUESTIONS.filter(q=>q.theme===t.id); if(!qs.length) return "";
+  const m=Math.round(100*qs.reduce((s,q)=>s+Math.min((E.q[q.id]&&E.q[q.id].b)||0,3),0)/(3*qs.length));
+  return `<button class="ligne-bouton" data-theme="${t.id}"><span class="sym">${t.icone}</span><span class="txt"><b>${esc(t.titre)}</b><span class="petit">${qs.length} questions</span></span><span class="pc">${m} %</span></button>`;
+}
+function rendreAscension(){
+  majJour();
+  const P=position(E.minutes), f=E.minutes/TOTAL;
+  const L=surLigne(HERO_PTS,f);
+  $("#hero-route").innerHTML = `<path d="${chemin(L.apres)}" fill="none" stroke="#F8FAFB" stroke-width="2" stroke-dasharray="3 6" stroke-linecap="round" opacity=".85"/><path d="${chemin(L.avant)}" fill="none" stroke="#E8541C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const moi=$("#hero-moi"); moi.style.left=(100*L.p[0]/390)+"%"; moi.style.top=(100*L.p[1]/430)+"%";
+  $("#alti").innerHTML = nf(P.a)+"<small>m</small>";
+  $("#jour").textContent = "Jour "+Math.max(1,E.jours);
+  $("#lieu").textContent = lieuTexte(E.minutes);
+  $("#prochaine").textContent = P.vers ? `Prochaine étape : ${P.vers.n}, ${nf(P.vers.a)} m, à ${kmTxt(P.vers.km-P.km)}` : `Sommet atteint le ${new Date(E.etapes["Sommet"]||Date.now()).toLocaleDateString("fr-FR")}. Bravo !`;
+  const cat=METEO.cat;
+  $("#meteo").className="meteo "+cat;
+  $("#meteo").innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO_METEO[cat]}</svg><p>${METEO.texte?`<strong>${esc(METEO.texte)}</strong> `:""}${EFFET[cat]}</p>`;
+  const ferme = cat==="tempete";
+  $("#btn-tech").disabled = ferme; $("#tech-sous").textContent = ferme ? "fermé par la tempête" : "gain double, risqué";
+  const obj=10; $("#obj-txt").textContent = Math.min(E.jourJustes,obj)+" / "+obj+" bonnes réponses";
+  $("#obj-jauge").style.width = Math.min(100,100*E.jourJustes/obj)+"%";
+  const ne=erreurs().length; $("#nb-err").textContent = ne ? ne+" question"+(ne>1?"s":"")+" à revoir" : "Aucune erreur en attente";
+  $("#themes").innerHTML = CH.themes.map(carteTheme).join("");
+}
+document.addEventListener("click", e=>{
+  const m=e.target.closest("[data-mode]"); if (m && !m.disabled){ lancer(m.dataset.mode); return; }
+  const t=e.target.closest("[data-theme]"); if (t) lancer("theme", t.dataset.theme);
+});
+
+/* ================= Séries de questions ================= */
+let Z=null;
+const boite = id => (E.q[id]&&E.q[id].b)||0;
+function erreurs(){ return QUESTIONS.filter(q=>E.q[q.id] && E.q[q.id].d===0); }
+function choisir(qs,n){ return qs.map(q=>({q,p:Math.random()*(4-Math.min(boite(q.id),3))})).sort((a,b)=>b.p-a.p).slice(0,n).map(x=>x.q); }
+function lancer(mode, theme){
+  let qs=QUESTIONS, titre="Marche normale";
+  if (mode==="normal") qs=QUESTIONS.filter(q=>q.niveau<=1);
+  if (mode==="technique"){ if (METEO.cat==="tempete") return toast("Passages techniques fermés par la tempête"); qs=QUESTIONS.filter(q=>q.niveau>=1); titre="Passage technique"; }
+  if (mode==="erreurs"){ qs=erreurs(); titre="Révision des erreurs"; }
+  if (mode==="theme"){ qs=QUESTIONS.filter(q=>q.theme===theme); titre=THEMES[theme].titre; }
+  if (!qs.length) return toast(mode==="erreurs" ? "Aucune erreur à revoir" : "Aucune question disponible");
+  Z={mode,theme,titre,liste: mode==="erreurs" ? melanger(qs).slice(0,10) : choisir(qs,10), i:0, justes:0, debutMin:E.minutes, debutEtape:etapeAtteinte(E.minutes).n};
+  aller("quiz"); afficherQuestion();
+}
+function afficherQuestion(){
+  const q=Z.liste[Z.i];
+  $("#pastilles").innerHTML = Z.liste.map((_,k)=>`<span class="${k<Z.i?"fait":""}"></span>`).join("");
+  $("#quiz-info").textContent = "Question "+(Z.i+1)+" sur "+Z.liste.length+", "+Z.titre.toLowerCase();
+  $("#quiz-alti").innerHTML = nf(position(E.minutes).a)+'<span style="font-size:15px;font-weight:600"> m</span>';
+  $("#quiz-theme").textContent = THEMES[q.theme].titre + (q.niveau ? "  "+"★".repeat(q.niveau) : "");
+  html($("#quiz-question"), q.q);
+  const z=$("#quiz-choix"); z.classList.remove("repondu");
+  z.innerHTML = melanger(q.choix.map((c,k)=>k)).map((k,j)=>`<button data-k="${k}"><span class="lettre">${"ABCD"[j]}</span><span class="cont">${prep(q.choix[k])}</span></button>`).join("");
+  maths(z);
+  z.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>repondre(+b.dataset.k,b)));
+}
+function repondre(k, bouton){
+  const q=Z.liste[Z.i], z=$("#quiz-choix"); z.classList.add("repondu");
+  const ok = k===q.bonne; majJour(); activite();
+  const s=E.q[q.id]||{b:0,ok:0,ko:0}; E.total++;
+  const avant=E.minutes, kmAvant=position(avant).km;
+  let note="";
+  if (ok){
+    s.ok++; s.b=Math.min(3,s.b+1); s.d=1; Z.justes++; E.justes++; E.jourJustes++;
+    const fac=FACTEUR[METEO.cat]; const g=(Z.mode==="technique"?2:1)*fac;
+    E.minutes=Math.min(TOTAL,E.minutes+g);
+    if (fac<1) note = METEO.cat==="tempete" ? "Gain divisé par quatre à cause de la tempête." : "Gain divisé par deux à cause de la météo.";
+    if (Z.mode==="technique") note = "Passage technique réussi : gain doublé. "+note;
+    bouton.classList.add("juste");
+  } else {
+    s.ko++; s.b=0; s.d=0;
+    bouton.classList.add("faux"); z.querySelector(`[data-k="${q.bonne}"]`).classList.add("juste");
+    if (Z.mode!=="technique" && q.niveau===0){ E.minutes=Math.max(0,E.minutes-1/3); note="Question classique ratée : vous glissez un peu."; }
+    else note = Z.mode==="technique" ? "Passage technique raté : vous restez sur place." : "Question difficile : pas de recul.";
+  }
+  E.q[q.id]=s; noterEtapes(); sauver();
+  const dm=Math.round((position(E.minutes).km-kmAvant)*1000);
+  $("#retour").className="retour visible "+(ok?"ok":"ko");
+  $("#r-verdict").textContent = ok ? "Juste" : "Raté";
+  $("#r-gain").textContent = dm>0 ? "+"+nf(dm)+" m" : dm<0 ? "−"+nf(-dm)+" m" : "±0 m";
+  html($("#r-expl"), q.expl);
+  $("#r-note").textContent = note + (dm ? " Altitude : "+nf(position(E.minutes).a)+" m." : "");
+  $("#r-suivant").textContent = Z.i+1<Z.liste.length ? "Continuer" : "Voir le bilan";
+  $("#quiz-alti").innerHTML = nf(position(E.minutes).a)+'<span style="font-size:15px;font-weight:600"> m</span>';
+}
+$("#r-suivant").addEventListener("click",()=>{ $("#retour").className="retour"; Z.i++; if (Z.i<Z.liste.length) afficherQuestion(); else terminer(); });
+$("#quiz-quitter").addEventListener("click",()=>{ $("#retour").className="retour"; Z=null; envoyer(); aller("ascension"); });
+function terminer(){
+  const n=Z.liste.length, P=position(E.minutes), dkm=P.km-position(Z.debutMin).km;
+  $("#res-titre").textContent = Z.titre;
+  $("#res-score").textContent = Z.justes+"/"+n;
+  const pc=Z.justes/n;
+  $("#res-msg").textContent = pc===1 ? "Sans faute" : pc>=.8 ? "Belle étape" : pc>=.5 ? "On continue" : "Repos, puis on repart";
+  $("#res-alt").textContent = nf(P.a)+" m";
+  $("#res-dist").textContent = (dkm>=0?"+":"−")+nf(Math.abs(dkm)*1000)+" m";
+  $("#res-total").textContent = kmTxt(P.km);
+  const nouvelles = ETAPES.filter(e=>e.min>Z.debutMin+1e-6 && e.min<=E.minutes+1e-6);
+  $("#res-annonces").innerHTML = nouvelles.map(e=>`<div class="annonce"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg><div><b>${esc(e.n)} atteint${e.n==="Sommet"?" : vous êtes sur le toit du monde !":""}</b><div style="font-size:13.5px">${nf(e.a)} m d'altitude</div></div></div>`).join("");
+  envoyer(); aller("resultat");
+}
+$("#res-rejouer").addEventListener("click",()=>lancer(Z.mode,Z.theme));
+$("#res-accueil").addEventListener("click",()=>aller("ascension"));
+
+/* ================= Cours ================= */
+function rendreCours(){
+  $("#cours-titre").textContent = "Chapitre "+CH.numero+" : "+CH.titre;
+  const et={exemple:"Exemples",attention:"Attention",remarque:"Remarque"};
+  $("#cours-contenu").innerHTML = CH.cours.map(b=>{
+    if (b.type==="section") return `<h2 class="section">${b.titre}</h2>`;
+    if (b.type==="sous") return `<h3 class="sous">${b.titre}</h3>`;
+    const t=prep(b.texte).replace(/\[\[([\s\S]+?)\]\]/g,'<button class="trou"><span>$1</span></button>');
+    const ti=b.titre||et[b.type]||"";
+    return `<div class="bloc ${b.type}">${ti?`<span class="etiquette">${ti}</span>`:""}${t}</div>`;
+  }).join("");
+  maths($("#cours-contenu"));
+}
+$("#cours-contenu").addEventListener("click",e=>{ const t=e.target.closest(".trou"); if(t) t.classList.toggle("vu"); });
+$("#tout-voir").addEventListener("click",()=>$$(".trou").forEach(t=>t.classList.add("vu")));
+$("#tout-cacher").addEventListener("click",()=>$$(".trou").forEach(t=>t.classList.remove("vu")));
+
+/* ================= Fiches ================= */
+let filtreF="toutes", pile=[], iF=0;
+function preparer(){ pile=melanger(filtreF==="revoir"?FICHES.filter(f=>E.f[f.id]!==1):FICHES); iF=0; }
+function rendreFiche(){
+  if (!pile.length||iF>=pile.length) preparer();
+  $("#fiche-sues").textContent = FICHES.filter(f=>E.f[f.id]===1).length+" / "+FICHES.length+" sues";
+  if (!pile.length){ $("#fiche-bloc").style.display="none"; $("#fiche-vide").style.display="block"; $("#fiche-compteur").textContent=""; return; }
+  $("#fiche-bloc").style.display="block"; $("#fiche-vide").style.display="none";
+  const f=pile[iF]; $("#fiche").classList.remove("retournee");
+  $("#fiche-compteur").textContent = "Fiche "+(iF+1)+" sur "+pile.length;
+  html($("#fiche-recto"),f.recto); setTimeout(()=>html($("#fiche-verso"),f.verso),150);
+}
+$("#fiche").addEventListener("click",()=>$("#fiche").classList.toggle("retournee"));
+$("#fiche").addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); $("#fiche").classList.toggle("retournee"); } });
+function noter(v){ const f=pile[iF]; if(!f) return; E.f[f.id]=v; sauver(); iF++; if(iF>=pile.length){ toast("Paquet terminé"); preparer(); } rendreFiche(); }
+$("#fiche-sue").addEventListener("click",()=>noter(1));
+$("#fiche-revoir").addEventListener("click",()=>noter(0));
+$$("#fiches-filtre button").forEach(b=>b.addEventListener("click",()=>{ filtreF=b.dataset.f; $$("#fiches-filtre button").forEach(x=>x.classList.toggle("on",x===b)); preparer(); rendreFiche(); }));
+
+/* ================= Classement commun (Firebase) ================= */
+const CFG = window.FIREBASE_CONFIG;
+function cloud(){ return CFG && window.AltiCloud && navigator.onLine !== false ? window.AltiCloud : null; }
+let dernierEnvoi=0;
+async function envoyer(){
+  const c=cloud(); if (!c || !E.acces || !E.prenom) return;
+  try { await c.push(CFG,{prenom:E.prenom, h:E.acces, minutes:Math.round(E.minutes*100)/100}); dernierEnvoi=Date.now(); } catch(e){}
+}
+async function restaurer(){
+  const c=cloud(); if (!c || !E.acces) return;
+  try {
+    const docs = await c.findByCode(CFG, E.acces);
+    if (!docs.length) return;
+    const best = docs.reduce((a,b)=>(b.minutes||0)>(a.minutes||0)?b:a);
+    if (!E.prenom && best.prenom) E.prenom = best.prenom;
+    if ((best.minutes||0) > E.minutes + 0.01){ E.minutes = Math.min(TOTAL,best.minutes); noterEtapes(); toast("Progression retrouvée : "+nf(position(E.minutes).a)+" m"); }
+    sauver(); if (vueCourante==="ascension") rendreAscension();
+  } catch(e){}
+}
+const EXP_P={"Lukla":[372,392],"Phakding":[342,384],"Namche Bazaar":[306,376],"Tengboche":[264,366],"Dingboche":[216,352],"Lobuche":[168,334],"Gorak Shep":[122,314],"Camp de base":[78,294],"Camp 1":[128,240],"Camp 2":[186,198],"Camp 3":[258,146],"Camp 4":[232,100],"Sommet":[141,45]};
+function expPos(m){ const P=position(m); const a=EXP_P[P.depuis.n], b=P.vers?EXP_P[P.vers.n]:a; return [a[0]+(b[0]-a[0])*P.u, a[1]+(b[1]-a[1])*P.u]; }
+function dessinerVoie(){
+  const pts=ETAPES.map(e=>EXP_P[e.n]);
+  let s=`<path d="${chemin(pts)}" fill="none" stroke="#1E2D4F" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/><path d="${chemin(pts)}" fill="none" stroke="#E2463B" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  ETAPES.forEach(e=>{ const [x,y]=EXP_P[e.n];
+    if (e.n.startsWith("Camp")) s+=`<path d="M${x-6},${y+1} L${x},${y-9} L${x+6},${y+1}Z" fill="#E8B53A" stroke="#1E2D4F" stroke-width="1.2" stroke-linejoin="round"/>`;
+    else if (e.n==="Sommet") s+=`<path d="M${x},${y} v-16" stroke="#1E2D4F" stroke-width="1.5"/><path d="M${x},${y-16} h10 l-3,3.5 l3,3.5 h-10z" fill="#E8541C"/>`;
+    else s+=`<circle cx="${x}" cy="${y}" r="2.6" fill="#F8FAFB" stroke="#1E2D4F" stroke-width="1.2"/>`; });
+  const lab=[["Sommet 8 849",155,30,"start",1],["Camp 4, col Sud 7 950",240,96,"start",1],["Camp 3 7 200",268,150,"start",1],["Camp 2 6 400",196,201,"start",1],["Camp 1 6 065",138,243,"start",1],["Camp de base 5 364",22,282,"start",1],["Lukla",372,408,"middle",0],["Namche",306,393,"middle",0],["Dingboche",216,370,"middle",0],["Gorak Shep",112,333,"middle",0]];
+  lab.forEach(([t,x,y,a,fonce])=>{ s+=`<text x="${x}" y="${y}" text-anchor="${a}" font-family="Public Sans,sans-serif" font-size="9.5" font-weight="600" fill="${fonce?"#1E2D4F":"#F8FAFB"}" paint-order="stroke" stroke="${fonce?"#E6EEF4":"#1E2D4F"}" stroke-width="3" stroke-linejoin="round">${t}</text>`; });
+  $("#exp-route").innerHTML=s;
+}
+let GRIMPEURS=null, majGrimpeurs=0;
+try { const g=JSON.parse(localStorage.getItem("altimaths.classe")||"null"); if (g){ GRIMPEURS=g.liste; majGrimpeurs=g.t; } } catch(e){}
+async function chargerClasse(){
+  const c=cloud(); if (!c){ rendreExpedition(); return; }
+  $("#exp-maj").textContent="Actualisation…";
+  try {
+    await envoyer();
+    const docs = await c.list(CFG);
+    const parCode={}; docs.forEach(d=>{ if(!d.h) return; const x=parCode[d.h]; if(!x || (d.minutes||0)>(x.minutes||0)) parCode[d.h]={prenom:d.prenom, minutes:d.minutes||0, h:d.h}; });
+    GRIMPEURS = Object.values(parCode); majGrimpeurs=Date.now();
+    try{ localStorage.setItem("altimaths.classe", JSON.stringify({liste:GRIMPEURS,t:majGrimpeurs})); }catch(e){}
+  } catch(e){ toast("Classement indisponible pour le moment"); }
+  $("#exp-maj").textContent="Actualiser les positions";
+  if (vueCourante==="expedition") rendreExpedition(true);
+}
+function rendreExpedition(sansCharger){
+  dessinerVoie();
+  let liste = (GRIMPEURS||[]).filter(g=>g.h!==E.acces).map(g=>({prenom:g.prenom||"?", minutes:Math.min(TOTAL,g.minutes||0), moi:false}));
+  liste.push({prenom:E.prenom||"Vous", minutes:E.minutes, moi:true});
+  liste.sort((a,b)=>b.minutes-a.minutes);
+  // points (noms affichés : vous et les trois premiers)
+  let pts="";
+  liste.slice().reverse().forEach((g,k)=>{ const [x,y]=expPos(g.minutes); const rang=liste.indexOf(g);
+    const col=g.moi?"#E8541C":"#F8FAFB";
+    pts+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${g.moi?6.5:4.5}" fill="${col}" stroke="#1E2D4F" stroke-width="2"/>`;
+    if (g.moi || rang<3) pts+=`<text x="${x.toFixed(1)}" y="${(y-(g.moi?14:11)).toFixed(1)}" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="${g.moi?12:10.5}" font-weight="700" fill="${col}" paint-order="stroke" stroke="#1E2D4F" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)}</text>`; });
+  $("#exp-points").innerHTML=pts;
+  $("#exp-info").textContent = (liste.length>1 ? liste.length+" grimpeurs" : "Votre position") + (majGrimpeurs ? ", positions du "+new Date(majGrimpeurs).toLocaleString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}) : "");
+  const msg = !CFG ? "Le classement commun n'est pas encore configuré." : (!window.AltiCloud||navigator.onLine===false) && !GRIMPEURS ? "Connectez-vous à Internet pour voir la position de la classe." : "";
+  $("#exp-message").innerHTML = msg ? `<p class="info">${msg}</p>` : "";
+  $("#exp-liste").innerHTML = liste.map((g,i)=>`<div class="rang${g.moi?" moi":""}"><span class="r">${i+1}</span><span class="n">${esc(g.prenom)}${g.moi&&E.prenom?" (vous)":""}<small> ${esc(lieuTexte(g.minutes).replace(/^À /,"à ").replace(/^Entre /,"entre ").replace(/^Départ de /,"à ").replace(/^Au sommet de l'Everest/,"au sommet"))}</small></span><span class="a">${nf(position(g.minutes).a)} m</span></div>`).join("");
+  if (!sansCharger && Date.now()-majGrimpeurs>60000) chargerClasse();
+}
+$("#exp-maj").addEventListener("click",()=>chargerClasse());
+
+/* ================= Carnet ================= */
+function rendreProfil(){
+  $("#prenom").value=E.prenom;
+  $("#p-justes").textContent=nf(E.justes);
+  $("#p-taux").textContent=E.total?Math.round(100*E.justes/E.total)+" %":"–";
+  $("#p-jours").textContent=E.jours;
+  $("#carnet").innerHTML = ETAPES.map(e=>{ const d=E.etapes[e.n]; return `<li class="${d?"atteint":""}"><span class="pt"></span><span>${esc(e.n)} <span class="petit">${nf(e.a)} m</span></span><span class="petit">${d?new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}):""}</span></li>`; }).join("");
+  $("#version").textContent = "AltiMaths "+VERSION_APP+", "+QUESTIONS.length+" questions, "+FICHES.length+" fiches";
+  $("#reset-confirme").style.display="none";
+}
+let tPrenom;
+$("#prenom").addEventListener("input",e=>{ E.prenom=e.target.value.trim().slice(0,24); sauver(); clearTimeout(tPrenom); tPrenom=setTimeout(envoyer,1500); });
+$("#btn-reset").addEventListener("click",()=>$("#reset-confirme").style.display="block");
+$("#reset-non").addEventListener("click",()=>$("#reset-confirme").style.display="none");
+$("#reset-oui").addEventListener("click",()=>{ const p=E.prenom,a=E.acces; E=VIDE(); E.prenom=p; E.acces=a; noterEtapes(); sauver(); envoyer(); rendreProfil(); toast("Retour à Lukla"); });
+
+/* ================= Petits outils ================= */
+let tT;
+function toast(msg, action){
+  const t=$("#toast"); t.innerHTML=""; const s=document.createElement("span"); s.textContent=msg; t.appendChild(s);
+  if (action){ const b=document.createElement("button"); b.textContent=action.texte; b.onclick=action.fn; t.appendChild(b); }
+  t.classList.add("visible"); clearTimeout(tT); if(!action) tT=setTimeout(()=>t.classList.remove("visible"),2800);
+}
+
+/* ================= Code d'accès ================= */
+function sha256(msg){
+  const b=Array.from(new TextEncoder().encode(msg)); const K=[]; let H=[]; let n=2,c=0;
+  const frac=x=>((x-Math.floor(x))*4294967296)|0;
+  while(c<64){ let p=true; for(let d=2;d*d<=n;d++) if(n%d===0){p=false;break;} if(p){ if(c<8) H[c]=frac(Math.pow(n,1/2)); K[c]=frac(Math.pow(n,1/3)); c++; } n++; }
+  const ror=(x,k)=>(x>>>k)|(x<<(32-k)); const l=b.length*8;
+  b.push(0x80); while(b.length%64!==56) b.push(0); b.push(0,0,0,0,(l>>>24)&255,(l>>>16)&255,(l>>>8)&255,l&255);
+  const w=new Array(64);
+  for(let j=0;j<b.length;j+=64){
+    for(let i=0;i<16;i++) w[i]=(b[j+4*i]<<24)|(b[j+4*i+1]<<16)|(b[j+4*i+2]<<8)|b[j+4*i+3];
+    for(let i=16;i<64;i++){ const x=w[i-15],y=w[i-2]; w[i]=(w[i-16]+(ror(x,7)^ror(x,18)^(x>>>3))+w[i-7]+(ror(y,17)^ror(y,19)^(y>>>10)))|0; }
+    let [a,bb,cc,d,e,f,g,h]=H;
+    for(let i=0;i<64;i++){ const t1=(h+(ror(e,6)^ror(e,11)^ror(e,25))+((e&f)^(~e&g))+K[i]+w[i])|0; const t2=((ror(a,2)^ror(a,13)^ror(a,22))+((a&bb)^(a&cc)^(bb&cc)))|0; h=g;g=f;f=e;e=(d+t1)|0;d=cc;cc=bb;bb=a;a=(t1+t2)|0; }
+    H=[a,bb,cc,d,e,f,g,h].map((v,i)=>(v+H[i])|0);
+  }
+  return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("");
+}
+const norm = c => String(c).toUpperCase().normalize("NFD").replace(/[^A-Z0-9]/g,"");
+let ACCES = window.ACCES;
+const valide = h => !ACCES || (h && ACCES.codes.some(c=>c.h===h));
+async function listeFraiche(){
+  try { const r=await fetch("eleves.js?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return false; const t=await r.text();
+    const sel=(t.match(/sel\s*:\s*"([^"]+)"/)||[])[1]; const codes=[...t.matchAll(/h\s*:\s*"([0-9a-f]{64})"/g)].map(m=>({h:m[1]}));
+    if(!sel||!codes.length) return false; ACCES={sel,codes}; return true; } catch(e){ return false; }
+}
+let etapePorte="code", occupe=false;
+function ouvrirPorte(etape){
+  etapePorte=etape||"code";
+  $("#etape-code").style.display = etapePorte==="code"?"block":"none";
+  $("#etape-prenom").style.display = etapePorte==="prenom"?"block":"none";
+  $("#porte-btn").textContent = etapePorte==="code" ? "Entrer" : "Commencer l'ascension";
+  $("#porte-erreur").textContent=""; $("#porte").classList.add("visible");
+}
+function fermerPorte(){ $("#porte").classList.remove("visible"); aller("ascension"); envoyer(); }
+$("#porte-form").addEventListener("submit", async e=>{
+  e.preventDefault(); if (occupe) return;
+  if (etapePorte==="code"){
+    const brut=$("#porte-code").value; if(!norm(brut)) return;
+    let h=sha256(ACCES.sel+norm(brut));
+    if (!valide(h)){ occupe=true; $("#porte-erreur").textContent="Vérification…"; if (await listeFraiche()) h=sha256(ACCES.sel+norm(brut)); occupe=false; }
+    if (!valide(h)){ $("#porte-erreur").textContent="Code inconnu. Vérifiez-le ou demandez-le à votre professeur."; const p=$("#porte"); p.classList.remove("secoue"); void p.offsetWidth; p.classList.add("secoue"); return; }
+    E.acces=h; sauver();
+    $("#porte-erreur").textContent="Connexion…"; await attendreCloud(2500); await restaurer();
+    if (!E.prenom) ouvrirPorte("prenom"); else fermerPorte();
+  } else {
+    const p=$("#porte-prenom").value.trim().slice(0,24);
+    if (!p){ $("#porte-erreur").textContent="Indiquez votre prénom."; return; }
+    E.prenom=p; sauver(); fermerPorte();
+  }
+});
+function attendreCloud(ms){ return new Promise(r=>{ const t0=Date.now(); (function w(){ if (window.AltiCloud||Date.now()-t0>ms) r(); else setTimeout(w,100); })(); }); }
+$("#btn-deco").addEventListener("click",()=>{ E.acces=""; sauver(); $("#porte-code").value=""; ouvrirPorte("code"); });
+if (!ACCES) $("#btn-deco").style.display="none";
+
+/* ================= Installation et mises à jour ================= */
+let invite=null;
+window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); invite=e; $("#btn-installer").style.display="flex"; });
+$("#btn-installer").addEventListener("click",async()=>{ if(!invite) return; invite.prompt(); try{await invite.userChoice;}catch(e){} invite=null; $("#btn-installer").style.display="none"; });
+if ("serviceWorker" in navigator){ try {
+  navigator.serviceWorker.register("sw.js").then(reg=>{
+    reg.addEventListener("updatefound",()=>{ const nw=reg.installing; nw&&nw.addEventListener("statechange",()=>{ if(nw.state==="installed"&&navigator.serviceWorker.controller) toast("Nouveau contenu disponible",{texte:"Mettre à jour",fn:()=>nw.postMessage("activer")}); }); });
+    setInterval(()=>reg.update().catch(()=>{}),3600000);
+  }).catch(()=>{});
+  let r=false; navigator.serviceWorker.addEventListener("controllerchange",()=>{ if(!r){ r=true; location.reload(); } });
+} catch(e){} }
+
+/* ================= Démarrage ================= */
+majJour(); noterEtapes(); sauver();
+rendreCours(); preparer(); aller("ascension"); chargerMeteo();
+if (!valide(E.acces)) ouvrirPorte("code");
+else if (!E.prenom) ouvrirPorte("prenom");
+else attendreCloud(4000).then(()=>{ restaurer(); envoyer(); });
+})();
+
+</script>
+</body>
+</html>
