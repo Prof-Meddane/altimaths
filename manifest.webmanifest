@@ -1,0 +1,17 @@
+{
+  "name": "Maths ECG1 — Lycée Olympe de Gouges",
+  "short_name": "Maths ECG1",
+  "description": "Cours, fiches et QCM de mathématiques pour les ECG1.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBF8F1",
+  "theme_color": "#1B2A4A",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

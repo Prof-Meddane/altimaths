@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maths ECG1</title>
+<meta name="theme-color" content="#1B2A4A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Maths ECG1">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+:root{
+  --papier:#FBF8F1; --carte:#FFFFFF; --encre:#1B2A4A; --encre2:#4A5672; --ligne:#E7E1D3;
+  --tomate:#E8553A; --tomate-pale:#FDE9E4; --moutarde:#F2B33D; --moutarde-pale:#FDF3DC;
+  --vert:#2F9E6B; --vert-pale:#E2F4EA; --rouge:#D64545; --rouge-pale:#FBE6E6; --bleu-pale:#E8EEF8;
+  --ombre:0 1px 0 rgba(27,42,74,.06), 0 6px 18px -8px rgba(27,42,74,.18);
+  --r:18px;
+  --titre:"Fraunces", Georgia, "Times New Roman", serif;
+  --texte:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --haut:env(safe-area-inset-top,0px); --bas:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--papier);color:var(--encre);font-family:var(--texte);font-size:16px;line-height:1.5}
+body{min-height:100vh;overscroll-behavior-y:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+input{font:inherit}
+.app{max-width:600px;margin:0 auto;padding:calc(var(--haut) + 14px) 16px calc(var(--bas) + 96px)}
+h1,h2,h3{font-family:var(--titre);margin:0;line-height:1.15;letter-spacing:-.01em}
+h1{font-size:1.9rem;font-weight:800}
+h2{font-size:1.35rem;font-weight:800}
+h3{font-size:1.05rem;font-weight:600}
+.petit{font-size:.85rem;color:var(--encre2)}
+.carte{background:var(--carte);border-radius:var(--r);box-shadow:var(--ombre);padding:16px;margin:12px 0}
+.ligne-flex{display:flex;align-items:center;gap:10px}
+.espace{flex:1}
+.vue{display:none;animation:apparait .25s ease}
+.vue.active{display:block}
+@keyframes apparait{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* En-tête */
+.entete{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.pastille{display:inline-flex;align-items:center;gap:6px;background:var(--carte);border-radius:999px;padding:6px 12px;font-weight:800;box-shadow:var(--ombre);font-size:.95rem}
+.pastille .ico{font-size:1.05rem}
+.sur-titre{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--tomate)}
+
+/* Niveau */
+.niveau-carte{background:var(--encre);color:#fff;border-radius:22px;padding:18px;margin:14px 0;position:relative;overflow:hidden}
+.niveau-carte::after{content:"∑";position:absolute;right:-6px;top:-38px;font-family:var(--titre);font-size:9rem;opacity:.08;font-weight:800}
+.niveau-carte .titre-niv{font-family:var(--titre);font-size:1.3rem;font-weight:800}
+.barre{height:12px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden;margin-top:10px}
+.barre>i{display:block;height:100%;background:linear-gradient(90deg,var(--moutarde),var(--tomate));border-radius:999px;transition:width .6s cubic-bezier(.2,.9,.3,1)}
+.barre.claire{background:var(--ligne)}
+
+/* Gros boutons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 18px;border-radius:16px;font-weight:800;font-size:1.02rem;transition:transform .08s ease, box-shadow .15s}
+.btn:active{transform:translateY(2px)}
+.btn-princ{background:var(--tomate);color:#fff;box-shadow:0 4px 0 #B83D26}
+.btn-princ:active{box-shadow:0 1px 0 #B83D26}
+.btn-sec{background:var(--carte);color:var(--encre);box-shadow:0 3px 0 var(--ligne), var(--ombre)}
+.btn-encre{background:var(--encre);color:#fff;box-shadow:0 4px 0 #0E1830}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.grille2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.mode{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:14px;border-radius:16px;background:var(--carte);box-shadow:0 3px 0 var(--ligne), var(--ombre)}
+.mode .em{font-size:1.5rem}
+.mode b{font-size:1rem}
+.mode span{font-size:.8rem;color:var(--encre2)}
+.mode:active{transform:translateY(2px)}
+
+/* Thèmes */
+.theme{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;background:var(--carte);box-shadow:var(--ombre);margin:8px 0;width:100%;text-align:left}
+.theme .sym{width:46px;height:46px;flex:none;border-radius:14px;background:var(--moutarde-pale);display:grid;place-items:center;font-family:var(--titre);font-weight:800;font-size:1.15rem;color:var(--encre)}
+.theme.maitrise .sym{background:var(--vert-pale);color:var(--vert)}
+.theme .infos{flex:1;min-width:0}
+.theme .infos b{display:block}
+.theme .barre{height:7px;margin-top:6px}
+.theme .pc{font-weight:800;font-size:.9rem;color:var(--encre2);min-width:42px;text-align:right}
+
+/* Cours */
+.cours h2.section{margin:26px 0 6px;color:var(--tomate)}
+.cours h3.sous{margin:18px 0 6px;font-size:1.15rem}
+.bloc{border-radius:16px;padding:14px 16px;margin:10px 0;background:var(--carte);box-shadow:var(--ombre);overflow-x:auto}
+.bloc .etiquette{font-weight:800;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block}
+.bloc.prop{border-left:5px solid var(--encre)}
+.bloc.exemple{background:var(--bleu-pale);box-shadow:none}
+.bloc.attention{background:var(--tomate-pale);box-shadow:none}
+.bloc.attention .etiquette{color:var(--tomate)}
+.bloc.remarque{background:var(--moutarde-pale);box-shadow:none}
+.bloc .ligne{margin:8px 0}
+.bloc ol{padding-left:20px;margin:6px 0}
+.bloc li{margin:6px 0}
+.trou{display:inline-block;vertical-align:middle;min-width:88px;min-height:32px;padding:3px 10px;margin:2px 2px;border-radius:10px;border:2px dashed var(--tomate);background:var(--tomate-pale);position:relative;transition:background .2s}
+.trou>span{visibility:hidden}
+.trou::before{content:"Toucher";position:absolute;inset:0;display:grid;place-items:center;font-size:.75rem;font-weight:800;color:var(--tomate);text-transform:uppercase;letter-spacing:.06em}
+.trou.vu{border-style:solid;border-color:var(--vert);background:var(--vert-pale)}
+.trou.vu>span{visibility:visible}
+.trou.vu::before{content:none}
+.outils-cours{position:sticky;top:calc(var(--haut) + 6px);z-index:5;display:flex;gap:8px;margin:10px 0}
+.outils-cours .btn{padding:10px 12px;font-size:.88rem}
+
+/* Fiches */
+.fiche-zone{perspective:1200px;margin:16px 0}
+.fiche{position:relative;height:260px;transition:transform .55s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d;cursor:pointer}
+.fiche.retournee{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;text-align:center;font-size:1.25rem;box-shadow:var(--ombre);overflow:auto}
+.face.recto{background:var(--carte)}
+.face.verso{background:var(--encre);color:#fff;transform:rotateY(180deg)}
+.face .indice{position:absolute;top:14px;font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;opacity:.55}
+
+/* Quiz */
+.quiz-tete{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.fermer{width:40px;height:40px;border-radius:12px;background:var(--carte);box-shadow:var(--ombre);font-size:1.3rem;font-weight:800;display:grid;place-items:center}
+.quiz-tete .barre{flex:1;margin:0;height:14px}
+.chrono{font-weight:800;font-variant-numeric:tabular-nums;min-width:52px;text-align:right}
+.chrono.urgent{color:var(--rouge)}
+.question{font-size:1.15rem;font-weight:600;margin:16px 2px 14px;overflow-x:auto}
+.etoiles{color:var(--moutarde);letter-spacing:2px;font-size:.95rem}
+.choix{display:flex;flex-direction:column;gap:10px}
+.choix button{display:flex;align-items:center;gap:12px;text-align:left;padding:14px;border-radius:16px;background:var(--carte);box-shadow:0 3px 0 var(--ligne), var(--ombre);border:2px solid transparent;min-height:60px;font-size:1.05rem;transition:transform .08s}
+.choix button:active{transform:translateY(2px)}
+.choix .lettre{flex:none;width:30px;height:30px;border-radius:9px;background:var(--papier);display:grid;place-items:center;font-weight:800;font-size:.85rem;color:var(--encre2)}
+.choix .contenu{flex:1;min-width:0;overflow-x:auto}
+.choix button.juste{border-color:var(--vert);background:var(--vert-pale)}
+.choix button.juste .lettre{background:var(--vert);color:#fff}
+.choix button.faux{border-color:var(--rouge);background:var(--rouge-pale);animation:secoue .35s}
+.choix button.faux .lettre{background:var(--rouge);color:#fff}
+.choix.repondu button{pointer-events:none}
+@keyframes secoue{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+.retour{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:16px 16px calc(var(--bas) + 16px);transform:translateY(110%);transition:transform .3s cubic-bezier(.2,.9,.3,1)}
+.retour.visible{transform:none}
+.retour .interieur{max-width:600px;margin:0 auto;border-radius:22px;padding:16px;box-shadow:0 -8px 30px -10px rgba(27,42,74,.35)}
+.retour.ok .interieur{background:var(--vert-pale)}
+.retour.ko .interieur{background:var(--rouge-pale)}
+.retour .verdict{font-family:var(--titre);font-weight:800;font-size:1.25rem;margin-bottom:4px}
+.retour.ok .verdict{color:var(--vert)}
+.retour.ko .verdict{color:var(--rouge)}
+.retour .expl{max-height:34vh;overflow:auto;margin-bottom:12px}
+.retour.ok .btn{background:var(--vert);color:#fff;box-shadow:0 4px 0 #227A51}
+.retour.ko .btn{background:var(--rouge);color:#fff;box-shadow:0 4px 0 #A83232}
+.combo{display:inline-block;margin-left:6px;background:var(--moutarde);color:var(--encre);border-radius:999px;padding:1px 9px;font-size:.8rem;font-weight:800;vertical-align:middle}
+
+/* Résultat */
+.resultat{text-align:center;padding-top:20px}
+.resultat .grand{font-family:var(--titre);font-size:4rem;font-weight:800;line-height:1}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.stat{background:var(--carte);border-radius:16px;padding:12px 6px;box-shadow:var(--ombre);text-align:center}
+.stat b{display:block;font-family:var(--titre);font-size:1.5rem}
+.stat span{font-size:.75rem;color:var(--encre2);font-weight:700}
+
+/* Badges */
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.badge{background:var(--carte);border-radius:16px;padding:12px 6px;text-align:center;box-shadow:var(--ombre);font-size:.75rem;font-weight:700;line-height:1.25}
+.badge .em{font-size:1.9rem;display:block;margin-bottom:4px}
+.badge.verrou{opacity:.38;filter:grayscale(1)}
+.nouveau-badge{display:flex;align-items:center;gap:12px;text-align:left;background:var(--moutarde-pale);border-radius:16px;padding:12px;margin:8px 0}
+.nouveau-badge .em{font-size:2rem}
+
+/* Navigation */
+nav.bas{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(251,248,241,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--ligne);padding:6px 6px calc(var(--bas) + 6px)}
+nav.bas .in{max-width:600px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+nav.bas button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0;border-radius:12px;font-size:.7rem;font-weight:700;color:var(--encre2)}
+nav.bas button .ico{font-size:1.35rem;line-height:1.2;font-family:var(--titre);font-weight:800}
+nav.bas button.actif{color:var(--tomate)}
+nav.bas button.actif .ico{transform:scale(1.1)}
+body.en-quiz nav.bas{display:none}
+
+.segment{display:flex;background:var(--ligne);border-radius:12px;padding:3px;gap:3px;margin:10px 0}
+.segment button{flex:1;padding:8px 4px;border-radius:9px;font-weight:700;font-size:.85rem;color:var(--encre2)}
+.segment button.on{background:var(--carte);color:var(--encre);box-shadow:var(--ombre)}
+
+.toast{position:fixed;left:50%;top:calc(var(--haut) + 12px);transform:translate(-50%,-200%);visibility:hidden;z-index:50;background:var(--encre);color:#fff;border-radius:14px;padding:10px 16px;font-weight:700;box-shadow:var(--ombre);transition:transform .3s;max-width:92vw;display:flex;gap:10px;align-items:center}
+.toast.visible{transform:translate(-50%,0);visibility:visible}
+.toast button{background:var(--tomate);color:#fff;padding:6px 10px;border-radius:9px;font-weight:800}
+.champ{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--ligne);background:var(--carte);color:var(--encre)}
+.champ:focus{outline:none;border-color:var(--encre)}
+.vide{text-align:center;padding:30px 10px;color:var(--encre2)}
+.vide .em{font-size:2.6rem;display:block}
+.porte{position:fixed;top:0;left:0;right:0;bottom:0;z-index:80;background:var(--encre);color:#fff;display:none;align-items:center;justify-content:center;padding:calc(var(--haut) + 20px) 24px calc(var(--bas) + 20px)}
+.porte.visible{display:flex}
+.porte .boite{width:100%;max-width:380px;text-align:center}
+.porte .logo{width:84px;height:84px;margin:0 auto 18px;border-radius:22px;background:#24365C;display:grid;place-items:center;font-family:var(--titre);font-weight:800;font-size:3rem;color:var(--moutarde);position:relative}
+.porte .logo::after{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:var(--tomate);top:14px;right:14px}
+.porte h1{font-size:1.7rem;margin-bottom:6px}
+.porte p{color:rgba(255,255,255,.72);margin:0 0 20px}
+.porte input{width:100%;padding:15px;border-radius:14px;border:2px solid transparent;background:#fff;color:var(--encre);font-size:1.15rem;font-weight:700;text-align:center;letter-spacing:.08em;text-transform:uppercase}
+.porte input:focus{outline:none;border-color:var(--moutarde)}
+.porte .btn{margin-top:12px}
+.porte .erreur{min-height:1.5em;margin-top:12px;color:#FFB4A6;font-weight:700}
+.porte.secoue .boite{animation:secoue .35s}
+canvas#confettis{position:fixed;inset:0;pointer-events:none;z-index:60}
+.katex{font-size:1.05em}
+.katex-display{margin:.6em 0;overflow-x:auto;overflow-y:hidden;padding:2px 0}
+.bloc .katex-display{font-size:.88em}
+@media (max-width:380px){.bloc .katex-display{font-size:.8em}}
+</style>
+</head>
+<body>
+<div class="porte" id="porte">
+  <form class="boite" id="porte-form" autocomplete="off">
+    <div class="logo">Σ</div>
+    <h1>Maths ECG1</h1>
+    <p id="porte-lycee">Entrez le code d'accès donné par votre professeur.</p>
+    <input id="porte-code" placeholder="EX : ROSE-4821" autocapitalize="characters" autocorrect="off" spellcheck="false" inputmode="text" aria-label="Code d'accès">
+    <button class="btn btn-princ" type="submit">Entrer</button>
+    <div class="erreur" id="porte-erreur"></div>
+  </form>
+</div>
+<canvas id="confettis"></canvas>
+<div class="toast" id="toast"></div>
+
+<main class="app">
+
+  <!-- ================= ACCUEIL ================= -->
+  <section class="vue active" id="v-accueil">
+    <div class="entete">
+      <div>
+        <div class="sur-titre" id="lycee"></div>
+        <h1 id="bonjour">Bonjour !</h1>
+      </div>
+      <div class="espace"></div>
+      <div class="pastille" title="Série de jours"><span class="ico">🔥</span><span id="serie">0</span></div>
+    </div>
+
+    <div class="niveau-carte">
+      <div class="ligne-flex">
+        <div>
+          <div class="petit" style="color:rgba(255,255,255,.7)" id="niv-num">Niveau 1</div>
+          <div class="titre-niv" id="niv-titre">Échauffement</div>
+        </div>
+        <div class="espace"></div>
+        <div style="text-align:right"><b id="xp-total" style="font-size:1.4rem">0</b><div class="petit" style="color:rgba(255,255,255,.7)">XP</div></div>
+      </div>
+      <div class="barre"><i id="niv-barre" style="width:0"></i></div>
+      <div class="petit" style="color:rgba(255,255,255,.75);margin-top:6px" id="niv-reste"></div>
+    </div>
+
+    <div class="carte">
+      <div class="ligne-flex">
+        <div style="font-size:1.6rem">🎯</div>
+        <div class="espace">
+          <b>Objectif du jour</b>
+          <div class="petit" id="obj-texte">0 / 20 bonnes réponses</div>
+        </div>
+      </div>
+      <div class="barre claire" style="height:10px"><i id="obj-barre" style="width:0"></i></div>
+    </div>
+
+    <button class="btn btn-princ" id="btn-go" style="margin:16px 0 12px">▶&nbsp; S'entraîner (10 questions)</button>
+    <div class="grille2">
+      <button class="mode" data-mode="chrono"><span class="em">⏱️</span><b>Défi chrono</b><span>10 questions, 5 minutes</span></button>
+      <button class="mode" data-mode="erreurs"><span class="em">🔁</span><b>Mes erreurs</b><span id="nb-erreurs">0 à revoir</span></button>
+    </div>
+
+    <h2 style="margin:26px 0 4px" id="titre-chapitre"></h2>
+    <div class="petit" id="objectif-chapitre"></div>
+    <div id="liste-themes"></div>
+  </section>
+
+  <!-- ================= COURS ================= -->
+  <section class="vue" id="v-cours">
+    <div class="sur-titre">Le cours</div>
+    <h1 id="cours-titre"></h1>
+    <p class="petit">Touchez les cases <b style="color:var(--tomate)">en pointillés</b> pour révéler la réponse. Essayez d'abord de la retrouver de tête !</p>
+    <div class="outils-cours">
+      <button class="btn btn-sec" id="tout-cacher">🙈 Tout cacher</button>
+      <button class="btn btn-sec" id="tout-voir">👀 Tout révéler</button>
+    </div>
+    <div class="cours" id="cours-contenu"></div>
+  </section>
+
+  <!-- ================= FICHES ================= -->
+  <section class="vue" id="v-fiches">
+    <div class="sur-titre">Fiches mémo</div>
+    <h1>Formules à connaître</h1>
+    <div class="segment" id="fiches-filtre">
+      <button data-f="toutes" class="on">Toutes</button>
+      <button data-f="revoir">À revoir</button>
+    </div>
+    <div class="ligne-flex petit"><span id="fiche-compteur"></span><span class="espace"></span><span id="fiche-sues"></span></div>
+    <div id="fiche-bloc">
+      <div class="fiche-zone">
+        <div class="fiche" id="fiche">
+          <div class="face recto"><span class="indice">Question · toucher pour retourner</span><div id="fiche-recto"></div></div>
+          <div class="face verso"><span class="indice">Réponse</span><div id="fiche-verso"></div></div>
+        </div>
+      </div>
+      <div class="grille2">
+        <button class="btn btn-sec" id="fiche-revoir">🔁 À revoir</button>
+        <button class="btn btn-encre" id="fiche-sue">✓ Je savais</button>
+      </div>
+    </div>
+    <div class="vide" id="fiche-vide" style="display:none"><span class="em">🎉</span>Aucune fiche à revoir. Bravo !</div>
+  </section>
+
+  <!-- ================= ENTRAÎNEMENT ================= -->
+  <section class="vue" id="v-entrainement">
+    <div class="sur-titre">Entraînement</div>
+    <h1>Choisir un exercice</h1>
+    <div class="petit" style="margin-top:14px;font-weight:700">Difficulté</div>
+    <div class="segment" id="filtre-niveau">
+      <button data-n="-1" class="on">Toutes</button>
+      <button data-n="0">Classique</button>
+      <button data-n="1">★</button>
+      <button data-n="2">★★ et +</button>
+    </div>
+    <div class="grille2" style="margin:12px 0">
+      <button class="mode" data-mode="melange"><span class="em">🎲</span><b>Mélange</b><span>10 questions au hasard</span></button>
+      <button class="mode" data-mode="chrono"><span class="em">⏱️</span><b>Défi chrono</b><span>10 questions, 5 min</span></button>
+      <button class="mode" data-mode="erreurs"><span class="em">🔁</span><b>Mes erreurs</b><span class="nb-err2">0 à revoir</span></button>
+      <button class="mode" data-mode="nouvelles"><span class="em">✨</span><b>Jamais vues</b><span class="nb-nouv">0 questions</span></button>
+    </div>
+    <h2 style="margin-top:22px">Par thème</h2>
+    <div id="liste-themes-2"></div>
+  </section>
+
+  <!-- ================= QUIZ ================= -->
+  <section class="vue" id="v-quiz">
+    <div class="quiz-tete">
+      <button class="fermer" id="quiz-fermer" aria-label="Quitter">×</button>
+      <div class="barre claire"><i id="quiz-barre"></i></div>
+      <div class="chrono" id="quiz-chrono"></div>
+    </div>
+    <div class="ligne-flex petit"><span id="quiz-theme"></span><span class="espace"></span><span class="etoiles" id="quiz-etoiles"></span></div>
+    <div class="question" id="quiz-question"></div>
+    <div class="choix" id="quiz-choix"></div>
+  </section>
+
+  <!-- ================= RÉSULTAT ================= -->
+  <section class="vue" id="v-resultat">
+    <div class="resultat">
+      <div style="font-size:3rem" id="res-emoji">🏆</div>
+      <div class="grand" id="res-score">8/10</div>
+      <h2 id="res-message" style="margin-top:8px"></h2>
+      <div class="stats3">
+        <div class="stat"><b id="res-xp">+0</b><span>XP gagnés</span></div>
+        <div class="stat"><b id="res-combo">0</b><span>Meilleure série</span></div>
+        <div class="stat"><b id="res-temps">0:00</b><span>Temps</span></div>
+      </div>
+      <div id="res-badges"></div>
+      <button class="btn btn-princ" id="res-rejouer" style="margin-top:14px">Rejouer</button>
+      <button class="btn btn-sec" id="res-accueil" style="margin-top:12px">Retour à l'accueil</button>
+    </div>
+  </section>
+
+  <!-- ================= PROFIL ================= -->
+  <section class="vue" id="v-profil">
+    <div class="sur-titre">Mon profil</div>
+    <h1>Ma progression</h1>
+    <div class="carte">
+      <label class="petit" for="prenom" style="font-weight:700">Mon prénom</label>
+      <input class="champ" id="prenom" placeholder="Votre prénom" maxlength="30" autocomplete="given-name" style="margin-top:6px">
+    </div>
+    <div class="stats3">
+      <div class="stat"><b id="p-justes">0</b><span>Réponses justes</span></div>
+      <div class="stat"><b id="p-taux">–</b><span>Réussite</span></div>
+      <div class="stat"><b id="p-record">0</b><span>Record de série</span></div>
+    </div>
+    <h2 style="margin:20px 0 10px">Badges <span class="petit" id="p-nb-badges"></span></h2>
+    <div class="badges" id="p-badges"></div>
+
+    <h2 style="margin:24px 0 6px">Installer l'application</h2>
+    <div class="carte" id="installer">
+      <button class="btn btn-encre" id="btn-installer" style="display:none;margin-bottom:10px">📲 Installer sur cet appareil</button>
+      <div class="petit">
+        <b>iPhone / iPad :</b> ouvrir cette page dans Safari, toucher le bouton Partager <span style="font-size:1.1em">⎋</span> puis « Sur l'écran d'accueil ».<br>
+        <b>Android :</b> dans Chrome, menu ⋮ puis « Installer l'application » (ou « Ajouter à l'écran d'accueil »).<br>
+        Une fois installée, l'application fonctionne même sans connexion et se met à jour toute seule.
+      </div>
+    </div>
+
+    <button class="btn btn-sec" id="btn-deco" style="margin-top:20px">Se déconnecter</button>
+    <button class="btn btn-sec" id="btn-reset" style="margin-top:20px;color:var(--rouge)">Réinitialiser ma progression</button>
+    <div id="reset-confirme" style="display:none" class="carte">
+      <b>Tout effacer ?</b> <span class="petit">XP, badges et statistiques seront perdus.</span>
+      <div class="grille2" style="margin-top:10px">
+        <button class="btn btn-sec" id="reset-non">Annuler</button>
+        <button class="btn btn-princ" id="reset-oui">Effacer</button>
+      </div>
+    </div>
+    <p class="petit" style="text-align:center;margin-top:24px" id="version"></p>
+  </section>
+</main>
+
+<nav class="bas">
+  <div class="in">
+    <button data-vue="accueil" class="actif"><span class="ico">⌂</span>Accueil</button>
+    <button data-vue="cours"><span class="ico">§</span>Cours</button>
+    <button data-vue="fiches"><span class="ico">⇄</span>Fiches</button>
+    <button data-vue="entrainement"><span class="ico">?</span>Exercices</button>
+    <button data-vue="profil"><span class="ico">☺</span>Profil</button>
+  </div>
+</nav>
+
+<div class="retour" id="retour">
+  <div class="interieur">
+    <div class="verdict" id="retour-verdict"></div>
+    <div class="expl" id="retour-expl"></div>
+    <button class="btn" id="retour-suivant">Continuer</button>
+  </div>
+</div>
+
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="contenu.js"></script>
+<script src="eleves.js"></script>
+<script>
+(function(){
+"use strict";
+const APP_VERSION = "1.1";
+const C = window.CONTENU;
+const CH = C.chapitres[0];
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+/* ---------- Identifiants stables des questions ---------- */
+function hash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)}
+const QUESTIONS = CH.questions.map(q => Object.assign({id: CH.id+"-"+hash(q.q)}, q));
+const FICHES = CH.fiches.map(f => Object.assign({id: CH.id+"-f"+hash(f.recto)}, f));
+const THEMES = Object.fromEntries(CH.themes.map(t => [t.id, t]));
+
+/* ---------- Sauvegarde locale ---------- */
+const CLE = "mathsECG1.v1";
+const ETAT_VIDE = () => ({prenom:"", xp:0, justes:0, total:0, record:0, serie:0, dernierJour:"", jour:"", jourJustes:0, q:{}, f:{}, badges:{}, quiz:0, chronoOK:0});
+let E;
+try { E = Object.assign(ETAT_VIDE(), JSON.parse(localStorage.getItem(CLE) || "{}")); } catch(e){ E = ETAT_VIDE(); }
+function sauver(){ try{ localStorage.setItem(CLE, JSON.stringify(E)); }catch(e){} }
+
+/* ---------- Dates ---------- */
+function auj(d){ d = d || new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function hier(){ const d=new Date(); d.setDate(d.getDate()-1); return auj(d); }
+function majJour(){
+  if (E.jour !== auj()){ E.jour = auj(); E.jourJustes = 0; }
+  if (E.dernierJour && E.dernierJour !== auj() && E.dernierJour !== hier()) E.serie = 0;
+}
+function activiteDuJour(){
+  if (E.dernierJour === auj()) return;
+  E.serie = (E.dernierJour === hier()) ? E.serie + 1 : 1;
+  E.dernierJour = auj();
+}
+
+/* ---------- Niveaux ---------- */
+const TITRES = ["Échauffement","Calcul mental","Fraction apprivoisée","Identité remarquable","Discriminant","Tableau de signes","Quantité conjuguée","Logarithme","Olympien·ne","Major de promo"];
+function niveauDe(xp){
+  let n=0, seuil=0, pas=100;
+  while (xp >= seuil + pas){ seuil += pas; n++; pas = 100 + n*50; }
+  return {n, titre: TITRES[Math.min(n, TITRES.length-1)], dans: xp-seuil, pas};
+}
+
+/* ---------- Maîtrise ---------- */
+function boite(id){ return (E.q[id] && E.q[id].b) || 0; }
+function maitriseTheme(t){
+  const qs = QUESTIONS.filter(q => q.theme === t);
+  if (!qs.length) return 0;
+  return Math.round(100 * qs.reduce((s,q)=>s+Math.min(boite(q.id),3),0) / (3*qs.length));
+}
+function erreurs(){ return QUESTIONS.filter(q => E.q[q.id] && E.q[q.id].d === 0); }
+function nouvelles(){ return QUESTIONS.filter(q => !E.q[q.id]); }
+
+/* ---------- Badges ---------- */
+const BADGES = [
+  {id:"premier", em:"🌱", nom:"Premier pas", test:()=>E.quiz>=1},
+  {id:"parfait", em:"💯", nom:"Sans faute", test:(r)=>r && r.justes===r.total && r.total>=10},
+  {id:"combo5", em:"⚡", nom:"Série de 5", test:()=>E.record>=5},
+  {id:"combo10", em:"🌩️", nom:"Série de 10", test:()=>E.record>=10},
+  {id:"j3", em:"🔥", nom:"3 jours d'affilée", test:()=>E.serie>=3},
+  {id:"j7", em:"🏅", nom:"7 jours d'affilée", test:()=>E.serie>=7},
+  {id:"cent", em:"💪", nom:"100 bonnes réponses", test:()=>E.justes>=100},
+  {id:"chrono", em:"⏱️", nom:"Chrono maîtrisé", test:(r)=>r && r.mode==="chrono" && r.justes>=8},
+  {id:"fiches", em:"🧠", nom:"Toutes les fiches sues", test:()=>FICHES.every(f=>E.f[f.id]===1)},
+  {id:"olym", em:"🏛️", nom:"Esprit Olympiades", test:()=>QUESTIONS.filter(q=>q.theme==="olym"&&boite(q.id)>=1).length>=5},
+  ...CH.themes.filter(t=>t.id!=="olym").map(t=>({id:"m-"+t.id, em:"🎓", nom:"Maîtrise : "+t.titre, test:()=>maitriseTheme(t.id)===100}))
+];
+function verifierBadges(r){
+  const nv=[];
+  BADGES.forEach(b=>{ if(!E.badges[b.id] && b.test(r)){ E.badges[b.id]=auj(); nv.push(b); } });
+  return nv;
+}
+
+/* ---------- Rendu des maths ---------- */
+function maths(el){
+  if (window.renderMathInElement) {
+    try { renderMathInElement(el, {delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}], throwOnError:false}); } catch(e){}
+  }
+}
+// Protège les < et > des formules pour que le navigateur ne les prenne pas pour des balises HTML
+function prep(t){ return String(t).replace(/\$\$[\s\S]+?\$\$|\$[^$]+?\$/g, m => m.replace(/</g,"&lt;").replace(/>/g,"&gt;")); }
+window.prepMaths = prep;
+function html(el, contenu){ el.innerHTML = prep(contenu); maths(el); }
+function etoiles(n){ return n>0 ? "★".repeat(n) : ""; }
+function melanger(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+/* ---------- Navigation ---------- */
+let vueCourante = "accueil";
+function aller(v){
+  vueCourante = v;
+  $$(".vue").forEach(s=>s.classList.toggle("active", s.id==="v-"+v));
+  $$("nav.bas button").forEach(b=>b.classList.toggle("actif", b.dataset.vue===v));
+  document.body.classList.toggle("en-quiz", v==="quiz");
+  window.scrollTo(0,0);
+  if (v==="accueil") rendreAccueil();
+  if (v==="entrainement") rendreEntrainement();
+  if (v==="profil") rendreProfil();
+  if (v==="fiches") rendreFiche();
+}
+$$("nav.bas button").forEach(b=>b.addEventListener("click",()=>aller(b.dataset.vue)));
+
+/* ---------- Accueil ---------- */
+function carteTheme(t){
+  const m = maitriseTheme(t.id);
+  const nb = QUESTIONS.filter(q=>q.theme===t.id).length;
+  return `<button class="theme ${m===100?"maitrise":""}" data-theme="${t.id}">
+    <span class="sym">${t.icone}</span>
+    <span class="infos"><b>${t.titre}</b><span class="petit">${nb} questions</span>
+      <span class="barre claire"><i style="width:${m}%"></i></span></span>
+    <span class="pc">${m}%</span></button>`;
+}
+function rendreAccueil(){
+  majJour();
+  $("#lycee").textContent = C.lycee;
+  $("#bonjour").textContent = E.prenom ? "Bonjour " + E.prenom + " !" : "Bonjour !";
+  $("#serie").textContent = E.serie;
+  const nv = niveauDe(E.xp);
+  $("#niv-num").textContent = "Niveau " + (nv.n+1);
+  $("#niv-titre").textContent = nv.titre;
+  $("#xp-total").textContent = E.xp;
+  $("#niv-barre").style.width = (100*nv.dans/nv.pas)+"%";
+  $("#niv-reste").textContent = (nv.pas-nv.dans) + " XP avant le niveau " + (nv.n+2);
+  const obj = 20;
+  $("#obj-texte").textContent = Math.min(E.jourJustes,obj) + " / " + obj + " bonnes réponses" + (E.jourJustes>=obj?" — objectif atteint ✓":"");
+  $("#obj-barre").style.width = Math.min(100, 100*E.jourJustes/obj)+"%";
+  $("#nb-erreurs").textContent = erreurs().length + " à revoir";
+  $("#titre-chapitre").textContent = "Chapitre " + CH.numero + " — " + CH.titre;
+  html($("#objectif-chapitre"), CH.objectif);
+  $("#liste-themes").innerHTML = CH.themes.map(carteTheme).join("");
+}
+$("#btn-go").addEventListener("click", ()=>lancer("melange"));
+
+/* ---------- Entraînement ---------- */
+let filtreNiveau = -1;
+$$("#filtre-niveau button").forEach(b=>b.addEventListener("click",()=>{
+  filtreNiveau = +b.dataset.n;
+  $$("#filtre-niveau button").forEach(x=>x.classList.toggle("on", x===b));
+}));
+function rendreEntrainement(){
+  $$(".nb-err2").forEach(e=>e.textContent = erreurs().length+" à revoir");
+  $$(".nb-nouv").forEach(e=>e.textContent = nouvelles().length+" questions");
+  $("#liste-themes-2").innerHTML = CH.themes.map(carteTheme).join("");
+}
+document.addEventListener("click", e=>{
+  const m = e.target.closest("[data-mode]"); if (m) { lancer(m.dataset.mode); return; }
+  const t = e.target.closest("[data-theme]"); if (t) { lancer("theme", t.dataset.theme); }
+});
+
+/* ---------- Quiz ---------- */
+let Z = null, minuterie = null;
+function filtrer(qs, fl){
+  if (fl<0) return qs;
+  return qs.filter(q => fl===2 ? q.niveau>=2 : q.niveau===fl);
+}
+function choisir(qs, n){
+  // Les questions peu maîtrisées sortent plus souvent
+  const pond = qs.map(q=>({q, p: Math.random() * (1 + 3 - Math.min(boite(q.id),3)) }));
+  return pond.sort((a,b)=>b.p-a.p).slice(0,n).map(x=>x.q);
+}
+function lancer(mode, theme, fl){
+  if (fl === undefined) fl = vueCourante==="entrainement" ? filtreNiveau : -1;
+  let qs = QUESTIONS, n = 10, titre = "Mélange";
+  if (mode==="theme"){ qs = QUESTIONS.filter(q=>q.theme===theme); titre = THEMES[theme].titre; }
+  if (mode==="erreurs"){ qs = erreurs(); titre = "Mes erreurs"; }
+  if (mode==="nouvelles"){ qs = nouvelles(); titre = "Jamais vues"; }
+  if (mode==="chrono"){ titre = "Défi chrono"; }
+  qs = filtrer(qs, fl);
+  if (!qs.length){
+    toast(mode==="erreurs" ? "Aucune erreur à revoir 🎉" : mode==="nouvelles" ? "Vous avez déjà vu toutes les questions !" : "Aucune question pour ce filtre.");
+    return;
+  }
+  const liste = mode==="erreurs" ? melanger(qs).slice(0,n) : choisir(qs, n);
+  Z = {mode, theme, fl, titre, liste, i:0, justes:0, combo:0, meilleurCombo:0, xp:0, debut:Date.now(), fin: mode==="chrono" ? Date.now()+5*60*1000 : 0};
+  aller("quiz");
+  clearInterval(minuterie);
+  if (Z.fin){ minuterie = setInterval(tic, 250); tic(); } else $("#quiz-chrono").textContent = "";
+  afficherQuestion();
+}
+function tic(){
+  if (!Z || !Z.fin) return;
+  const r = Math.max(0, Z.fin - Date.now());
+  const s = Math.ceil(r/1000);
+  const el = $("#quiz-chrono");
+  el.textContent = Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+  el.classList.toggle("urgent", s<=30);
+  if (r<=0){ clearInterval(minuterie); cacherRetour(); terminer(); }
+}
+function afficherQuestion(){
+  const q = Z.liste[Z.i];
+  $("#quiz-barre").style.width = (100*Z.i/Z.liste.length)+"%";
+  $("#quiz-theme").textContent = THEMES[q.theme].titre + " · " + (Z.i+1) + "/" + Z.liste.length;
+  $("#quiz-etoiles").textContent = etoiles(q.niveau);
+  html($("#quiz-question"), q.q);
+  const ordre = melanger(q.choix.map((c,k)=>k));
+  const zone = $("#quiz-choix");
+  zone.classList.remove("repondu");
+  zone.innerHTML = ordre.map((k,j)=>`<button data-k="${k}"><span class="lettre">${"ABCD"[j]}</span><span class="contenu">${prep(q.choix[k])}</span></button>`).join("");
+  maths(zone);
+  zone.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>repondre(+b.dataset.k, b)));
+}
+function repondre(k, bouton){
+  const q = Z.liste[Z.i];
+  const zone = $("#quiz-choix");
+  zone.classList.add("repondu");
+  const ok = k === q.bonne;
+  majJour(); activiteDuJour();
+  const s = E.q[q.id] || {b:0, ok:0, ko:0};
+  E.total++;
+  if (ok){
+    s.ok++; s.b = Math.min(3, s.b+1); s.d = 1;
+    Z.justes++; Z.combo++; Z.meilleurCombo = Math.max(Z.meilleurCombo, Z.combo);
+    E.justes++; E.jourJustes++; E.record = Math.max(E.record, Z.combo);
+    let gain = 10 + 5*q.niveau + (Z.combo>=3 ? 5 : 0);
+    Z.xp += gain; E.xp += gain;
+    bouton.classList.add("juste");
+    vibrer(15);
+  } else {
+    s.ko++; s.b = 0; s.d = 0; Z.combo = 0;
+    bouton.classList.add("faux");
+    zone.querySelector(`[data-k="${q.bonne}"]`).classList.add("juste");
+    vibrer([30,40,30]);
+  }
+  E.q[q.id] = s;
+  sauver();
+  const r = $("#retour");
+  r.className = "retour visible " + (ok ? "ok" : "ko");
+  const bravo = ["Bien joué !","Exact !","Parfait !","Bravo !","Excellent !"];
+  $("#retour-verdict").innerHTML = (ok ? bravo[Math.floor(Math.random()*bravo.length)] : "Pas tout à fait…") + (ok && Z.combo>=3 ? `<span class="combo">🔥 ×${Z.combo}</span>` : "");
+  html($("#retour-expl"), q.expl);
+  $("#retour-suivant").textContent = Z.i+1 < Z.liste.length ? "Continuer" : "Voir mon score";
+  setTimeout(()=>$("#retour-suivant").focus({preventScroll:true}), 50);
+}
+function cacherRetour(){ $("#retour").className = "retour"; }
+$("#retour-suivant").addEventListener("click", ()=>{
+  cacherRetour();
+  Z.i++;
+  if (Z.i < Z.liste.length) afficherQuestion(); else terminer();
+});
+$("#quiz-fermer").addEventListener("click", ()=>{ clearInterval(minuterie); cacherRetour(); Z=null; aller("accueil"); });
+
+function terminer(){
+  clearInterval(minuterie);
+  const total = Z.liste.length;
+  E.quiz++;
+  if (Z.mode==="chrono" && Z.justes>=8) E.chronoOK++;
+  const nv = verifierBadges({justes:Z.justes, total, mode:Z.mode});
+  sauver();
+  const t = Math.round((Date.now()-Z.debut)/1000);
+  const pc = Z.justes/total;
+  $("#res-emoji").textContent = pc===1 ? "🏆" : pc>=.8 ? "🌟" : pc>=.5 ? "👍" : "💪";
+  $("#res-score").textContent = Z.justes + "/" + total;
+  $("#res-message").textContent = pc===1 ? "Sans faute, impressionnant !" : pc>=.8 ? "Très bon travail !" : pc>=.5 ? "C'est bien, on continue !" : "Courage, revoyez le cours puis réessayez.";
+  $("#res-xp").textContent = "+" + Z.xp;
+  $("#res-combo").textContent = Z.meilleurCombo;
+  $("#res-temps").textContent = Math.floor(t/60)+":"+String(t%60).padStart(2,"0");
+  $("#res-badges").innerHTML = nv.map(b=>`<div class="nouveau-badge"><span class="em">${b.em}</span><div><div class="petit">Nouveau badge !</div><b>${b.nom}</b></div></div>`).join("");
+  aller("resultat");
+  if (pc>=.8 || nv.length) confettis();
+}
+$("#res-rejouer").addEventListener("click", ()=>{ const m=Z.mode, t=Z.theme, f=Z.fl; lancer(m,t,f); });
+$("#res-accueil").addEventListener("click", ()=>aller("accueil"));
+
+/* ---------- Cours ---------- */
+function rendreCours(){
+  $("#cours-titre").textContent = "Chapitre " + CH.numero + " — " + CH.titre;
+  const etiq = {prop:"", exemple:"Exemples", attention:"⚠ Attention", remarque:"Remarque"};
+  const h = CH.cours.map(b=>{
+    if (b.type==="section") return `<h2 class="section">${b.titre}</h2>`;
+    if (b.type==="sous") return `<h3 class="sous">${b.titre}</h3>`;
+    const texte = prep(b.texte).replace(/\[\[([\s\S]+?)\]\]/g, '<button class="trou"><span>$1</span></button>');
+    const titre = b.titre || etiq[b.type] || "";
+    return `<div class="bloc ${b.type}">${titre?`<span class="etiquette">${titre}</span>`:""}${texte}</div>`;
+  }).join("");
+  $("#cours-contenu").innerHTML = h; maths($("#cours-contenu"));
+}
+$("#cours-contenu").addEventListener("click", e=>{ const t=e.target.closest(".trou"); if(t){ t.classList.toggle("vu"); } });
+$("#tout-voir").addEventListener("click", ()=>$$(".trou").forEach(t=>t.classList.add("vu")));
+$("#tout-cacher").addEventListener("click", ()=>$$(".trou").forEach(t=>t.classList.remove("vu")));
+
+/* ---------- Fiches ---------- */
+let filtreFiches = "toutes", pileFiches = [], idxFiche = 0;
+function preparerFiches(){
+  pileFiches = melanger(filtreFiches==="revoir" ? FICHES.filter(f=>E.f[f.id]!==1) : FICHES);
+  idxFiche = 0;
+}
+function rendreFiche(){
+  if (!pileFiches.length || idxFiche>=pileFiches.length) preparerFiches();
+  const sues = FICHES.filter(f=>E.f[f.id]===1).length;
+  $("#fiche-sues").textContent = sues + " / " + FICHES.length + " sues";
+  if (!pileFiches.length){ $("#fiche-bloc").style.display="none"; $("#fiche-vide").style.display="block"; $("#fiche-compteur").textContent=""; return; }
+  $("#fiche-bloc").style.display="block"; $("#fiche-vide").style.display="none";
+  const f = pileFiches[idxFiche];
+  $("#fiche").classList.remove("retournee");
+  $("#fiche-compteur").textContent = "Fiche " + (idxFiche+1) + " / " + pileFiches.length;
+  html($("#fiche-recto"), f.recto);
+  setTimeout(()=>html($("#fiche-verso"), f.verso), 120);
+}
+$("#fiche").addEventListener("click", ()=>$("#fiche").classList.toggle("retournee"));
+function noterFiche(v){
+  const f = pileFiches[idxFiche]; if(!f) return;
+  E.f[f.id] = v;
+  const nv = verifierBadges(null); sauver();
+  if (nv.length){ toast(nv[0].em+" Nouveau badge : "+nv[0].nom); confettis(); }
+  idxFiche++;
+  if (idxFiche>=pileFiches.length){ toast("Paquet terminé ! On recommence."); preparerFiches(); }
+  rendreFiche();
+}
+$("#fiche-sue").addEventListener("click", ()=>noterFiche(1));
+$("#fiche-revoir").addEventListener("click", ()=>noterFiche(0));
+$$("#fiches-filtre button").forEach(b=>b.addEventListener("click",()=>{
+  filtreFiches = b.dataset.f;
+  $$("#fiches-filtre button").forEach(x=>x.classList.toggle("on", x===b));
+  preparerFiches(); rendreFiche();
+}));
+
+/* ---------- Profil ---------- */
+function rendreProfil(){
+  $("#prenom").value = E.prenom;
+  $("#p-justes").textContent = E.justes;
+  $("#p-taux").textContent = E.total ? Math.round(100*E.justes/E.total)+"%" : "–";
+  $("#p-record").textContent = E.record;
+  const nb = BADGES.filter(b=>E.badges[b.id]).length;
+  $("#p-nb-badges").textContent = nb + " / " + BADGES.length;
+  $("#p-badges").innerHTML = BADGES.map(b=>`<div class="badge ${E.badges[b.id]?"":"verrou"}"><span class="em">${b.em}</span>${b.nom}</div>`).join("");
+  $("#version").textContent = C.appli + " · version " + APP_VERSION + " · " + QUESTIONS.length + " questions · " + FICHES.length + " fiches";
+  $("#reset-confirme").style.display="none";
+}
+$("#prenom").addEventListener("input", e=>{ E.prenom = e.target.value.trim(); sauver(); });
+$("#btn-reset").addEventListener("click", ()=>{ $("#reset-confirme").style.display="block"; });
+$("#reset-non").addEventListener("click", ()=>{ $("#reset-confirme").style.display="none"; });
+$("#reset-oui").addEventListener("click", ()=>{ const p=E.prenom, a=E.acces; E = ETAT_VIDE(); E.prenom=p; E.acces=a; sauver(); rendreProfil(); toast("Progression réinitialisée"); });
+
+/* ---------- Petits effets ---------- */
+let toastT;
+function toast(msg, action){
+  const t = $("#toast");
+  t.innerHTML = "";
+  const s = document.createElement("span"); s.textContent = msg; t.appendChild(s);
+  if (action){ const b=document.createElement("button"); b.textContent=action.texte; b.onclick=action.fn; t.appendChild(b); }
+  t.classList.add("visible");
+  clearTimeout(toastT);
+  if (!action) toastT = setTimeout(()=>t.classList.remove("visible"), 2600);
+}
+function vibrer(p){ try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
+function confettis(){
+  const cv = $("#confettis"), ctx = cv.getContext("2d");
+  cv.width = innerWidth; cv.height = innerHeight;
+  const couleurs = ["#E8553A","#F2B33D","#2F9E6B","#1B2A4A","#7FA7E8"];
+  const P = Array.from({length:120}, ()=>({x:Math.random()*cv.width, y:-20-Math.random()*cv.height*.5, vx:(Math.random()-.5)*3, vy:2+Math.random()*3, r:Math.random()*6.28, vr:(Math.random()-.5)*.3, c:couleurs[Math.floor(Math.random()*5)], w:6+Math.random()*6}));
+  let f=0;
+  (function anim(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.04; p.r+=p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.c; ctx.fillRect(-p.w/2,-p.w/4,p.w,p.w/2); ctx.restore(); });
+    if (++f < 170) requestAnimationFrame(anim); else ctx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+
+/* ---------- Installation & mises à jour (PWA) ---------- */
+let invite = null;
+window.addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); invite = e; $("#btn-installer").style.display="flex"; });
+$("#btn-installer").addEventListener("click", async ()=>{ if(!invite) return; invite.prompt(); try{ await invite.userChoice; }catch(e){} invite=null; $("#btn-installer").style.display="none"; });
+if ("serviceWorker" in navigator){
+  try {
+    navigator.serviceWorker.register("sw.js").then(reg=>{
+      reg.addEventListener("updatefound", ()=>{
+        const nw = reg.installing;
+        nw && nw.addEventListener("statechange", ()=>{
+          if (nw.state==="installed" && navigator.serviceWorker.controller){
+            toast("Nouveau contenu disponible", {texte:"Mettre à jour", fn:()=>{ nw.postMessage("activer"); }});
+          }
+        });
+      });
+      setInterval(()=>reg.update().catch(()=>{}), 60*60*1000);
+    }).catch(()=>{});
+    let recharge = false;
+    navigator.serviceWorker.addEventListener("controllerchange", ()=>{ if(!recharge){ recharge=true; location.reload(); } });
+  } catch(e){}
+}
+
+/* ---------- Code d'accès ---------- */
+function sha256(msg){
+  const b = Array.from(new TextEncoder().encode(msg));
+  const K=[]; let H=[]; let n=2, c=0;
+  const frac = x => ((x - Math.floor(x)) * 4294967296) | 0;
+  while(c<64){ let p=true; for(let d=2;d*d<=n;d++) if(n%d===0){p=false;break;}
+    if(p){ if(c<8) H[c]=frac(Math.pow(n,1/2)); K[c]=frac(Math.pow(n,1/3)); c++; } n++; }
+  const ror=(x,k)=>(x>>>k)|(x<<(32-k));
+  const l=b.length*8;
+  b.push(0x80); while(b.length%64!==56) b.push(0);
+  b.push(0,0,0,0,(l>>>24)&255,(l>>>16)&255,(l>>>8)&255,l&255);
+  const w=new Array(64);
+  for(let j=0;j<b.length;j+=64){
+    for(let i=0;i<16;i++) w[i]=(b[j+4*i]<<24)|(b[j+4*i+1]<<16)|(b[j+4*i+2]<<8)|b[j+4*i+3];
+    for(let i=16;i<64;i++){ const x=w[i-15], y=w[i-2];
+      w[i]=(w[i-16]+(ror(x,7)^ror(x,18)^(x>>>3))+w[i-7]+(ror(y,17)^ror(y,19)^(y>>>10)))|0; }
+    let [a,bb,cc,d,e,f,g,h]=H;
+    for(let i=0;i<64;i++){
+      const t1=(h+(ror(e,6)^ror(e,11)^ror(e,25))+((e&f)^(~e&g))+K[i]+w[i])|0;
+      const t2=((ror(a,2)^ror(a,13)^ror(a,22))+((a&bb)^(a&cc)^(bb&cc)))|0;
+      h=g; g=f; f=e; e=(d+t1)|0; d=cc; cc=bb; bb=a; a=(t1+t2)|0; }
+    H=[a,bb,cc,d,e,f,g,h].map((v,i)=>(v+H[i])|0);
+  }
+  return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("");
+}
+
+function normaliser(code){ return String(code).toUpperCase().normalize("NFD").replace(/[^A-Z0-9]/g,""); }
+const ACCES = window.ACCES;
+function codeValide(h){ return !ACCES || (h && ACCES.codes.some(c=>c.h===h)); }
+function ouvrirPorte(){ $("#porte").classList.add("visible"); $("#porte-erreur").textContent=""; $("#porte-code").value=""; }
+$("#porte-form").addEventListener("submit", e=>{
+  e.preventDefault();
+  const brut = $("#porte-code").value;
+  if (!normaliser(brut)) return;
+  const h = sha256(ACCES.sel + normaliser(brut));
+  if (codeValide(h)){
+    E.acces = h; sauver();
+    $("#porte").classList.remove("visible");
+    $("#porte-code").blur();
+    aller("accueil");
+    toast("Bienvenue !");
+  } else {
+    $("#porte-erreur").textContent = "Code inconnu. Vérifiez-le ou demandez-le à votre professeur.";
+    const p=$("#porte"); p.classList.remove("secoue"); void p.offsetWidth; p.classList.add("secoue");
+  }
+});
+$("#btn-deco").addEventListener("click", ()=>{ E.acces=""; sauver(); ouvrirPorte(); });
+if (!ACCES) $("#btn-deco").style.display="none";
+
+/* ---------- Démarrage ---------- */
+majJour(); sauver();
+rendreCours();
+preparerFiches();
+aller("accueil");
+if (!codeValide(E.acces)) ouvrirPorte();
+})();
+</script>
+</body>
+</html>
