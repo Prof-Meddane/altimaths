@@ -76,6 +76,18 @@ h1,h2,h3{margin:0}
 .ligne-bouton b{display:block;font-weight:600}
 .ligne-bouton .pc{font-family:var(--d);font-weight:800;font-size:20px}
 .choix-chap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.acc{background:var(--nuit2);border-radius:16px;overflow:hidden}
+.acc>summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:60px;cursor:pointer;color:var(--neige)}
+.acc>summary::-webkit-details-marker{display:none}
+.acc>summary:focus-visible{outline:2px solid var(--drapeau);outline-offset:-2px;border-radius:16px}
+.acc .num{width:40px;flex:none;text-align:center;font-family:var(--d);font-weight:800;font-size:36px;line-height:1;color:var(--drapeau)}
+.acc .txt{flex:1;min-width:0}
+.acc .txt b{display:block;font-weight:700;line-height:1.25}
+.acc .pc{font-family:var(--d);font-weight:800;font-size:20px}
+.acc .chev{flex:none;color:var(--brume);transition:transform .2s ease}
+.acc[open] .chev{transform:rotate(180deg)}
+.acc .corps{display:flex;flex-direction:column;gap:8px;padding:0 8px 10px 8px}
+@media (prefers-reduced-motion:reduce){.acc .chev{transition:none}}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chips button{border-radius:999px;padding:7px 13px;font-size:13.5px;font-weight:600;border:1.5px solid var(--pente);color:var(--brume);min-height:36px}
 .chips button.on{background:var(--neige);color:var(--nuit);border-color:var(--neige)}
@@ -434,7 +446,7 @@ body.en-quiz nav.bas{display:none}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.4.1";
+const VERSION_APP = "2.5";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -582,9 +594,10 @@ function lieuTexte(m){
   if (m - P.depuis.min < 0.5) return P.depuis.n==="Lukla" ? "Départ de Lukla" : "À "+P.depuis.n;
   return "Entre "+(NOM_COURT[P.depuis.n]||P.depuis.n).replace(", col Sud","")+" et "+(NOM_COURT[P.vers.n]||P.vers.n).replace(", col Sud","");
 }
+const maitrise = qs => qs.length ? Math.round(100*qs.reduce((s,q)=>s+Math.min((E.q[q.id]&&E.q[q.id].b)||0,3),0)/(3*qs.length)) : 0;
 function carteTheme(t){
   const qs=QUESTIONS.filter(q=>q.theme===t.id); if(!qs.length) return "";
-  const m=Math.round(100*qs.reduce((s,q)=>s+Math.min((E.q[q.id]&&E.q[q.id].b)||0,3),0)/(3*qs.length));
+  const m=maitrise(qs);
   return `<button class="ligne-bouton" data-theme="${t.id}"><span class="sym">${t.icone}</span><span class="txt"><b>${esc(t.titre)}</b><span class="petit">${qs.length} questions</span></span><span class="pc">${m} %</span></button>`;
 }
 function rendreAscension(){
@@ -607,8 +620,20 @@ function rendreAscension(){
   $("#obj-jauge").style.width = Math.min(100,100*E.jourJustes/obj)+"%";
   const ne=erreurs().length; $("#nb-err").textContent = ne ? ne+" question"+(ne>1?"s":"")+" à revoir" : "Aucune erreur en attente";
   $("#chap-choix").innerHTML = [["tous","Tous"]].concat(CHAPS.map(ch=>[ch.id,"Ch. "+ch.numero])).map(([id,l])=>`<button data-chap="${id}" class="${(E.chap||"tous")===id?"on":""}">${l}</button>`).join("");
-  $("#themes").innerHTML = CHAPS.filter(ch=>E.chap==="tous"||!E.chap||E.chap===ch.id).map(ch=>`<p class="petit" style="margin:8px 0 0;font-weight:700">Chapitre ${ch.numero} : ${esc(ch.titre)}</p>`+ch.themes.map(carteTheme).join("")).join("");
+  const seul = E.chap && E.chap!=="tous", dernier = CHAPS[CHAPS.length-1].id;
+  E.ouverts = E.ouverts || {};
+  $("#themes").innerHTML = CHAPS.filter(ch=>!seul||E.chap===ch.id).map(ch=>{
+    const qs=QUESTIONS.filter(q=>q.ch===ch.id), cartes=ch.themes.map(carteTheme).join("");
+    if (!cartes) return "";
+    const ouvert = seul || (ch.id in E.ouverts ? E.ouverts[ch.id] : ch.id===dernier);
+    return `<details class="acc" data-acc="${ch.id}"${ouvert?" open":""}><summary><span class="num" aria-hidden="true">${ch.numero}</span><span class="txt"><b>Chapitre ${ch.numero} : ${esc(ch.titre)}</b><span class="petit">${ch.themes.length} sous-parties, ${qs.length} questions</span></span><span class="pc">${maitrise(qs)} %</span><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="corps">${cartes}</div></details>`;
+  }).join("");
 }
+$("#themes").addEventListener("toggle", e=>{
+  const d=e.target; if (!d.matches || !d.matches("details[data-acc]")) return;
+  if (E.chap && E.chap!=="tous") return;
+  E.ouverts = E.ouverts || {}; E.ouverts[d.dataset.acc]=d.open; sauver();
+}, true);
 document.addEventListener("click", e=>{
   const ch=e.target.closest("[data-chap]"); if (ch){ E.chap=ch.dataset.chap; sauver(); rendreAscension(); return; }
   const m=e.target.closest("[data-mode]"); if (m && !m.disabled){ lancer(m.dataset.mode); return; }
