@@ -1,7 +1,7 @@
 {
-  "name": "AltiMaths",
+  "name": "AltiMaths, prépa ECG1 Olympe de Gouges",
   "short_name": "AltiMaths",
-  "description": "Mathématiques ECG1 : cours, fiches et QCM, en route vers le sommet de l'Everest.",
+  "description": "Cours, fiches et QCM de mathématiques de la prépa ECG1 du lycée Olympe de Gouges (Noisy-le-Sec), en route vers le sommet de l'Everest.",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",
@@ -10,8 +10,21 @@
   "background_color": "#1E2D4F",
   "theme_color": "#1E2D4F",
   "icons": [
-    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
-    {"src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
