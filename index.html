@@ -414,7 +414,7 @@ canvas#confettis{position:fixed;inset:0;pointer-events:none;z-index:60}
 <script>
 (function(){
 "use strict";
-const APP_VERSION = "1.1";
+const APP_VERSION = "1.2";
 const C = window.CONTENU;
 const CH = C.chapitres[0];
 const $ = s => document.querySelector(s);
@@ -817,14 +817,34 @@ function sha256(msg){
 }
 
 function normaliser(code){ return String(code).toUpperCase().normalize("NFD").replace(/[^A-Z0-9]/g,""); }
-const ACCES = window.ACCES;
+let ACCES = window.ACCES;
 function codeValide(h){ return !ACCES || (h && ACCES.codes.some(c=>c.h===h)); }
 function ouvrirPorte(){ $("#porte").classList.add("visible"); $("#porte-erreur").textContent=""; $("#porte-code").value=""; }
-$("#porte-form").addEventListener("submit", e=>{
+// Relit la liste des codes directement sur le serveur, sans aucun cache
+async function listeFraiche(){
+  try {
+    const r = await fetch("eleves.js?t=" + Date.now(), {cache: "no-store"});
+    if (!r.ok) return false;
+    const t = await r.text();
+    const sel = (t.match(/sel\s*:\s*"([^"]+)"/) || [])[1];
+    const codes = [...t.matchAll(/h\s*:\s*"([0-9a-f]{64})"/g)].map(m=>({h:m[1]}));
+    if (!sel || !codes.length) return false;
+    ACCES = {sel, codes};
+    return true;
+  } catch(e){ return false; }
+}
+let verifEnCours = false;
+$("#porte-form").addEventListener("submit", async e=>{
   e.preventDefault();
+  if (verifEnCours) return;
   const brut = $("#porte-code").value;
   if (!normaliser(brut)) return;
-  const h = sha256(ACCES.sel + normaliser(brut));
+  let h = sha256(ACCES.sel + normaliser(brut));
+  if (!codeValide(h)){
+    verifEnCours = true; $("#porte-erreur").textContent = "Vérification…";
+    if (await listeFraiche()) h = sha256(ACCES.sel + normaliser(brut));
+    verifEnCours = false; $("#porte-erreur").textContent = "";
+  }
   if (codeValide(h)){
     E.acces = h; sauver();
     $("#porte").classList.remove("visible");

@@ -1,4 +1,4 @@
-const VERSION = "v1.1.0"; // ← augmenter à chaque mise à jour du contenu (v1.0.1, v1.0.2…)
+const VERSION = "v1.2.0"; // ← augmenter à chaque mise à jour du contenu (v1.0.1, v1.0.2…)
 const CACHE = "maths-ecg1-" + VERSION;
 const FICHIERS = [
   "./", "index.html", "contenu.js", "eleves.js", "manifest.webmanifest",
@@ -33,7 +33,7 @@ self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
   // La liste des codes est relue sur le réseau dès que possible (ajout/retrait d'un élève sans changer de version)
   if (new URL(e.request.url).pathname.endsWith("/eleves.js")) {
-    e.respondWith(fetch(e.request).then(rep => {
+    e.respondWith(fetch(e.request.url, {cache: "no-store"}).then(rep => {
       if (rep.ok) { const copie = rep.clone(); caches.open(CACHE).then(c => c.put("eleves.js", copie)); }
       return rep;
     }).catch(() => caches.match("eleves.js")));
