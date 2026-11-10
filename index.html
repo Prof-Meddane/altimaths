@@ -56,7 +56,7 @@ h1,h2,h3{margin:0}
 .bloc-asc{background:var(--nuit);color:var(--neige);padding:14px 20px 8px;display:flex;flex-direction:column;gap:12px}
 .lieu{font-family:var(--d);font-weight:600;font-size:27px;line-height:1.1}
 .meteo{border-radius:14px;padding:11px 13px;display:flex;gap:11px;align-items:center;color:var(--nuit)}
-.meteo.beau{background:#D8E9DF}.meteo.mauvais{background:var(--drapeau)}.meteo.tempete{background:#F3B7A3}.meteo.inconnu{background:var(--glace)}
+.meteo.beau{background:#D8E9DF}.meteo.mauvais{background:var(--drapeau)}.meteo.fortes{background:#F2A65A}.meteo.tempete{background:#F3B7A3}.meteo.inconnu{background:var(--glace)}
 .meteo p{margin:0;font-size:13.5px;line-height:1.35}
 .meteo svg{flex:none}
 .deux{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -388,7 +388,7 @@ body.en-quiz nav.bas{display:none}
       <h2 class="d" style="font-size:28px;margin:18px 0 6px">Règles de l'ascension</h2>
       <div class="carte" style="font-size:14.5px">
         <p style="margin:0 0 8px">Chaque bonne réponse correspond à une minute de marche, calculée avec la règle de Naismith utilisée par les randonneurs : une heure pour 5 km, plus une heure pour 600 m de montée.</p>
-        <p style="margin:0 0 8px">Météo de Noisy-le-Sec : par temps de pluie ou de vent, le gain est divisé par deux ; par tempête, il est divisé par quatre et les passages techniques sont fermés.</p>
+        <p style="margin:0 0 8px">Météo de Noisy-le-Sec (prévision Météo-France, de 8 h à 20 h) : par temps de pluie ou de vent, le gain est divisé par deux ; par fortes pluies (au moins 10 mm) ou grosses rafales (au moins 60 km/h), il est divisé par deux et les pistes noires sont fermées ; par tempête (orages durables, rafales d'au moins 70 km/h ou neige), il est divisé par quatre et les pistes rouges et noires sont fermées.</p>
         <p style="margin:0 0 8px">Les questions sont classées comme les pistes de ski : <span class="piste" style="--pc:#2C7A57;margin:0"><i></i>verte</span> <span class="piste" style="--pc:#2361B8;margin:0"><i></i>bleue</span> <span class="piste" style="--pc:#C8202F;margin:0"><i></i>rouge</span> <span class="piste" style="--pc:#141B2B;margin:0"><i></i>noire</span>. À partir de la piste rouge, il faut souvent écrire un peu au brouillon.</p>
         <p style="margin:0 0 8px">Marche normale : pistes vertes et bleues. Passage technique : pistes rouges et noires, gain double, aucune progression en cas d'erreur.</p>
         <p style="margin:0">Une erreur sur une piste verte fait reculer de 20 secondes de marche.</p>
@@ -434,7 +434,7 @@ body.en-quiz nav.bas{display:none}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.3";
+const VERSION_APP = "2.4.1";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -488,26 +488,62 @@ function noterEtapes(){ ETAPES.forEach(e=>{ if (E.minutes>=e.min-1e-6 && !E.etap
 /* ================= Météo de Noisy-le-Sec (Open-Meteo) ================= */
 const LIB = {0:"ciel dégagé",1:"ciel plutôt dégagé",2:"quelques nuages",3:"ciel couvert",45:"brouillard",48:"brouillard givrant",51:"bruine",53:"bruine",55:"bruine dense",56:"bruine verglaçante",57:"bruine verglaçante",61:"pluie faible",63:"pluie",65:"forte pluie",66:"pluie verglaçante",67:"pluie verglaçante",71:"neige faible",73:"neige",75:"forte neige",77:"grésil",80:"averses",81:"averses",82:"averses violentes",85:"averses de neige",86:"fortes averses de neige",95:"orages",96:"orages de grêle",99:"orages de grêle"};
 const TEMPETE=[65,67,75,82,86,95,96,99], MAUVAIS=[45,48,51,53,55,56,57,61,63,66,71,73,77,80,81,85];
-const EFFET = {beau:"Conditions idéales : progression normale.", mauvais:"Montée ralentie : chaque bonne réponse compte moitié.", tempete:"Tempête : progression très ralentie, passages techniques fermés.", inconnu:"Météo indisponible : progression normale."};
-const FACTEUR = {beau:1, mauvais:0.5, tempete:0.25, inconnu:1};
+const EFFET = {beau:"Conditions idéales : progression normale, toutes les pistes sont ouvertes.", mauvais:"Montée ralentie : chaque bonne réponse compte moitié.", fortes:"Fortes pluies ou grosses rafales : montée ralentie, pistes noires fermées.", tempete:"Tempête : montée très ralentie, pistes rouges et noires fermées.", inconnu:"Météo indisponible : progression normale."};
+const FACTEUR = {beau:1, mauvais:0.5, fortes:0.5, tempete:0.25, inconnu:1};
+const NIVEAU_MAX = {beau:3, mauvais:3, fortes:2, tempete:1, inconnu:3};
+const ouverte = q => q.niveau <= NIVEAU_MAX[METEO.cat];
 let METEO = {cat:"inconnu", texte:""};
 try { const m = JSON.parse(localStorage.getItem("altimaths.meteo")||"null"); if (m && m.date===auj()) METEO=m; } catch(e){}
-async function chargerMeteo(){
-  if (METEO.date===auj() && METEO.cat!=="inconnu") return;
-  try {
-    const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=48.8908&longitude=2.4594&daily=weather_code,wind_gusts_10m_max,temperature_2m_max&timezone=Europe%2FParis&forecast_days=1");
-    const j = await r.json(); const code=j.daily.weather_code[0], raf=j.daily.wind_gusts_10m_max[0], t=j.daily.temperature_2m_max[0];
-    let cat = TEMPETE.includes(code)||raf>=70 ? "tempete" : (MAUVAIS.includes(code)||raf>=50 ? "mauvais" : "beau");
-    let lib = LIB[code] || "temps variable"; if (raf>=50 && !TEMPETE.includes(code)) lib += ", rafales à "+Math.round(raf)+" km/h";
-    METEO = {date:auj(), cat, texte: lib.charAt(0).toUpperCase()+lib.slice(1)+" à Noisy-le-Sec, "+Math.round(t)+" °C."};
-    try{ localStorage.setItem("altimaths.meteo", JSON.stringify(METEO)); }catch(e){}
-    if (vueCourante==="ascension") rendreAscension();
-  } catch(e){}
+// Météo du jour : modèle Météo-France (AROME/ARPEGE) via Open-Meteo, jugée sur la journée (8 h - 20 h)
+// et non sur son pire moment : on regarde la pluie cumulée, les rafales et la durée des orages.
+const LIB_COURT = c => c<=1 ? "ciel dégagé" : c===2 ? "quelques nuages" : c===3 ? "ciel couvert" : c<=48 ? "brouillard" : c<=57 ? "bruine" : c<=67 ? "pluie" : c<=77 ? "neige" : c<=82 ? "averses" : c<=86 ? "averses de neige" : "orages";
+function jugerJournee(h){
+  // h : {weather_code[], precipitation[], wind_gusts_10m[], temperature_2m[], time[]} sur 24 h
+  const idx=[]; h.time.forEach((t,i)=>{ const hr=+t.slice(11,13); if (hr>=8 && hr<=20) idx.push(i); });
+  const val=(a,i)=> (a && a[i]!=null) ? a[i] : 0;
+  const pluie = idx.reduce((s,i)=>s+val(h.precipitation,i),0);
+  const rafale = Math.max(0,...idx.map(i=>val(h.wind_gusts_10m,i)));
+  const tmax = Math.max(...idx.map(i=>val(h.temperature_2m,i)));
+  const codes = idx.map(i=>val(h.weather_code,i));
+  const hOrage = codes.filter(c=>c>=95).length, hNeige = codes.filter(c=>(c>=71&&c<=77)||c===85||c===86).length;
+  const hPluie = codes.filter(c=>c>=51 && c<=82).length;
+  let cat = "beau";
+  if (hOrage>=2 || rafale>=70 || hNeige>=3) cat="tempete";
+  else if (pluie>=10 || rafale>=60) cat="fortes";
+  else if (pluie>=1 || hPluie>=3 || rafale>=50 || hNeige>=1 || hOrage===1) cat="mauvais";
+  // libellé : le temps le plus fréquent de la journée (et pas le pire)
+  const freq={}; codes.forEach(c=>{ const l=LIB_COURT(c); freq[l]=(freq[l]||0)+1; });
+  let lib = Object.entries(freq).sort((a,b)=>b[1]-a[1])[0][0];
+  if (cat==="tempete" && hOrage>=2) lib="orages";
+  const calme = lib.startsWith("ciel")||lib==="quelques nuages";
+  if (calme && rafale>=50) lib = "vent fort";
+  else if (cat!=="beau" && calme && pluie>=1) lib = "averses";
+  const details=[];
+  if (pluie>=1) details.push(Math.round(pluie)+" mm"+(lib==="vent fort"?" de pluie":""));
+  if (rafale>=50) details.push("rafales à "+Math.round(rafale)+" km/h");
+  return {cat, texte: lib.charAt(0).toUpperCase()+lib.slice(1)+(details.length?" ("+details.join(", ")+")":"")+" à Noisy-le-Sec, "+Math.round(tmax)+" °C."};
 }
+async function chargerMeteo(){
+  if (METEO.date===auj() && METEO.cat!=="inconnu" && METEO.v===3) return;
+  const base="https://api.open-meteo.com/v1/forecast?latitude=48.8908&longitude=2.4594&hourly=weather_code,precipitation,wind_gusts_10m,temperature_2m&timezone=Europe%2FParis&forecast_days=1";
+  for (const url of [base+"&models=meteofrance_seamless", base]){
+    try {
+      const j = await (await fetch(url)).json();
+      if (!j.hourly || !j.hourly.time || j.hourly.weather_code.every(v=>v==null)) continue;
+      const r = jugerJournee(j.hourly);
+      METEO = {date:auj(), v:3, cat:r.cat, texte:r.texte};
+      try{ localStorage.setItem("altimaths.meteo", JSON.stringify(METEO)); }catch(e){}
+      if (vueCourante==="ascension") rendreAscension();
+      return;
+    } catch(e){}
+  }
+}
+window.__jugerJournee = jugerJournee;
 const ICO_METEO = {
   beau:'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>',
   mauvais:'<path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15z"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/>',
   tempete:'<path d="M7 14a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 14"/><path d="M12.5 12l-2.5 4.5h3.5L11 21"/>',
+  fortes:'<path d="M7 14a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 14"/><path d="M7 17l-1.5 4M11 17l-1.5 4M15 17l-1.5 4M19 15l-1.5 4"/>',
   inconnu:'<path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15z"/>'};
 
 /* ================= Rendu des maths ================= */
@@ -565,7 +601,8 @@ function rendreAscension(){
   $("#meteo").className="meteo "+cat;
   $("#meteo").innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO_METEO[cat]}</svg><p>${METEO.texte?`<strong>${esc(METEO.texte)}</strong> `:""}${EFFET[cat]}</p>`;
   const ferme = cat==="tempete";
-  $("#btn-tech").disabled = ferme; $("#tech-sous").textContent = ferme ? "fermé par la tempête" : "pistes rouges et noires, gain double";
+  $("#btn-tech").disabled = ferme;
+  $("#tech-sous").textContent = ferme ? "fermé par la tempête" : cat==="fortes" ? "pistes rouges seulement, gain double" : "pistes rouges et noires, gain double";
   const obj=10; $("#obj-txt").textContent = Math.min(E.jourJustes,obj)+" / "+obj+" bonnes réponses";
   $("#obj-jauge").style.width = Math.min(100,100*E.jourJustes/obj)+"%";
   const ne=erreurs().length; $("#nb-err").textContent = ne ? ne+" question"+(ne>1?"s":"")+" à revoir" : "Aucune erreur en attente";
@@ -584,13 +621,13 @@ const boite = id => (E.q[id]&&E.q[id].b)||0;
 function erreurs(){ return QUESTIONS.filter(q=>E.q[q.id] && E.q[q.id].d===0); }
 function choisir(qs,n){ return qs.map(q=>({q,p:Math.random()*(4-Math.min(boite(q.id),3))})).sort((a,b)=>b.p-a.p).slice(0,n).map(x=>x.q); }
 function lancer(mode, theme){
-  const POOL = QUESTIONS.filter(q=>!E.chap||E.chap==="tous"||q.ch===E.chap);
+  const POOL = QUESTIONS.filter(q=>(!E.chap||E.chap==="tous"||q.ch===E.chap) && ouverte(q));
   let qs=POOL, titre="Marche normale";
   if (mode==="normal") qs=POOL.filter(q=>q.niveau<=1);
-  if (mode==="technique"){ if (METEO.cat==="tempete") return toast("Passages techniques fermés par la tempête"); qs=POOL.filter(q=>q.niveau>=2); titre="Passage technique"; }
-  if (mode==="erreurs"){ qs=erreurs(); titre="Révision des erreurs"; }
-  if (mode==="theme"){ qs=QUESTIONS.filter(q=>q.theme===theme); titre=THEMES[theme].titre; }
-  if (!qs.length) return toast(mode==="erreurs" ? "Aucune erreur à revoir" : "Aucune question disponible");
+  if (mode==="technique"){ if (METEO.cat==="tempete") return toast("Pistes rouges et noires fermées par la tempête"); qs=POOL.filter(q=>q.niveau>=2); titre="Passage technique"; }
+  if (mode==="erreurs"){ qs=erreurs().filter(ouverte); titre="Révision des erreurs"; }
+  if (mode==="theme"){ qs=QUESTIONS.filter(q=>q.theme===theme && ouverte(q)); titre=THEMES[theme].titre; }
+  if (!qs.length) return toast(mode==="erreurs" ? (erreurs().length ? "Erreurs restantes sur des pistes fermées par la météo" : "Aucune erreur à revoir") : (mode==="theme" && QUESTIONS.some(q=>q.theme===theme) ? "Pistes de ce thème fermées par la météo aujourd'hui" : "Aucune question disponible"));
   Z={mode,theme,titre,liste: mode==="erreurs" ? melanger(qs).slice(0,10) : choisir(qs,10), i:0, justes:0, debutMin:E.minutes, debutEtape:etapeAtteinte(E.minutes).n};
   aller("quiz"); afficherQuestion();
 }
