@@ -4,6 +4,12 @@
    empreintes. Pour retirer l'accès à un élève, supprimer sa ligne (repérée par
    son numéro dans votre liste personnelle).
    ========================================================================== */
+/* ==========================================================================
+   CODES D'ACCÈS DES ÉLÈVES — généré le 10/11/2026
+   Ce fichier ne contient AUCUN nom ni aucun code en clair, seulement des
+   empreintes. Pour retirer l'accès à un élève, supprimer sa ligne (repérée par
+   son numéro dans votre liste personnelle).
+   ========================================================================== */
 window.ACCES = {
   sel: "5a138da64443b5b0d5",
   codes: [
@@ -23,6 +29,7 @@ window.ACCES = {
     { n: 14, h: "52a3d3086b15d045053ad2d7584cd96d3f727a6832c41f2d7cbebc3b589f30b6" },
     { n: 15, h: "c865635cf15b18c39e791b245c357d35eabe4aabb8191c4f9d480f5754df35b3" },
     { n: 16, h: "40b74acb46a4f1e7919e692a8067aa9019c0b929a60b390d4930436dd8e6d898" },
-    { n: 17, h: "7c4465c54549ef37663d110174fb18989909273d602b0850e05ee4284e23f461" }
+    { n: 17, h: "7c4465c54549ef37663d110174fb18989909273d602b0850e05ee4284e23f461" },
+    { n: 18, h: "5ed5a19984f55f5ecbbce427f07209419ea4e248411dce48e26cf9717dd5f2cc" }
   ]
 };
