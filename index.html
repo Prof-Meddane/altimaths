@@ -413,7 +413,7 @@ body.en-quiz nav.bas{display:none}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.0";
+const VERSION_APP = "2.0.1";
 const C = window.CONTENU, CH = C.chapitres[0];
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -698,6 +698,7 @@ async function chargerClasse(){
   const c=cloud(); if (!c){ rendreExpedition(); return; }
   $("#exp-maj").textContent="Actualisation…";
   try {
+    await listeFraiche();
     await envoyer();
     const docs = await c.list(CFG);
     const parCode={}; docs.forEach(d=>{ if(!d.h) return; const x=parCode[d.h]; if(!x || (d.minutes||0)>(x.minutes||0)) parCode[d.h]={prenom:d.prenom, minutes:d.minutes||0, h:d.h}; });
@@ -709,7 +710,8 @@ async function chargerClasse(){
 }
 function rendreExpedition(sansCharger){
   dessinerVoie();
-  let liste = (GRIMPEURS||[]).filter(g=>g.h!==E.acces).map(g=>({prenom:g.prenom||"?", minutes:Math.min(TOTAL,g.minutes||0), moi:false}));
+  const autorises = ACCES ? new Set(ACCES.codes.map(c=>c.h)) : null;
+  let liste = (GRIMPEURS||[]).filter(g=>g.h!==E.acces && (!autorises || autorises.has(g.h))).map(g=>({prenom:g.prenom||"?", minutes:Math.min(TOTAL,g.minutes||0), moi:false}));
   liste.push({prenom:E.prenom||"Vous", minutes:E.minutes, moi:true});
   liste.sort((a,b)=>b.minutes-a.minutes);
   // points (noms affichés : vous et les trois premiers)
