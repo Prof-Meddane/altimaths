@@ -1,4 +1,4 @@
-/* Cours de Python d'AltiMaths (généré par build.py à partir de py/ch*.js) */
+/* Cours de Python d'AltiMaths (généré par build.py à partir de py/ch*.js et py/lecons.js) */
 (function(){ const R=String.raw;
 window.PYTHON = { chapitres: [
 { id:"py1", numero:1, ecg:true, titre:"Premiers pas en Python", resume:"Types, opérations, chaînes et tuples, conditions, boucles, fonctions, fichiers.",
@@ -2167,5 +2167,253 @@ def proba_extinction(lam):
 for lam in [0.5, 1.2, 1.5, 2]:
     print(lam, round(proba_extinction(lam), 3))`},
 ]}
-]};
+],
+lecons: {
+py1: [
+ {titre:"Types et indentation", parts:[
+  ["Typage dynamique", {q:R`Que renvoie <code>type(2.)</code> ?`, c:[R`<code>&lt;class 'float'&gt;</code>`, R`<code>&lt;class 'int'&gt;</code>`, R`<code>&lt;class 'str'&gt;</code>`, R`Une erreur`], b:0, e:R`Le point fait de <code>2.</code> un nombre à virgule : un <code>float</code>.`}],
+  ["Principe d'indentation", {q:R`Combien de fois ce programme affiche-t-il <code>fin</code> ?`, code:R`for i in range(3):
+    print(i)
+print("fin")`, c:["1","3","4","0"], b:0, e:R`<code>print("fin")</code> est aligné sur le <code>for</code> : il est hors de la boucle, donc exécuté une seule fois.`}]],
+  bonus:{q:R`Quel est le rôle des deux-points <code>:</code> à la fin de <code>for i in range(3):</code> ?`, c:["Ils annoncent un bloc indenté","Ils terminent l'instruction, comme un point-virgule","Ils séparent deux instructions sur la même ligne","Ils sont facultatifs"], b:0, e:"L'en-tête d'un bloc (def, for, while, if…) se termine par deux-points, et le bloc qui suit est décalé de quatre espaces."}},
+ {titre:"Portée des variables et appel par valeur", parts:[
+  ["Portée des variables", {q:R`Qu'affiche ce programme ?`, code:R`x = 5
+def f():
+    return x + 1
+print(f())`, c:["6","5","1",R`Une erreur <code>NameError</code>`], b:0, s:1, e:R`<code>x</code> n'est pas définie dans <code>f</code> : Python va la chercher dans l'espace global, où elle vaut 5.`}],
+  ["Appel de fonction par valeur", {q:R`Qu'affiche ce programme ?`, code:R`a = 2
+def f(x):
+    x = 3
+    return x
+f(a)
+print(a)`, c:["2","3","5","None"], b:0, s:1, e:R`<code>f</code> reçoit la valeur de <code>a</code> ; modifier <code>x</code> dans la fonction ne change pas <code>a</code>.`}]],
+  bonus:{q:R`Qu'affiche ce programme ?`, code:R`L = [1, 2, 3]
+def f(X):
+    X[0] = 0
+f(L)
+print(L)`, c:[R`<code>[0, 2, 3]</code>`, R`<code>[1, 2, 3]</code>`, R`<code>[0]</code>`, R`<code>None</code>`], b:0, s:1, e:"Une liste est mutable : la fonction reçoit l'adresse de la même liste et la modifie."}},
+ {titre:"Nombres, booléens et comparaisons", parts:[
+  ["Entiers (int) et flottants (float)", {q:R`Que vaut <code>17 // 5</code> ?`, c:["3","2","3.4","2.0"], b:0, e:R`<code>//</code> donne le quotient de la division euclidienne : $17 = 5\times3+2$. Le reste, 2, s'obtient avec <code>%</code>.`}],
+  ["Booléens (bool) et caractère paresseux", {q:R`Pourquoi écrit-on <code>while i &lt; len(L) and L[i] != x</code> dans cet ordre ?`, c:[R`Si <code>i &lt; len(L)</code> est faux, <code>L[i]</code> n'est pas évalué`, "Pour aller plus vite, sans autre raison", R`<code>and</code> évalue toujours les deux conditions`, "L'ordre n'a aucune importance"], b:0, e:R`<code>and</code> est paresseux : si la première condition est fausse, la seconde n'est pas évaluée, ce qui évite un accès hors de la liste.`}],
+  ["Comparaisons", {q:R`Quelle écriture teste si <code>x</code> vaut 3 ?`, c:[R`<code>x == 3</code>`, R`<code>x = 3</code>`, R`<code>x := 3</code>`, R`<code>x === 3</code>`], b:0, e:R`<code>=</code> est l'affectation ; le test d'égalité s'écrit <code>==</code>.`}]],
+  bonus:{q:R`Que vaut <code>2 ** 10</code> ?`, c:["1024","20","100","8"], b:0, e:R`<code>**</code> est la puissance : $2^{10} = 1024$. Attention, <code>^</code> n'est pas la puissance en Python.`}},
+ {titre:"Chaînes, tuples, listes et dictionnaires", parts:[
+  ["Chaînes de caractères et tuples", {q:R`Que vaut <code>"Everest"[0:3]</code> ?`, c:[R`<code>'Eve'</code>`, R`<code>'Ever'</code>`, R`<code>'ver'</code>`, R`<code>'E'</code>`], b:0, e:R`La tranche <code>[0:3]</code> prend les indices 0, 1, 2 : la fin est exclue.`}],
+  ["Listes : l'essentiel", {q:R`Quelle instruction ajoute 7 à la fin de la liste <code>L</code>, sans la recréer ?`, c:[R`<code>L.append(7)</code>`, R`<code>L = L + [7]</code>`, R`<code>L + 7</code>`, R`<code>L[len(L)] = 7</code>`], b:0, e:R`<code>append</code> modifie la liste existante ; <code>L = L + [7]</code> recrée toute la liste, ce qui coûte bien plus cher.`}],
+  ["Dictionnaires : l'essentiel", {q:R`Avec <code>D = {"Lukla": 2860}</code>, que vaut <code>D["Lukla"]</code> ?`, c:["2860",R`<code>"Lukla"</code>`,"0",R`Une erreur`], b:0, e:"On accède à une valeur par sa clé."}]],
+  bonus:{q:R`Pourquoi <code>(1)</code> n'est-il pas un tuple ?`, c:[R`Sans virgule, ce sont de simples parenthèses : il faut écrire <code>(1,)</code>`, "Un tuple doit contenir au moins deux éléments", R`Les tuples s'écrivent entre crochets`, R`<code>(1)</code> est bien un tuple`], b:0, e:R`C'est la virgule qui fait le tuple : <code>(1,)</code>.`}},
+ {titre:"Affectation et conditions", parts:[
+  ["4. Structures de contrôle"],
+  ["Affectation", {q:R`Après <code>x, y = 1, 2</code> puis <code>x, y = y, x</code>, que valent <code>x</code> et <code>y</code> ?`, c:[R`<code>x = 2</code> et <code>y = 1</code>`, R`<code>x = 1</code> et <code>y = 2</code>`, R`<code>x = 2</code> et <code>y = 2</code>`, R`Une erreur`], b:0, e:"Le dépaquetage échange les deux valeurs en une seule instruction."}],
+  ["Instruction conditionnelle if / elif / else", {q:R`Qu'affiche ce programme ?`, code:R`x = 15
+if x > 10:
+    print("A")
+elif x > 5:
+    print("B")
+else:
+    print("C")`, c:["A","B","A puis B","C"], b:0, s:1, e:"Seule la première branche dont la condition est vraie est exécutée."}]],
+  bonus:{q:R`Avec <code>delta = 0</code>, quelle branche de <code>if delta &gt; 0 : … elif delta == 0 : … else : …</code> est exécutée ?`, c:[R`Celle du <code>elif</code>`, R`Celle du <code>if</code>`, R`Celle du <code>else</code>`, "Aucune"], b:0, e:R`<code>delta &gt; 0</code> est faux, <code>delta == 0</code> est vrai : c'est le <code>elif</code>.`}},
+ {titre:"Boucles et fonctions", parts:[
+  ["Boucles bornées : for", {q:R`Quelles valeurs prend <code>i</code> dans <code>for i in range(2, 6) :</code> ?`, c:["2, 3, 4, 5","2, 3, 4, 5, 6","3, 4, 5, 6","0, 1, 2, 3, 4, 5"], b:0, e:R`<code>range(n, m)</code> va de $n$ inclus à $m$ exclu.`}],
+  ["Boucles non bornées : while", {q:R`Qu'affiche ce programme ?`, code:R`n = 1
+while n < 20:
+    n = 2 * n
+print(n)`, c:["32","16","20","64"], b:0, s:1, e:"n vaut 1, 2, 4, 8, 16, puis 32 : la condition devient fausse et on sort."}],
+  ["for ou while ?"],
+  ["Définir une fonction", {q:R`Que renvoie une fonction qui n'exécute aucun <code>return</code> ?`, c:[R`<code>None</code>`, R`<code>0</code>`, "Le dernier résultat affiché", R`Une erreur`], b:0, e:R`Sans <code>return</code>, une fonction renvoie <code>None</code>. Afficher avec <code>print</code> n'est pas renvoyer.`}]],
+  bonus:{q:R`Pour trouver le premier rang où une suite dépasse 1000, quelle boucle choisir ?`, c:[R`<code>while</code>, car on ne connaît pas le nombre de tours`, R`<code>for</code>, car on calcule des termes de suite`, R`<code>for i in range(1000)</code>`, "Aucune boucle n'est nécessaire"], b:0, e:R`Nombre de tours inconnu à l'avance : <code>while</code>.`}},
+ {titre:"Modules, fichiers et assertions", parts:[
+  ["Commentaires et modules", {q:R`Après <code>import numpy as np</code>, comment appelle-t-on le cosinus de numpy ?`, c:[R`<code>np.cos(x)</code>`, R`<code>numpy.cos(x)</code>`, R`<code>cos(x)</code>`, R`<code>np(cos(x))</code>`], b:0, e:R`L'alias <code>np</code> remplace le nom du module.`}],
+  ["Fichiers texte", {q:R`Que renvoie <code>"F, Charlotte, 1988".split(", ")</code> ?`, c:[R`<code>['F', 'Charlotte', '1988']</code>`, R`<code>'F Charlotte 1988'</code>`, R`<code>['F, Charlotte, 1988']</code>`, R`<code>('F', 'Charlotte', 1988)</code>`], b:0, e:"split découpe la chaîne selon le séparateur et renvoie une liste de chaînes."}],
+  ["Assertions", {q:R`Que se passe-t-il si la condition d'un <code>assert</code> est fausse ?`, c:[R`Le programme s'arrête avec une <code>AssertionError</code>`, "Rien, l'instruction est ignorée", R`La fonction renvoie <code>False</code>`, "Un avertissement s'affiche et le programme continue"], b:0, e:"assert sert à vérifier les pré-conditions : en cas d'échec, tout s'arrête."}]],
+  bonus:{q:R`Que fait <code>open("notes.csv", "w")</code> si le fichier existe déjà ?`, c:["Il l'écrase","Il ajoute à la fin","Il le lit","Il provoque une erreur"], b:0, e:R`Le mode <code>"w"</code> écrase le fichier ; pour ajouter à la fin, on utilise <code>"a"</code>.`}},
+],
+py2: [
+ {titre:"Accéder aux éléments", parts:[
+  ["Qu'est-ce qu'une liste ?", {q:R`Que vaut <code>len(["un mot", 1, [4, 4]])</code> ?`, c:["3","4","2","7"], b:0, e:"La liste contient trois éléments : une chaîne, un entier et une liste."}],
+  ["Accès à un élément", {q:R`Avec <code>L = [1, 2, 5, 8, 9]</code>, que vaut <code>L[-1]</code> ?`, c:["9","1","8",R`Une erreur`], b:0, e:R`<code>L[-1]</code> est le dernier élément.`}],
+  ["Accès multiple : les tranches (slicing)", {q:R`Avec <code>L = [1, 2, 5, 8, 9]</code>, que vaut <code>L[1:4]</code> ?`, c:[R`<code>[2, 5, 8]</code>`, R`<code>[1, 2, 5, 8]</code>`, R`<code>[2, 5, 8, 9]</code>`, R`<code>[1, 2, 5]</code>`], b:0, e:"Indices 1, 2, 3 : la fin (4) est exclue."}]],
+  bonus:{q:R`Avec <code>L = [1, 2, 5, 8, 9]</code>, que vaut <code>L[::-1]</code> ?`, c:[R`<code>[9, 8, 5, 2, 1]</code>`, R`<code>[1, 2, 5, 8, 9]</code>`, R`<code>[9]</code>`, R`<code>[]</code>`], b:0, e:"Un pas de −1 parcourt la liste à l'envers."}},
+ {titre:"Modifier une liste", parts:[
+  ["Modifier un élément", {q:R`Qu'affiche ce programme ?`, code:R`L = [1, 2, 5]
+L[0] = -6
+print(L)`, c:[R`<code>[-6, 2, 5]</code>`, R`<code>[1, 2, 5]</code>`, R`<code>[-6, 1, 2, 5]</code>`, R`Une erreur`], b:0, s:1, e:"Les listes sont mutables : on remplace l'élément d'indice 0."}],
+  ["Ajouter des éléments", {q:R`Pourquoi <code>L + 4</code> provoque-t-il une erreur ?`, c:[R`On ne concatène une liste qu'avec une liste : il faut <code>L + [4]</code>`, R`On ne peut jamais ajouter d'élément à une liste`, R`Il faut écrire <code>4 + L</code>`, R`<code>+</code> additionne tous les éléments de <code>L</code>`], b:0, e:R`<code>+</code> concatène deux listes.`}],
+  ["Supprimer des éléments", {q:R`Après <code>L = [3, 1, 4, 1, 5]</code> puis <code>del L[1]</code>, que vaut <code>L</code> ?`, c:[R`<code>[3, 4, 1, 5]</code>`, R`<code>[3, 4, 5]</code>`, R`<code>[1, 4, 1, 5]</code>`, R`<code>[3, 1, 4, 5]</code>`], b:0, e:R`<code>del L[1]</code> supprime l'élément d'indice 1.`}]],
+  bonus:{q:R`Comment insérer 0 en position 3 dans <code>L</code> par concaténation ?`, c:[R`<code>L = L[:3] + [0] + L[3:]</code>`, R`<code>L = L[:3] + 0 + L[3:]</code>`, R`<code>L[3] = 0</code>`, R`<code>L = L[:2] + [0] + L[3:]</code>`], b:0, e:"On recolle les éléments avant l'indice 3, la liste [0], puis la suite."}},
+ {titre:"Créer des listes et des matrices", parts:[
+  ["Avec l'opérateur *", {q:R`Que vaut <code>[0] * 4</code> ?`, c:[R`<code>[0, 0, 0, 0]</code>`, R`<code>[0]</code>`, R`<code>0</code>`, R`<code>[4]</code>`], b:0, e:"On répète 4 fois la liste [0]."}],
+  ["Les listes en compréhension", {q:R`Que vaut <code>[k**2 for k in range(1, 5)]</code> ?`, c:[R`<code>[1, 4, 9, 16]</code>`, R`<code>[0, 1, 4, 9, 16]</code>`, R`<code>[1, 4, 9, 16, 25]</code>`, R`<code>[2, 4, 6, 8]</code>`], b:0, e:"k prend les valeurs 1, 2, 3, 4."}],
+  ["Les matrices : des listes de listes", {q:R`Avec <code>M = [[1, 2, 3], [4, 5, 6]]</code>, que vaut <code>M[1][2]</code> ?`, c:["6","2","5","3"], b:0, e:"Ligne d'indice 1 : [4, 5, 6] ; colonne d'indice 2 : 6."}]],
+  bonus:{q:R`Pourquoi éviter <code>M = [[0, 0]] * 3</code> pour créer une matrice ?`, c:["Les 3 lignes sont la même liste : modifier l'une modifie les autres","Cela crée une liste de 6 zéros","Cette écriture provoque une erreur","Elle crée 3 colonnes au lieu de 3 lignes"], b:0, e:R`On préfère <code>[[0 for j in range(2)] for i in range(3)]</code>.`}},
+ {titre:"Méthodes et parcours", parts:[
+  ["4. La classe list et ses méthodes", {q:R`Que renvoie <code>L.pop()</code> pour <code>L = [18, 5, 9]</code> ?`, c:["9","18",R`<code>[18, 5]</code>`,R`<code>None</code>`], b:0, e:R`<code>pop()</code> supprime le dernier élément et le renvoie.`}],
+  ["5. Parcourir une liste", {q:R`Quel parcours donne accès aux indices ?`, c:[R`<code>for i in range(len(L)) :</code>`, R`<code>for e in L :</code>`, R`<code>for L in e :</code>`, R`<code>for i in L[i] :</code>`], b:0, e:R`<code>for e in L</code> donne les éléments, <code>range(len(L))</code> les indices.`}]],
+  bonus:{q:R`Pourquoi <code>L = L.append(4)</code> est-il une erreur ?`, c:[R`<code>append</code> renvoie <code>None</code> : la liste est perdue`, R`<code>append</code> ne fonctionne qu'avec des chaînes`, R`Il faut écrire <code>L.append[4]</code>`, "Ce n'est pas une erreur"], b:0, e:R`<code>append</code> modifie <code>L</code> et ne renvoie rien.`}},
+ {titre:"Prédicats et maximum", parts:[
+  ["6. Prédicats sur les listes"],
+  ["Quand il faut parcourir toute la liste", {q:R`Pour compter les 0 et les 1 d'une liste, peut-on s'arrêter avant la fin ?`, c:["Non, il faut voir tous les éléments","Oui, au premier 1","Oui, au premier 0","Oui, à la moitié de la liste"], b:0, e:R`Pour compter, on parcourt toute la liste : boucle <code>for</code>.`}],
+  ["Quand un parcours partiel suffit", {q:R`Dans <code>tous_positifs</code>, où placer <code>return True</code> ?`, c:["Après la boucle","Dans la boucle, dans un else","Avant la boucle","Nulle part"], b:0, e:"On ne peut conclure que si aucun contre-exemple n'a été trouvé, donc après la boucle."}],
+  ["Maximum d'une liste", {q:R`Qu'affiche ce programme ?`, code:R`L = [3, 8, 1, 8, 5]
+i_M = 0
+for i in range(1, len(L)):
+    if L[i] > L[i_M]:
+        i_M = i
+print(i_M)`, c:["1","3","8","4"], b:0, s:1, e:"Avec le test strict, on garde la première apparition du maximum, d'indice 1."}], ["Alias"], ["Copie superficielle"], ["Copie profonde"]],
+  bonus:{q:R`Qu'affiche ce programme ?`, code:R`a = [1, 2]
+b = a
+a[0] = 5
+print(b)`, c:[R`<code>[5, 2]</code>`, R`<code>[1, 2]</code>`, R`<code>[5]</code>`, R`Une erreur`], b:0, s:1, e:R`<code>b = a</code> ne copie pas : les deux noms désignent la même liste (alias).`}},
+],
+py3: [
+ {titre:"Le type dict et sa création", parts:[
+  ["1. Le type dict", {q:R`Lequel ne peut pas être une clé de dictionnaire ?`, c:["Une liste","Une chaîne","Un entier","Un tuple"], b:0, e:"Les clés doivent être non modifiables ; une liste est modifiable."}],
+  ["2. Créer un dictionnaire", {q:R`Que vaut <code>{x: x**2 for x in range(3)}</code> ?`, c:[R`<code>{0: 0, 1: 1, 2: 4}</code>`, R`<code>[0, 1, 4]</code>`, R`<code>{0, 1, 4}</code>`, R`<code>{1: 1, 2: 4, 3: 9}</code>`], b:0, e:"Dictionnaire par compréhension : la clé x est associée à x²."}]],
+  bonus:{q:R`Que vaut <code>dict([("one", 1), ("two", 2)])["two"]</code> ?`, c:["2",R`<code>"two"</code>`,"1",R`Une erreur`], b:0, e:"La liste de couples devient un dictionnaire."}},
+ {titre:"Opérations et parcours", parts:[
+  ["3. Opérations", {q:R`Avec <code>D = {"yes": "oui"}</code>, que vaut <code>"oui" in D</code> ?`, c:[R`<code>False</code>`, R`<code>True</code>`, R`<code>"yes"</code>`, R`Une erreur`], b:0, e:R`<code>in</code> teste les clés, pas les valeurs.`}],
+  ["Parcourir un dictionnaire", {q:R`Que parcourt <code>for c in D :</code> ?`, c:["Les clés","Les valeurs","Les couples (clé, valeur)","Les indices 0, 1, 2…"], b:0, e:R`Pour les couples, on écrit <code>for c, v in D.items() :</code>.`}]],
+  bonus:{q:R`Que se passe-t-il avec <code>D["hello"]</code> si la clé est absente ?`, c:[R`Une erreur <code>KeyError</code>`, R`Cela renvoie <code>None</code>`, R`Cela crée la clé avec la valeur 0`, R`Cela renvoie <code>False</code>`], b:0, e:R`On teste d'abord avec <code>"hello" in D</code>.`}},
+ {titre:"Applications : traduire, compter, croiser", parts:[
+  ["Décoder et coder : le morse", {q:R`Comment obtenir le dictionnaire inverse de <code>morse</code> (code → lettre) ?`, c:[R`<code>{v: c for c, v in morse.items()}</code>`, R`<code>{c: v for c, v in morse.items()}</code>`, R`<code>morse[::-1]</code>`, R`<code>list(morse.values())</code>`], b:0, e:"On échange clés et valeurs."}],
+  ["Compter avec un dictionnaire", {q:R`Qu'affiche ce programme ?`, code:R`d = {}
+for lettre in "abba":
+    if lettre in d:
+        d[lettre] = d[lettre] + 1
+    else:
+        d[lettre] = 1
+print(d)`, c:[R`<code>{'a': 2, 'b': 2}</code>`, R`<code>{'a': 1, 'b': 1}</code>`, R`<code>{'abba': 1}</code>`, R`<code>{'a': 2, 'b': 2, 'a': 2}</code>`], b:0, s:1, e:"Chaque lettre devient une clé, et on augmente son compteur à chaque apparition."}],
+  ["Jointures"], ["Devinettes"]],
+  bonus:{q:R`Avec <code>capitale = {"Népal": "Katmandou"}</code> et <code>monnaie = {"Népal": "roupie"}</code>, que vaut <code>{capitale[p]: monnaie[p] for p in capitale}</code> ?`, c:[R`<code>{'Katmandou': 'roupie'}</code>`, R`<code>{'Népal': 'roupie'}</code>`, R`<code>{'Népal': 'Katmandou'}</code>`, R`<code>{'roupie': 'Katmandou'}</code>`], b:0, e:"Une jointure : on relie deux dictionnaires par leur clé commune."}},
+],
+py4: [
+ {titre:"La boucle for pas à pas", parts:[
+  ["1. Structures de contrôle"],
+  ["2. Boucles bornées : for/Syntaxe", {q:R`Combien de valeurs produit <code>range(1, 10, 3)</code> ?`, c:["3 (1, 4, 7)","4 (1, 4, 7, 10)","10","9"], b:0, e:"Les valeurs sont strictement inférieures à 10."}],
+  ["Ordre d'exécution", {q:R`Qu'affiche ce programme ?`, code:R`u = []
+for i in range(4):
+    u.append(i**3)
+print(u, i)`, c:[R`<code>[0, 1, 8, 27] 3</code>`, R`<code>[1, 8, 27, 64] 4</code>`, R`<code>[0, 1, 8, 27] 4</code>`, R`<code>[0, 1, 4, 9] 3</code>`], b:0, s:1, e:"i va de 0 à 3, et vaut 3 en sortie de boucle."}]],
+  bonus:{q:R`Que vaut <code>list(range(5, 0, -1))</code> ?`, c:[R`<code>[5, 4, 3, 2, 1]</code>`, R`<code>[5, 4, 3, 2, 1, 0]</code>`, R`<code>[]</code>`, R`<code>[0, 1, 2, 3, 4, 5]</code>`], b:0, e:"Pas négatif : on descend jusqu'à 1, la fin 0 étant exclue."}},
+ {titre:"La boucle while pas à pas", parts:[
+  ["3. Boucles non bornées : while/Syntaxe", {q:R`Quand la condition d'un <code>while</code> est-elle testée ?`, c:["Avant chaque tour","Après chaque tour","Une seule fois au début","À la fin de la boucle seulement"], b:0, e:"Si elle est fausse dès le départ, le bloc n'est jamais exécuté."}],
+  ["Ordre d'exécution sur un exemple", {q:R`Qu'affiche ce programme ?`, code:R`r = [0.49, 0.18, 0.75, 0.94]
+i = 0
+while r[i] < 0.5:
+    i = i + 1
+print(r[i])`, c:["0.75","0.49","0.94","0.18"], b:0, s:1, e:"On avance tant que r[i] < 0,5 ; le premier élément ≥ 0,5 est 0,75."}]],
+  bonus:{q:R`Dans le programme précédent, que se passe-t-il si l'on cherche un élément ≥ 0,95 ?`, c:[R`<code>IndexError</code> : <code>i</code> dépasse la fin de la liste`, R`Le programme affiche <code>None</code>`, "La boucle est infinie", "Il affiche 0.94"], b:0, e:R`Il faut tester <code>i &lt; len(r)</code> avant <code>r[i]</code>.`}},
+ {titre:"Choisir sa boucle", parts:[
+  ["Simuler un for avec un while", {q:R`Pour simuler <code>for i in range(m)</code> avec un <code>while</code>, il faut…`, c:[R`initialiser <code>i = 0</code> et faire <code>i = i + 1</code> à chaque tour`, R`écrire <code>while i in range(m)</code> sans rien d'autre`, R`initialiser <code>i = m</code>`, "c'est impossible"], b:0, e:"Un compteur initialisé avant la boucle et incrémenté à chaque tour."}],
+  ["Que choisir ?", {q:R`Calculer $\sum_{k=1}^{n} \frac1{k^2}$ : quelle boucle ?`, c:[R`<code>for</code>`, R`<code>while</code>`, "Les deux sont impossibles", R`<code>if</code>`], b:0, e:"Le nombre de termes est connu à l'avance."}]],
+  bonus:{q:R`Nombre d'années pour qu'un capital double à 3 % par an : quelle boucle ?`, c:[R`<code>while</code>`, R`<code>for</code>`, R`<code>for i in range(3)</code>`, "Aucune"], b:0, e:"Le nombre de tours n'est pas connu à l'avance."}},
+ {titre:"Schémas classiques", parts:[
+  ["Accumuler : sommes et produits", {q:R`Pour calculer un produit, on initialise l'accumulateur à…`, c:["1","0",R`<code>None</code>`,"n"], b:0, e:"1 est neutre pour la multiplication (0 rendrait tout nul)."}],
+  ["Suite récurrente", {q:R`Qu'affiche ce programme ?`, code:R`x = 1
+for k in range(3):
+    x = 2 * x + 1
+print(x)`, c:["15","7","3","31"], b:0, s:1, e:"x vaut successivement 1, 3, 7, 15."}],
+  ["Seuil : premier rang où…"],
+  ["Boucles imbriquées", {q:R`Combien de fois s'exécute le corps de la boucle intérieure ?`, code:R`for i in range(3):
+    for j in range(4):
+        print(i, j)`, c:["12","7","3","4"], b:0, e:"3 tours extérieurs × 4 tours intérieurs."}]],
+  bonus:{q:R`Qu'affiche ce programme ?`, code:R`n, s = 1, 1
+while s < 2:
+    n = n + 1
+    s = s + 1 / n
+print(n)`, c:["4","3","2","5"], b:0, s:1, e:"1 + 1/2 = 1,5 ; + 1/3 ≈ 1,83 ; + 1/4 ≈ 2,08 : on s'arrête à n = 4."}},
+],
+py5: [
+ {titre:"Qu'est-ce que la récursivité ?", parts:[
+  ["Définition", {q:R`Une fonction récursive est une fonction…`, c:["qui s'appelle elle-même","qui contient une boucle","qui renvoie une liste","qui n'a pas de paramètre"], b:0, e:"Comme une suite définie par récurrence."}],
+  ["Une première tentative pour la factorielle", {q:R`Pourquoi <code>def f(n): return n * f(n-1)</code> provoque-t-il une <code>RecursionError</code> ?`, c:["Il manque un cas de base : les appels ne s'arrêtent jamais","La multiplication est interdite dans une fonction récursive",R`Il faut écrire <code>f(n+1)</code>`,"Python n'accepte pas la récursivité"], b:0, e:R`Sans la condition $0! = 1$, on descend sur $-1, -2, \dots$ sans fin.`}],
+  ["Une implémentation correcte", {q:R`Qu'affiche ce programme ?`, code:R`def f(n):
+    if n == 0:
+        return 1
+    return n * f(n-1)
+print(f(4))`, c:["24","4","10","0"], b:0, s:1, e:"4 × 3 × 2 × 1 × 1 = 24."}]],
+  bonus:{q:R`Qu'est-ce qui garantit la terminaison d'une fonction récursive ?`, c:["Les appels se font sur des arguments plus petits qui atteignent un cas de base","La présence d'un return","L'utilisation d'un assert","Le fait qu'elle renvoie un entier"], b:0, e:"C'est l'analogue de l'initialisation et de l'hérédité d'une récurrence."}},
+ {titre:"Récursivité sur les listes", parts:[
+  ["2. Récursivité sur les listes", {q:R`Qu'affiche ce programme ?`, code:R`def somme(L):
+    if L == []:
+        return 0
+    return L[0] + somme(L[1:])
+print(somme([3, 1, 4]))`, c:["8","3","0","4"], b:0, s:1, e:"3 + (1 + (4 + 0)) = 8."}],
+  ["Extension aux matrices", {q:R`Pour sommer une matrice récursivement, on additionne…`, c:["la somme de la première ligne et la somme du reste de la matrice","le premier coefficient et le dernier","les diagonales","toutes les colonnes d'un coup"], b:0, e:"Une matrice est une liste de lignes : même schéma que pour les listes."}]],
+  bonus:{q:R`Dans <code>return L[0] == x or recherche(L[1:], x)</code>, que se passe-t-il si <code>L[0] == x</code> ?`, c:["L'appel récursif n'est pas effectué","Les deux sont toujours évalués","La fonction renvoie False","Une erreur se produit"], b:0, e:R`<code>or</code> est paresseux : la réponse est déjà connue.`}},
+ {titre:"Exponentiation rapide et dichotomie", parts:[
+  ["3. Exponentiation rapide", {q:R`Pour $n$ pair, l'exponentiation rapide calcule $x^n$ comme…`, c:[R`$(x^2)^{n/2}$`, R`$x \times x^{n-1}$`, R`$x^{n/2} + x^{n/2}$`, R`$(x^{n})^2$`], b:0, e:"L'exposant est divisé par 2 : environ log₂(n) appels."}],
+  ["4. Recherche dichotomique", {q:R`La recherche dichotomique exige une liste…`, c:["triée","sans doublon","de longueur paire","d'entiers positifs"], b:0, e:"On compare à l'élément du milieu pour éliminer une moitié."}]],
+  bonus:{q:R`Dans la dichotomie, après avoir vu que <code>x &lt; L[m]</code>, on cherche dans…`, c:[R`<code>L[:m]</code>`, R`<code>L[:m-1]</code>`, R`<code>L[m+1:]</code>`, R`<code>L[m:]</code>`], b:0, e:R`<code>L[:m]</code> va jusqu'à l'indice $m-1$ inclus.`}},
+ {titre:"Suite d'ordre 2 : récursif ou itératif ?", parts:[
+  ["5. Une suite récurrente d'ordre 2", {q:R`Pourquoi le calcul récursif naïf de $u_{30}$ (avec $u_{n+2} = u_{n+1} + 2u_n$) est-il si lent ?`, c:["Les mêmes termes sont recalculés un nombre exponentiel de fois","Python est lent avec les entiers","Il y a une boucle infinie","La récursivité est interdite pour les suites"], b:0, e:"Chaque appel en déclenche deux : le nombre d'appels explose."}]],
+  bonus:{q:R`Qu'affiche ce programme ?`, code:R`a, b = 1, 0
+for k in range(3):
+    a, b = b, b + 2*a
+print(a)`, c:["2","0","6","1"], b:0, s:1, e:"(a, b) vaut (1, 0), (0, 2), (2, 2), (2, 6) : a = u₃ = 2."}},
+],
+py11: [
+ {titre:"Vocabulaire des graphes", parts:[
+  ["Définition", {q:R`Dans un graphe à 9 arêtes, que vaut la somme des degrés ?`, c:["18","9","81","On ne peut pas savoir"], b:0, e:"Chaque arête compte pour ses deux extrémités : somme des degrés = 2 × nombre d'arêtes."}],
+  ["Graphe complet", {q:R`Combien d'arêtes possède un graphe complet à 5 sommets ?`, c:["10","20","25","5"], b:0, e:R`$\binom52 = \frac{5\times4}{2} = 10$.`}],
+  ["Représentations en Python", {q:R`La matrice d'adjacence d'un graphe non orienté est toujours…`, c:["symétrique","diagonale","inversible","triangulaire"], b:0, e:"Si i est relié à j, j est relié à i."}]],
+  bonus:{q:R`Avec <code>M = [[0,1,1],[1,0,0],[1,0,0]]</code>, que vaut <code>[[j for j in range(3) if L[j] == 1] for L in M]</code> ?`, c:[R`<code>[[1, 2], [0], [0]]</code>`, R`<code>[[0, 1, 1], [1, 0, 0], [1, 0, 0]]</code>`, R`<code>[2, 1, 1]</code>`, R`<code>[[1], [0, 2], [0]]</code>`], b:0, e:"Ce sont les listes d'adjacence : les voisins de chaque sommet."}},
+ {titre:"Chaînes et connexité", parts:[
+  ["Chaînes", {q:R`Quelle est la longueur de la chaîne $(0, 2, 3, 5)$ ?`, c:["3","4","5","2"], b:0, e:"La longueur est le nombre d'arêtes : 4 sommets, 3 arêtes."}],
+  ["Lien avec la matrice d'adjacence", {q:R`Que compte le coefficient $(i, j)$ de $M^3$ ?`, c:["Le nombre de chaînes de longueur 3 de i à j","La distance de i à j","Le nombre d'arêtes du graphe","Le degré de i"], b:0, e:"Théorème du cours, démontré par récurrence sur la puissance."}],
+  ["Graphe connexe", {q:R`Un graphe est connexe si…`, c:["tout couple de sommets est relié par une chaîne","tous les sommets sont reliés directement","il n'a pas de cycle","tous les degrés sont pairs"], b:0, e:"Être relié directement, c'est être complet, une propriété plus forte."}]],
+  bonus:{q:R`Pour un graphe d'ordre $n$, quelle longueur de chaîne suffit toujours pour relier deux sommets accessibles ?`, c:[R`Au plus $n-1$`, R`Exactement $n$`, R`Au plus 2`, R`Au moins $n$`], b:0, e:"Une chaîne sans répétition de sommet a au plus n − 1 arêtes."}},
+ {titre:"Parcours en profondeur et cycles", parts:[
+  ["3. Parcours en profondeur", {q:R`Le parcours en profondeur…`, c:["s'enfonce le plus loin possible avant de revenir en arrière","visite les sommets par distance croissante","ne visite que les voisins du départ","choisit toujours le sommet de plus petit degré"], b:0, e:"La distance croissante, c'est le parcours en largeur."}],
+  ["Premières applications", {q:R`Après un parcours en profondeur depuis le sommet 0, comment savoir si le graphe est connexe ?`, c:["Tous les sommets ont été visités","Le sommet 0 a été visité","Le parcours a duré n étapes","La liste visite contient un False"], b:0, e:R`<code>all(visite)</code>.`}],
+  ["4. Cycles", {q:R`Un graphe connexe dont les degrés sont 2, 3, 4, 4, 3, 2 est-il eulérien ?`, c:["Non, deux sommets sont de degré impair","Oui, car il est connexe","Oui, car la somme des degrés est paire","On ne peut pas savoir"], b:0, e:"Théorème d'Euler : il faut tous les degrés pairs. Ici il a seulement une chaîne eulérienne."}]],
+  bonus:{q:R`Pourquoi la promenade des 7 ponts de Königsberg est-elle impossible ?`, c:["Quatre sommets sont de degré impair","Le graphe n'est pas connexe","Il y a trop de ponts","Un des quartiers n'a qu'un pont"], b:0, e:"Une chaîne eulérienne demande 0 ou 2 sommets de degré impair."}},
+ {titre:"Piles, files et parcours en largeur", parts:[
+  ["5. Graphes orientés"],
+  ["Pile", {q:R`Une pile fonctionne selon le principe…`, c:["dernier arrivé, premier servi","premier arrivé, premier servi","plus prioritaire d'abord","au hasard"], b:0, e:"Comme une pile d'assiettes (LIFO)."}],
+  ["File", {q:R`Avec une <code>deque</code>, quelle méthode retire le premier élément arrivé ?`, c:[R`<code>popleft()</code>`, R`<code>pop()</code>`, R`<code>remove()</code>`, R`<code>append()</code>`], b:0, e:"La file est FIFO : on ajoute à la fin, on retire au début."}],
+  ["File de priorité"],
+  ["Parcours en profondeur avec une pile"],
+  ["Parcours en largeur avec une file", {q:R`Quel parcours donne le nombre minimal d'arêtes pour atteindre chaque sommet ?`, c:["Le parcours en largeur","Le parcours en profondeur","Les deux","Aucun"], b:0, e:"Il visite les sommets par distance croissante au départ."}]],
+  bonus:{q:R`Qu'affiche ce programme ?`, code:R`pile = []
+for x in [1, 2, 3]:
+    pile.append(x)
+print(pile.pop(), pile.pop())`, c:["3 2","1 2","3 1","2 3"], b:0, s:1, e:"On dépile d'abord le dernier empilé."}},
+ {titre:"Plus courts chemins : Dijkstra", parts:[
+  ["Objectif", {q:R`Dans la matrice des poids, que met-on quand il n'y a pas d'arête entre i et j ?`, c:[R`$+\infty$`, "0", "−1", "1"], b:0, e:R`En Python : <code>float("inf")</code>. On met 0 sur la diagonale.`}],
+  ["Principe", {q:R`À chaque étape, Dijkstra sélectionne…`, c:["le sommet non traité d'estimation minimale","le sommet de plus grand degré","un sommet au hasard","le dernier sommet ajouté"], b:0, e:"Son estimation est alors définitive."}],
+  ["Implémentation"],
+  ["Correction et complexité", {q:R`Quelle est la complexité de Dijkstra avec une matrice des poids, pour $n$ sommets ?`, c:[R`$\Theta(n^2)$`, R`$\Theta(n)$`, R`$\Theta(\ln n)$`, R`$\Theta(2^n)$`], b:0, e:"n étapes, chacune parcourant les n sommets."}]],
+  bonus:{q:R`Relâcher l'arête $u \to v$, c'est…`, c:[R`remplacer $d[v]$ par $d[u] + g_{u,v}$ si c'est plus petit`, R`supprimer l'arête`, R`remplacer $d[u]$ par $d[v]$`, R`ajouter $g_{u,v}$ à toutes les distances`], b:0, e:"Passer par u est alors un raccourci vers v."}},
+],
+py13: [
+ {titre:"Simuler Bernoulli et binomiale", parts:[
+  ["intro", {q:R`Que vaut $P(U &lt; 0{,}3)$ si $U$ suit la loi uniforme sur $[0, 1[$ ?`, c:["0,3","0,7","0,5","1"], b:0, e:R`$P(a \leqslant U &lt; b) = b - a$.`}],
+  ["1. Loi de Bernoulli", {q:R`Comment simuler une variable de loi $\mathcal B(p)$ ?`, c:[R`Renvoyer 1 si <code>random.random() &lt; p</code>, 0 sinon`, R`Renvoyer <code>random.random() * p</code>`, R`Renvoyer <code>random.randint(0, p)</code>`, R`Renvoyer <code>p</code>`], b:0, e:R`$P(X=1) = P(U &lt; p) = p$.`}],
+  ["2. Loi binomiale", {q:R`Comment obtient-on une variable de loi $\mathcal B(n, p)$ ?`, c:["En additionnant n Bernoulli indépendantes de paramètre p","En multipliant n Bernoulli","En tirant un entier au hasard entre 0 et n","En calculant n × p"], b:0, e:"C'est le nombre de succès en n épreuves indépendantes."}]],
+  bonus:{q:R`Sur 2000 simulations de $\mathcal B(20; 0{,}4)$, de quelle valeur la moyenne est-elle proche ?`, c:["8","0,4","20","12"], b:0, e:"L'espérance vaut np = 8."}},
+ {titre:"Loi géométrique et méthode d'inversion", parts:[
+  ["3. Loi géométrique", {q:R`La boucle <code>while random.random() &gt;= p : k += 1</code> (avec <code>k = 1</code> au départ) simule…`, c:["le rang du premier succès","le nombre de succès","une loi uniforme","une loi de Poisson"], b:0, e:R`$P(X = k) = (1-p)^{k-1}p$ : loi géométrique.`}],
+  ["Une autre méthode : la fonction quantile", {q:R`La méthode d'inversion renvoie, pour $u$ tiré au hasard…`, c:[R`le plus petit $k$ tel que $F(k) \geqslant u$`, R`$F(u)$`, R`le plus grand $k$ tel que $F(k) \leqslant u$`, R`$1 - F(u)$`], b:0, e:R`C'est $F^-(u)$, la fonction quantile.`}]],
+  bonus:{q:R`Quelle est l'espérance d'une loi géométrique de paramètre $p = 0{,}25$ ?`, c:["4","0,25","0,75","1,33"], b:0, e:"E(X) = 1/p."}},
+ {titre:"Loi de Poisson", parts:[
+  ["4. Loi de Poisson", {q:R`Pour $X \hookrightarrow \mathcal P(\lambda)$, que vaut $P(X = k)$ ?`, c:[R`$e^{-\lambda}\frac{\lambda^k}{k!}$`, R`$e^{-\lambda k}\frac{\lambda^k}{k!}$`, R`$\binom nk \lambda^k$`, R`$\lambda e^{-\lambda k}$`], b:0, e:"Son espérance et sa variance valent λ."}],
+  ["Avec numpy", {q:R`Que renvoie <code>np.random.poisson(2.5, 10)</code> ?`, c:["Un tableau de 10 tirages indépendants de loi P(2,5)","La probabilité P(X = 10)","Un seul tirage","La moyenne de 10 tirages"], b:0, e:"Le dernier argument est le nombre de tirages."}]],
+  bonus:{q:R`Dans <code>Z2 = [Z.count(k) / N for k in range(11)]</code>, que représente <code>Z2[k]</code> ?`, c:["La fréquence de la valeur k parmi les N simulations","La probabilité théorique P(X = k)","Le k-ième tirage","Le nombre total de tirages"], b:0, e:"On la compare ensuite à P(X = k)."}},
+],
+py14: [
+ {titre:"Binomiale vers Poisson", parts:[
+  ["intro"],
+  ["1. Des lois binomiales vers la loi de Poisson", {q:R`$\mathcal B(n, \lambda/n)$ se rapproche de $\mathcal P(\lambda)$ quand…`, c:[R`$n$ tend vers $+\infty$`, R`$n$ tend vers 0`, R`$\lambda$ tend vers $+\infty$`, R`$n = \lambda$`], b:0, e:"Beaucoup d'épreuves, chacune avec une probabilité de succès faible."}]],
+  bonus:{q:R`Pour approcher $\mathcal P(3)$, laquelle de ces lois binomiales convient le mieux ?`, c:[R`$\mathcal B(100; 0{,}03)$`, R`$\mathcal B(4; 0{,}75)$`, R`$\mathcal B(10; 0{,}3)$`, R`$\mathcal B(3; 1)$`], b:0, e:"n grand et p = 3/n petit."}},
+ {titre:"Loi des grands nombres et TLC", parts:[
+  ["2. La loi des grands nombres", {q:R`Selon la loi des grands nombres, la moyenne de $n$ tirages indépendants de même loi…`, c:["se rapproche de l'espérance","se rapproche de 0","reste toujours égale au premier tirage","grandit avec n"], b:0, e:"C'est ce qui justifie l'approche fréquentiste."}],
+  ["3. Le théorème limite central", {q:R`Selon le théorème limite central, la loi de la moyenne centrée réduite tend vers…`, c:[R`la loi normale $\mathcal N(0, 1)$`, "une loi de Poisson", "une loi uniforme", "une loi de Bernoulli"], b:0, e:"D'où la courbe en cloche de l'histogramme des moyennes."}]],
+  bonus:{q:R`Que fait <code>np.cumsum(Y) / np.arange(1, n + 1)</code> ?`, c:["Il calcule la moyenne des k premiers tirages, pour chaque k","Il trie les tirages","Il calcule la variance","Il calcule la somme totale"], b:0, e:"La somme cumulée divisée par le nombre de termes."}},
+ {titre:"Galton-Watson", parts:[
+  ["4. Dynamique des populations : Galton-Watson", {q:R`Dans le modèle de Galton-Watson avec une loi $\mathcal P(\lambda)$, la population s'éteint presque sûrement si…`, c:[R`$\lambda \leqslant 1$`, R`$\lambda &gt; 1$`, R`$\lambda = 2$`, "jamais"], b:0, e:"Si λ > 1, elle survit avec une probabilité strictement positive."}]],
+  bonus:{q:R`Que vaut l'espérance de $Z_n$, la taille de la génération $n$ ?`, c:[R`$\lambda^n$`, R`$n\lambda$`, R`$\lambda/n$`, R`$e^{-\lambda}$`], b:0, e:"Chaque individu a en moyenne λ enfants."}},
+],
+}
+};
 })();

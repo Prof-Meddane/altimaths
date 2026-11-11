@@ -479,6 +479,13 @@ body.nuit .bloc.culture{background:#2A2650}
 body.nuit .duels-carte{background:#1B2B52;border-color:#2E4170;color:var(--n-texte)}
 body.nuit .duels-haut h2,body.nuit .duels-haut b{color:var(--n-texte)}
 body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
+
+.py-mode{margin:8px 0 4px}
+.py-prog{font-style:normal;font-size:12px;font-weight:700;color:var(--vert);margin-top:3px}
+.q-code{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#152A57;color:#E6EEF8;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.5;overflow-x:auto;white-space:pre;text-align:left}
+.texte-lecon .py-code{margin:12px -4px 4px}
+.texte-lecon .bloc{margin:10px 0 0}
+#v-cours.immersif #py-sentier{margin-bottom:-90px}
 </style>
 </head>
 <body class="sombre">
@@ -756,7 +763,7 @@ body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "3.1";
+const VERSION_APP = "3.2";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -1047,7 +1054,7 @@ function rendreCours(){
   $("#cours-contenu").innerHTML = CH.cours.map(b=>{
     if (b.type==="section") return `<h2 class="section">${b.titre}</h2>`;
     if (b.type==="sous") return `<h3 class="sous">${b.titre}</h3>`;
-    const t=prep(b.texte).replace(/\[\[([\s\S]+?)\]\]/g,'<button class="trou"><span>$1</span></button>');
+    const t=b.pyhtml!=null ? b.pyhtml : prep(b.texte).replace(/\[\[([\s\S]+?)\]\]/g,'<button class="trou"><span>$1</span></button>');
     const ti=b.titre||et[b.type]||"";
     return `<div class="bloc ${b.type}">${ti?`<span class="etiquette">${ti}</span>`:""}${t}</div>`;
   }).join("");
@@ -1219,15 +1226,45 @@ function pyLancer(code, mode, chap, entrees, sortie, bouton, prec){
   pyWorker().postMessage({id, code, mode, chap, entrees, prec:prec||[]});
 }
 
+
+/* --- leçons de Python : mêmes mécanismes que les leçons de maths (sentier, cartes, quiz, gain d'altitude) --- */
+let pyLeconsPretes=false;
+function pyLecons(){
+  if (pyLeconsPretes) return; pyLeconsPretes=true;
+  const DEF=(window.PYTHON && window.PYTHON.lecons) || {};
+  PYC.forEach(ch=>{ const defs=DEF[ch.id]; if (!defs) return;
+    /* chaque bloc connaît sa section et sa sous-section */
+    let sec="intro", sous=null; const blocs=[];
+    ch.cours.forEach((b,i)=>{ if (b.type==="section"){ sec=b.titre; sous=null; return; } if (b.type==="sous"){ sous=b.titre; return; } blocs.push({b,i,sec,sous}); });
+    const dans=(x,p)=> (x.sous==null && x.sec===p) || x.sous===p || (x.sec+"/"+x.sous)===p;
+    const carteDe=(grp)=>{ const t=grp.find(x=>x.b.type!=="code"&&x.b.type!=="console");
+      const html=grp.map(x=> (x.b.type==="code"||x.b.type==="console") ? pyBloc(x.b,x.i,ch.id) : (x===t?"":`<div class="bloc ${x.b.type}">${prep(x.b.texte)}</div>`)+"").join("");
+      return {type:t?t.b.type:"exemple", titre:t?(t.b.titre||""):"", pyhtml:(t?prep(t.b.texte):"")+html}; };
+    let nq=0;
+    const Q=(q)=>q && ({id:ch.id+"-q"+(nq++), ch:ch.id, q:q.q+(q.code?`<pre class="q-code">${colorPy(q.code)}</pre>`:""), choix:q.c, bonne:q.b, expl:q.e||"", niveau:q.bonus?1:0});
+    LECONS[ch.id]=defs.map((l,li)=>{
+      const cartes=[], quiz=[];
+      l.parts.forEach(([p,q])=>{
+        const sel=blocs.filter(x=>dans(x,p)); let grp=[];
+        sel.forEach(x=>{ const code=x.b.type==="code"||x.b.type==="console"; if (!code && grp.length){ cartes.push(carteDe(grp)); grp=[]; } grp.push(x); });
+        if (grp.length) cartes.push(carteDe(grp));
+        if (q) quiz.push({apres:cartes.length, qs:[Q(q)]});
+      });
+      const bonus=l.bonus?Q(Object.assign({},l.bonus,{bonus:true})):null;
+      return {id:ch.id+"-L"+(li+1), ch:ch.id, n:li+1, titre:l.titre, themes:[], blocs:cartes, quiz, bonus, py:true};
+    }).filter(l=>l.blocs.length);
+  });
+}
+
 /* --- rendu --- */
 const PY_ET={exemple:"Exemple",attention:"Attention",remarque:"Remarque",def:"Définition",prop:"À retenir",methode:"Méthode",culture:"Pour la culture"};
-function pyBloc(b,i){
+function pyBloc(b,i,chId){
   if (b.type==="section") return `<h2 class="section" id="pys-${i}">${b.titre}</h2>`;
   if (b.type==="sous") return `<h3 class="sous">${b.titre}</h3>`;
   if (b.type==="code"||b.type==="console"){
     const cons=b.type==="console", code=b.code.replace(/^\n+|\s+$/g,"");
     const entree = /input\(/.test(code) ? `<label class="py-ent">Entrées (une par ligne)<textarea rows="2" spellcheck="false">${esc(b.entrees||"")}</textarea></label>` : "";
-    return `<div class="py-code${cons?" console":""}" data-i="${i}">${b.titre?`<div class="py-titre">${b.titre}</div>`:""}
+    return `<div class="py-code${cons?" console":""}" data-i="${i}" data-ch="${chId||""}">${b.titre?`<div class="py-titre">${b.titre}</div>`:""}
       <pre class="py-src">${cons?colorConsole(code):colorPy(code)}</pre>
       ${b.run===false?"":`<div class="py-barre"><button class="py-run">Exécuter</button>${cons?"":`<button class="py-mod">Modifier</button>`}<button class="py-copie" aria-label="Copier le code">Copier</button></div>${entree}<div class="py-sortie" hidden></div>`}</div>`;
   }
@@ -1241,7 +1278,9 @@ function rendrePython(){
   if (!ch){
     $("#cours-titre").textContent="Python";
     $("#cours-aide").textContent="Le manuel de l'atelier : tout le cours d'informatique, avec du code à exécuter et à modifier directement dans l'application.";
-    const carte=c=>`<button class="py-chap${E.py.lu[c.id]?" lu":""}" data-c="${c.id}"><span class="num">${c.numero}</span><span class="txt"><b>${c.titre}</b><small>${c.resume||""}</small></span>${E.py.lu[c.id]?'<span class="ok" aria-label="Lu">✓</span>':""}</button>`;
+    pyLecons(); $("#v-cours").classList.remove("immersif"); document.body.classList.remove("cours-immersif");
+    const progr=c=>{ const ls=LECONS[c.id]||[]; if (!ls.length) return ""; const f=ls.filter(leconFaite).length; return `<em class="py-prog">${f}/${ls.length} leçon${ls.length>1?"s":""}</em>`; };
+    const carte=c=>`<button class="py-chap${E.py.lu[c.id]?" lu":""}" data-c="${c.id}"><span class="num">${c.numero}</span><span class="txt"><b>${c.titre}</b><small>${c.resume||""}</small>${progr(c)}</span>${E.py.lu[c.id]?'<span class="ok" aria-label="Lu">✓</span>':""}</button>`;
     const ecg=PYC.filter(c=>c.ecg), plus=PYC.filter(c=>!c.ecg);
     v.innerHTML=`<div class="py-intro"><b>Programme d'ECG.</b> On se concentre sur les chapitres 1 à 5 (des premiers pas à la récursivité), sur les graphes et sur la simulation de variables aléatoires. Les autres chapitres sont des bonus pour aller plus loin.</div>
       <h2 class="py-groupe">Programme ECG</h2>${ecg.map(carte).join("")}
@@ -1251,11 +1290,20 @@ function rendrePython(){
   const k=PYC.indexOf(ch), prec=PYC[k-1], suiv=PYC[k+1];
   $("#cours-titre").textContent="Python "+ch.numero+" : "+ch.titre;
   $("#cours-aide").textContent = ch.ecg ? "Chapitre au programme d'ECG." : "Chapitre bonus, pour aller plus loin.";
+  pyLecons();
+  const aLecons=(LECONS[ch.id]||[]).length>0, enLecons=aLecons && E.py.mode!=="complet";
+  const seg=aLecons?`<div class="segment py-mode"><button data-pm="lecons" class="${enLecons?"on":""}">Leçons</button><button data-pm="complet" class="${enLecons?"":"on"}">Cours complet</button></div>`:"";
+  $("#v-cours").classList.toggle("immersif", enLecons); document.body.classList.toggle("cours-immersif", enLecons);
+  if (enLecons){
+    v.innerHTML=`<button class="py-retour">‹ Tous les chapitres</button><span class="py-badge${ch.ecg?"":" bonus"}">${ch.ecg?"Programme ECG":"Pour aller plus loin"}</span>${seg}<div id="py-sentier"></div>`;
+    $("#lecons-vue").innerHTML=""; rendreSentier(ch.id, $("#py-sentier"));
+    requestAnimationFrame(()=>{ const n=$("#py-sentier .pt-lecon.suivante"); if (n && n.getBoundingClientRect().top>innerHeight*.7) window.scrollTo({top:scrollY+n.getBoundingClientRect().top-innerHeight*.55}); });
+    return; }
   const secs=ch.cours.map((b,i)=>b.type==="section"?`<button data-s="${i}">${b.titre}</button>`:"").join("");
   v.innerHTML=`<button class="py-retour">‹ Tous les chapitres</button>
-    <span class="py-badge${ch.ecg?"":" bonus"}">${ch.ecg?"Programme ECG":"Pour aller plus loin"}</span>
+    <span class="py-badge${ch.ecg?"":" bonus"}">${ch.ecg?"Programme ECG":"Pour aller plus loin"}</span>${seg}
     ${secs?`<div class="py-sommaire">${secs}</div>`:""}
-    <div class="cours py-cours">${ch.cours.map(pyBloc).join("")}</div>
+    <div class="cours py-cours">${ch.cours.map((b,i)=>pyBloc(b,i,ch.id)).join("")}</div>
     <div class="py-fin">
       <button class="btn-plein btn-ligne py-lu">${E.py.lu[ch.id]?"Chapitre lu ✓":"J'ai lu ce chapitre"}</button>
       <div class="py-nav">${prec?`<button data-c="${prec.id}">‹ ${prec.numero}. ${prec.titre}</button>`:"<span></span>"}${suiv?`<button data-c="${suiv.id}">${suiv.numero}. ${suiv.titre} ›</button>`:""}</div>
@@ -1266,10 +1314,15 @@ function ouvrirPy(id){ pyOuvert=id; E.py.ouvert=id; sauver(); rendrePython(); wi
 $("#python-vue").addEventListener("click",e=>{
   const c=e.target.closest("[data-c]"); if (c){ ouvrirPy(c.dataset.c); return; }
   if (e.target.closest(".py-retour")){ ouvrirPy(null); return; }
+  const pm=e.target.closest("[data-pm]"); if (pm){ E.py.mode=pm.dataset.pm; sauver(); rendrePython(); return; }
+  const lb=e.target.closest("[data-lecon]"); if (lb){ demarrerLecon(lb.dataset.lecon); return; }
   const s=e.target.closest("[data-s]"); if (s){ const h=$("#pys-"+s.dataset.s); if(h) window.scrollTo({top:h.getBoundingClientRect().top+scrollY-12,behavior:"smooth"}); return; }
   if (e.target.closest(".py-lu")){ E.py.lu[pyOuvert]=!E.py.lu[pyOuvert]; sauver(); e.target.closest(".py-lu").textContent=E.py.lu[pyOuvert]?"Chapitre lu ✓":"J'ai lu ce chapitre"; return; }
-  const blocEl=e.target.closest(".py-code"); if (!blocEl) return;
-  const ch=PYC.find(x=>x.id===pyOuvert), b=ch.cours[+blocEl.dataset.i], cons=b.type==="console";
+  pyCodeClic(e);
+});
+function pyCodeClic(e){
+  const blocEl=e.target.closest(".py-code"); if (!blocEl) return false;
+  const ch=PYC.find(x=>x.id===blocEl.dataset.ch), b=ch && ch.cours[+blocEl.dataset.i]; if (!b) return false; const cons=b.type==="console";
   const ta=blocEl.querySelector("textarea.py-ed"), src=()=> ta ? ta.value : b.code.replace(/^\n+|\s+$/g,"");
   if (e.target.closest(".py-run")){
     const bt=e.target.closest(".py-run"); if (bt.classList.contains("stop")){ pyStop("Exécution arrêtée."); return; }
@@ -1285,7 +1338,9 @@ $("#python-vue").addEventListener("click",e=>{
     t.addEventListener("keydown",ev=>{ if (ev.key==="Tab"){ ev.preventDefault(); const p=t.selectionStart; t.setRangeText("    ",p,t.selectionEnd,"end"); }
       if (ev.key==="Enter"){ ev.preventDefault(); const p=t.selectionStart, deb=t.value.lastIndexOf("\n",p-1)+1, ligne=t.value.slice(deb,p); let ind=ligne.match(/^ */)[0]; if (/:\s*$/.test(ligne)) ind+="    "; t.setRangeText("\n"+ind,p,t.selectionEnd,"end"); ajuste(); } });
     pre.hidden=true; pre.after(t); ajuste(); t.focus(); bt.textContent="Rétablir l'original"; }
-});
+return true;
+}
+
 
 $("#cours-contenu").addEventListener("click",e=>{ const t=e.target.closest(".trou"); if(t) t.classList.toggle("vu"); });
 $("#tout-voir").addEventListener("click",()=>$$(".trou").forEach(t=>t.classList.add("vu")));
@@ -1358,8 +1413,8 @@ function fondSentier(W,H,pts){
   for(let i=0;i<40;i++){ const y=Y(.77+rnd()*.23), x=rnd()*W; if(!libre(x,y,W*.08)) continue; g+=`<circle cx="${x}" cy="${y}" r="1.6" fill="${["#F8FAFB","#E8B53A","#E07AA3"][i%3]}"/>`; }
   return g+"</g>";
 }
-function rendreSentier(){
-  const ls=LECONS[chapCours]||[], el=$("#lecons-vue");
+function rendreSentier(chId, cible){
+  const ls=LECONS[chId||chapCours]||[], el=cible||$("#lecons-vue");
   if (!ls.length){ el.innerHTML='<p class="petit" style="padding:20px 0">Les leçons de ce chapitre arrivent bientôt. Le cours complet est disponible dans l\'autre onglet.</p>'; return; }
   const faites=ls.filter(leconFaite).length, prochaine=ls.find(l=>!leconFaite(l));
   const PAS=112, H=240+ls.length*PAS, W=Math.max(300, Math.min(560, ($("#v-cours").clientWidth||window.innerWidth||390)));
@@ -1380,7 +1435,7 @@ let largeurSentier=0; window.addEventListener("resize",()=>{ const w=$("#lecons-
 $("#lecons-vue").addEventListener("click",e=>{ const b=e.target.closest("[data-lecon]"); if(b) demarrerLecon(b.dataset.lecon); });
 
 let L=null;
-const ETIQ={prop:"À retenir",exemple:"Exemple",attention:"Attention",remarque:"Remarque"};
+const ETIQ={prop:"À retenir",exemple:"Exemple",attention:"Attention",remarque:"Remarque",def:"Définition",methode:"Méthode",culture:"Pour la culture",texte:"Cours"};
 function demarrerLecon(id){
   const l=Object.values(LECONS).flat().find(x=>x.id===id); if(!l) return;
   const cartes=l.blocs.map(b=>({type:"carte",b}));
@@ -1396,7 +1451,7 @@ function demarrerLecon(id){
 }
 function diapoHTML(it, i){
   if (it.type==="carte"){ const b=it.b;
-    const t=prep(b.texte).replace(/\[\[([\s\S]+?)\]\]/g,'<button class="trou"><span>$1</span></button>');
+    const t=b.pyhtml!=null ? b.pyhtml : prep(b.texte).replace(/\[\[([\s\S]+?)\]\]/g,'<button class="trou"><span>$1</span></button>');
     return `<section class="diapo"><div class="carte-lecon"><span class="pastille-type ${b.type}">${ETIQ[b.type]||"Cours"}</span>${b.titre?`<h2>${b.titre}</h2>`:""}<div class="texte-lecon">${t}</div></div>${i===0?'<p class="glisser"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>Glisser vers le haut pour continuer</p>':""}</section>`; }
   if (it.type==="quiz"){ const q=it.q, ordre=melanger(q.choix.map((c,j)=>j)); it.ordre=ordre;
     return `<section class="diapo"><div class="carte-lecon quiz-lecon" data-i="${i}"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span class="titre-quiz">${it.bonus?"Bonus":(it.rejoue?"Deuxième chance":"Petit quiz")}</span>${badgePiste(q.niveau)}</div><div class="question">${prep(q.q)}</div><div class="choix">${ordre.map((j,m)=>`<button data-j="${j}"><span class="lettre">${"ABCD"[m]}</span><span>${prep(q.choix[j])}</span></button>`).join("")}</div>${it.bonus?'<p class="petit" style="margin:0">Question facultative un peu plus difficile : elle rapporte un supplément si elle est juste, et rien n\'est perdu sinon.</p>':""}<div class="corr-lecon" hidden></div></div></section>`; }
@@ -1420,6 +1475,7 @@ function majSegments(){
 }
 $("#lecon-fil").addEventListener("scroll",()=>{ if(!L) return; clearTimeout(L.t); L.t=setTimeout(majSegments,80); });
 $("#lecon-fil").addEventListener("click",e=>{
+  if (e.target.closest(".py-code")){ pyCodeClic(e); return; }
   const t=e.target.closest(".trou"); if(t){ t.classList.toggle("vu"); return; }
   const c=e.target.closest(".quiz-lecon .choix button");
   if (c){ const box=c.closest(".quiz-lecon"), it=L.seq[+box.dataset.i]; if (it.repondu) return;
