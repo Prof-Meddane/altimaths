@@ -486,6 +486,31 @@ body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
 .texte-lecon .py-code{margin:12px -4px 4px}
 .texte-lecon .bloc{margin:10px 0 0}
 #v-cours.immersif #py-sentier{margin-bottom:-90px}
+
+.anneaux-titre{font-weight:700;font-size:14px;margin:2px 0 8px;color:var(--nuit)}
+.anneaux{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:10px 6px;margin-bottom:14px}
+.anneaux:last-child{margin-bottom:0}
+.anneau{text-align:center;font-size:12px;line-height:1.25}
+.anneau svg{display:block;margin:0 auto 4px}
+.anneau b{display:block;font-size:13px}
+.anneau small{color:var(--gris)}
+.anneau .pct{font-family:var(--d);font-weight:800;font-size:19px;fill:var(--nuit)}
+.anneau .fond-anneau{stroke:#E3EAF4}
+body.nuit .anneaux-titre{color:var(--n-texte)}
+body.nuit .anneau .pct{fill:var(--n-texte)}
+body.nuit .anneau .fond-anneau{stroke:rgba(255,255,255,.12)}
+body.nuit .anneau small{color:var(--n-doux)}
+body.nuit .anneau .arc-noire{stroke:#C9D3E6}
+
+.b-grille polygon,.b-grille line{fill:none;stroke:#D5DFEC;stroke-width:1}
+.b-forme{fill:rgba(232,84,28,.22);stroke:#E8541C;stroke-width:2;stroke-linejoin:round}
+.b-pt{fill:#E8541C}
+.b-num{font-size:11px;font-weight:700;fill:var(--nuit)}
+.b-legende{margin:6px 0 0;padding-left:24px;font-size:13.5px}
+.b-legende li{padding:3px 0;border-bottom:1px solid var(--trait)}.b-legende li span{display:inline-block;width:calc(100% - 52px)}.b-legende b{color:var(--orange);white-space:nowrap;float:right}
+body.nuit .b-legende li{border-color:rgba(255,255,255,.08)}
+body.nuit .b-grille polygon,body.nuit .b-grille line{stroke:rgba(255,255,255,.14)}
+body.nuit .b-num{fill:var(--n-texte)}
 </style>
 </head>
 <body class="sombre">
@@ -545,7 +570,7 @@ body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
       <div class="choix-chap"><span class="petit">Questions :</span><div class="chips" id="chap-choix"></div></div>
       <div class="deux">
         <button class="btn-marche btn-normal" data-mode="normal"><b>Marche normale</b><span>pistes vertes et bleues</span></button>
-        <button class="btn-marche btn-tech" data-mode="technique" id="btn-tech"><b>Passage technique</b><span id="tech-sous">pistes rouges et noires, gain double</span></button>
+        <button class="btn-marche btn-tech" data-mode="technique" id="btn-tech"><b>Passage technique</b><span id="tech-sous">5 pistes rouges et noires, gain ×4</span></button>
       </div>
       <div class="objectif">
         <div style="display:flex;justify-content:space-between" class="petit"><span>Objectif du jour</span><span id="obj-txt"></span></div>
@@ -553,7 +578,7 @@ body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
       </div>
       <button class="ligne-bouton" data-mode="erreurs"><span class="sym">↺</span><span class="txt"><b>Revoir mes erreurs</b><span class="petit" id="nb-err"></span></span></button>
       <p class="sous-titre">S'entraîner par thème</p>
-      <p class="petit" style="margin:-8px 0 2px">Chaque bonne réponse fait aussi avancer.</p>
+      <p class="petit" style="margin:-8px 0 2px">Chaque bonne réponse fait avancer deux fois moins qu'en marche normale.</p>
       <div id="themes" style="display:flex;flex-direction:column;gap:8px;padding-bottom:10px"></div>
     </div>
   </section>
@@ -711,6 +736,8 @@ body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
         <div class="stat"><b class="num" id="p-taux"></b><span>de réussite</span></div>
         <div class="stat"><b class="num" id="p-jours"></b><span>jours de marche</span></div>
       </div>
+      <h2 class="d" style="font-size:28px;margin:18px 0 6px">Mes statistiques</h2>
+      <div class="carte" id="p-graph"></div>
       <h2 class="d" style="font-size:28px;margin:18px 0 6px">Carnet d'étapes</h2>
       <div class="carte"><ul class="carnet" id="carnet"></ul></div>
       <h2 class="d" style="font-size:28px;margin:18px 0 6px">Règles de l'ascension</h2>
@@ -719,7 +746,9 @@ body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
         <p style="margin:0 0 8px">Fiches du jour : l'appli vous redonne chaque fiche juste avant que vous risquiez de l'oublier (méthode de répétition espacée, comme Anki). « Je savais » espace la prochaine révision, « À revoir » la fait revenir dans la séance. Soyez honnête : c'est la seule façon pour que le planning soit utile. Dix nouvelles fiches au plus par jour. Chaque fiche sue fait un peu monter (un quart de bonne réponse), dans la limite de 5 minutes de marche par jour.</p>
         <p style="margin:0 0 8px">Météo de Noisy-le-Sec (prévision Météo-France, de 8 h à 20 h) : par temps de pluie ou de vent, le gain est divisé par deux ; par fortes pluies (au moins 10 mm) ou grosses rafales (au moins 60 km/h), il est divisé par deux et les pistes noires sont fermées ; par tempête (orages durables, rafales d'au moins 70 km/h ou neige), il est divisé par quatre et les pistes rouges et noires sont fermées.</p>
         <p style="margin:0 0 8px">Les questions sont classées comme les pistes de ski : <span class="piste" style="--pc:#2C7A57;margin:0"><i></i>verte</span> <span class="piste" style="--pc:#2361B8;margin:0"><i></i>bleue</span> <span class="piste" style="--pc:#C8202F;margin:0"><i></i>rouge</span> <span class="piste" style="--pc:#141B2B;margin:0"><i></i>noire</span>. À partir de la piste rouge, il faut souvent écrire un peu au brouillon.</p>
-        <p style="margin:0 0 8px">Marche normale : pistes vertes et bleues. Passage technique : pistes rouges et noires, gain double, aucune progression en cas d'erreur.</p>
+        <p style="margin:0 0 8px">Marche normale : 10 questions, pistes vertes et bleues, 1 minute de marche par bonne réponse. Comme dans Anki, les thèmes qui vous posent problème reviennent plus souvent.</p>
+        <p style="margin:0 0 8px">Passage technique : 5 questions, pistes rouges et noires, 4 minutes par bonne réponse, mais chaque erreur fait reculer d'une minute. Répondre au hasard ne paie pas.</p>
+        <p style="margin:0 0 8px">Entraînement par thème et révision des erreurs : une demi-minute par bonne réponse.</p>
         <p style="margin:0">Une erreur sur une piste verte fait reculer de 20 secondes de marche.</p>
       </div>
       <h2 class="d" style="font-size:28px;margin:18px 0 6px">Installer l'application</h2>
@@ -768,7 +797,7 @@ body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "3.4.1";
+const VERSION_APP = "3.6";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -938,7 +967,7 @@ function rendreAscension(){
   $("#meteo").innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO_METEO[cat]}</svg><p>${METEO.texte?`<strong>${esc(METEO.texte)}</strong> `:""}${EFFET[cat]}</p>`;
   const ferme = cat==="tempete";
   $("#btn-tech").disabled = ferme;
-  $("#tech-sous").textContent = ferme ? "fermé par la tempête" : cat==="fortes" ? "pistes rouges seulement, gain double" : "pistes rouges et noires, gain double";
+  $("#tech-sous").textContent = ferme ? "fermé par la tempête" : cat==="fortes" ? "5 pistes rouges, gain ×4" : "5 pistes rouges et noires, gain ×4";
   const obj=10; $("#obj-txt").textContent = Math.min(E.jourJustes,obj)+" / "+obj+" bonnes réponses";
   $("#obj-jauge").style.width = Math.min(100,100*E.jourJustes/obj)+"%";
   const ne=erreurs().length; $("#nb-err").textContent = ne ? ne+" question"+(ne>1?"s":"")+" à revoir" : "Aucune erreur en attente";
@@ -967,6 +996,21 @@ document.addEventListener("click", e=>{
 let Z=null;
 const boite = id => (E.q[id]&&E.q[id].b)||0;
 function erreurs(){ return QUESTIONS.filter(q=>E.q[q.id] && E.q[q.id].d===0); }
+const GAIN_SERIE={normal:1, technique:4, theme:0.5, erreurs:0.5}, PENALITE_TECH=1;
+/* maîtrise de chaque thème : moyenne mobile des réponses, les plus récentes comptent davantage */
+function maitriseTheme(t){
+  if (!E.th) E.th={};
+  if (E.th[t]==null){ let ok=0,ko=0; QUESTIONS.forEach(q=>{ if (q.theme===t && E.q[q.id]){ ok+=E.q[q.id].ok||0; ko+=E.q[q.id].ko||0; } }); E.th[t] = ok+ko ? (ok+1)/(ok+ko+2) : 0.5; }
+  return E.th[t]; }
+function noterTheme(t, ok){ const m=maitriseTheme(t); E.th[t]=Math.round((0.7*m+0.3*(ok?1:0))*1000)/1000; }
+/* marche normale « façon Anki » : les thèmes fragiles reviennent plus souvent ; un tiers des questions reste tiré sans tenir compte du thème */
+function choisirAnki(qs,n){
+  const nTh=Math.round(n*2/3);
+  const poids=q=>Math.random()*(4-Math.min(boite(q.id),3))*(0.4+2*(1-maitriseTheme(q.theme)));
+  const a=qs.map(q=>({q,p:poids(q)})).sort((x,y)=>y.p-x.p).slice(0,nTh).map(x=>x.q);
+  const reste=qs.filter(q=>!a.includes(q));
+  return melanger(a.concat(choisir(reste,n-a.length)));
+}
 function choisir(qs,n){ return qs.map(q=>({q,p:Math.random()*(4-Math.min(boite(q.id),3))})).sort((a,b)=>b.p-a.p).slice(0,n).map(x=>x.q); }
 function lancer(mode, theme){
   const POOL = QUESTIONS.filter(q=>(!E.chap||E.chap==="tous"||q.ch===E.chap) && ouverte(q));
@@ -976,7 +1020,8 @@ function lancer(mode, theme){
   if (mode==="erreurs"){ qs=erreurs().filter(ouverte); titre="Révision des erreurs"; }
   if (mode==="theme"){ qs=QUESTIONS.filter(q=>q.theme===theme && ouverte(q)); titre=THEMES[theme].titre; }
   if (!qs.length) return toast(mode==="erreurs" ? (erreurs().length ? "Erreurs restantes sur des pistes fermées par la météo" : "Aucune erreur à revoir") : (mode==="theme" && QUESTIONS.some(q=>q.theme===theme) ? "Pistes de ce thème fermées par la météo aujourd'hui" : "Aucune question disponible"));
-  Z={mode,theme,titre,liste: mode==="erreurs" ? melanger(qs).slice(0,10) : choisir(qs,10), i:0, justes:0, debutMin:E.minutes, debutEtape:etapeAtteinte(E.minutes).n};
+  const N = mode==="technique" ? 5 : 10;
+  Z={mode,theme,titre,liste: mode==="erreurs" ? melanger(qs).slice(0,N) : mode==="normal" ? choisirAnki(qs,N) : choisir(qs,N), i:0, justes:0, debutMin:E.minutes, debutEtape:etapeAtteinte(E.minutes).n};
   aller("quiz"); afficherQuestion();
 }
 function afficherQuestion(){
@@ -994,24 +1039,27 @@ function afficherQuestion(){
 function repondre(k, bouton){
   const q=Z.liste[Z.i], z=$("#quiz-choix"); z.classList.add("repondu");
   const ok = k===q.bonne; majJour(); activite();
+  maitriseTheme(q.theme);
   const s=E.q[q.id]||{b:0,ok:0,ko:0}; E.total++;
   const avant=E.minutes, kmAvant=position(avant).km;
   let note="";
   if (ok){
     s.ok++; s.b=Math.min(3,s.b+1); s.d=1; Z.justes++; E.justes++; E.jourJustes++;
-    const fac=FACTEUR[METEO.cat]; const g=(Z.mode==="technique"?2:1)*fac;
+    const fac=FACTEUR[METEO.cat]; const g=GAIN_SERIE[Z.mode]*fac;
     E.minutes=Math.min(TOTAL,E.minutes+g);
     if (fac<1) note = METEO.cat==="tempete" ? "Gain divisé par quatre à cause de la tempête." : "Gain divisé par deux à cause de la météo.";
-    if (Z.mode==="technique") note = "Passage technique réussi : gain doublé. "+note;
+    if (Z.mode==="technique") note = "Passage technique réussi : gain quadruplé. "+note;
+    else if (Z.mode==="theme"||Z.mode==="erreurs") note = (Z.mode==="theme"?"Entraînement par thème":"Révision des erreurs")+" : demi-gain. "+note;
     bouton.classList.add("juste");
   } else {
     s.ko++; s.b=0; s.d=0;
     bouton.classList.add("faux"); z.querySelector(`[data-k="${q.bonne}"]`).classList.add("juste");
     if (estProfCode(E.acces)) note="Compte professeur : vous restez au sommet.";
     else if (Z.mode!=="technique" && q.niveau===0){ E.minutes=Math.max(0,E.minutes-1/3); note="Piste verte ratée : vous glissez un peu."; }
-    else note = Z.mode==="technique" ? "Passage technique raté : vous restez sur place." : piste(q.niveau).nom+" : pas de recul.";
+    else if (Z.mode==="technique"){ E.minutes=Math.max(0,E.minutes-PENALITE_TECH); note="Passage technique raté : vous reculez d'une minute de marche."; }
+    else note = piste(q.niveau).nom+" : pas de recul.";
   }
-  E.q[q.id]=s; noterEtapes(); sauver();
+  E.q[q.id]=s; noterTheme(q.theme, ok); noterEtapes(); sauver();
   const dm=Math.round((position(E.minutes).km-kmAvant)*1000);
   $("#retour").className="retour visible "+(ok?"ok":"ko");
   $("#r-verdict").textContent = ok ? "Juste" : "Raté";
@@ -1725,7 +1773,44 @@ function rendreExpedition(sansCharger){
 $("#exp-maj").addEventListener("click",()=>chargerClasse());
 
 /* ================= Carnet ================= */
+function anneau(t, n, couleur, titre){
+  const r=26, C=2*Math.PI*r, p=t==null?0:t;
+  return `<div class="anneau"><svg width="68" height="68" viewBox="0 0 68 68" role="img" aria-label="${esc(titre)} : ${t==null?"pas encore de réponse":p+" % de réussite sur "+n+" réponse"+(n>1?"s":"")}">
+    <circle cx="34" cy="34" r="${r}" fill="none" stroke-width="8" class="fond-anneau"/>
+    ${t==null?"":`<circle cx="34" cy="34" r="${r}" fill="none" stroke="${couleur}" class="${couleur==="#141B2B"?"arc-noire":""}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(C*p/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 34 34)"/>`}
+    <text x="34" y="40" text-anchor="middle" class="pct">${t==null?"–":p+"%"}</text></svg><b>${titre}</b><small>${n} réponse${n>1?"s":""}</small></div>`;
+}
+function rendreGraphiques(){
+  const taux=qs=>{ let ok=0, ko=0; qs.forEach(q=>{ const s=E.q[q.id]; if (s){ ok+=s.ok||0; ko+=s.ko||0; } }); const n=ok+ko; return {t:n?Math.round(100*ok/n):null, n}; };
+  const parCh=CHAPS.map(c=>{ const r=taux(QUESTIONS.filter(q=>q.ch===c.id)); return anneau(r.t, r.n, "#E8541C", "Chapitre "+c.numero); }).join("");
+  const parPiste=PISTES.map((p,i)=>{ const r=taux(QUESTIONS.filter(q=>(q.niveau||0)===i)); return anneau(r.t, r.n, p.c, p.nom.replace("Piste ","")); }).join("");
+  const col=n=>`style="grid-template-columns:repeat(${Math.min(4,n)},1fr)"`;
+  $("#p-graph").innerHTML=`<div class="anneaux-titre">Réussite par chapitre</div><div class="anneaux" ${col(CHAPS.length)}>${parCh}</div>
+    <div class="anneaux-titre">Réussite par couleur de piste</div><div class="anneaux" ${col(PISTES.length)}>${parPiste}</div>
+    <div class="anneaux-titre" style="margin-top:4px">Boussole des thèmes</div>
+    <div class="chips clair-chips" id="bous-chap" style="margin:0 0 4px"></div><div id="boussole"></div>
+    <p class="petit" style="margin:4px 0 0">Toutes les réponses aux exercices sont comptées, y compris les nouvelles tentatives. Les quiz des leçons et les duels ne sont pas comptés.</p>`;
+  rendreBoussole();
+}
+let chapBous=null;
+function rendreBoussole(){
+  if (!chapBous || !CHAP[chapBous]) chapBous = CHAPS[CHAPS.length-1].id;
+  $("#bous-chap").innerHTML = CHAPS.map(c=>`<button class="${c.id===chapBous?"on":""}" data-bc="${c.id}">Ch. ${c.numero}</button>`).join("");
+  const th=CHAP[chapBous].themes.map(t=>{ let ok=0,ko=0; QUESTIONS.forEach(q=>{ if (q.theme===t.id && E.q[q.id]){ ok+=E.q[q.id].ok||0; ko+=E.q[q.id].ko||0; } }); return {titre:t.titre, n:ok+ko, t: ok+ko ? ok/(ok+ko) : null}; });
+  const n=th.length, R=92, cx=150, cy=118, ang=i=>-Math.PI/2+2*Math.PI*i/n, P=(i,r)=>[cx+r*Math.cos(ang(i)), cy+r*Math.sin(ang(i))];
+  const anneauPoly=f=>th.map((_,i)=>P(i,R*f).map(v=>v.toFixed(1)).join(",")).join(" ");
+  const forme=th.map((x,i)=>P(i,R*Math.max(0.04,x.t||0)).map(v=>v.toFixed(1)).join(",")).join(" ");
+  const axes=th.map((_,i)=>{ const [x,y]=P(i,R); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`; }).join("");
+  const nums=th.map((x,i)=>{ const [lx,ly]=P(i,R+14); return `<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" text-anchor="middle" class="b-num">${i+1}</text>`; }).join("");
+  const pts=th.map((x,i)=>x.t==null?"":(()=>{ const [px,py]=P(i,R*Math.max(0.04,x.t)); return `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3" class="b-pt"/>`; })()).join("");
+  $("#boussole").innerHTML = `<svg viewBox="0 0 300 240" width="100%" style="max-width:340px;display:block;margin:0 auto" role="img" aria-label="Boussole des thèmes du chapitre ${CHAP[chapBous].numero}">
+    <g class="b-grille">${[0.25,0.5,0.75,1].map(f=>`<polygon points="${anneauPoly(f)}"/>`).join("")}${axes}</g>
+    <polygon points="${forme}" class="b-forme"/>${pts}${nums}</svg>
+    <ol class="b-legende">${th.map(x=>`<li><span>${esc(x.titre)}</span><b>${x.t==null?"–":Math.round(100*x.t)+" %"}</b></li>`).join("")}</ol>`;
+}
+$("#p-graph").addEventListener("click",e=>{ const b=e.target.closest("[data-bc]"); if (b){ chapBous=b.dataset.bc; rendreBoussole(); } });
 function rendreProfil(){
+  rendreGraphiques();
   $$("#theme-choix button").forEach(b=>b.classList.toggle("on",b.dataset.t===(E.theme||"auto")));
   { const now=new Date(); $("#theme-info").textContent="En automatique, le thème sombre étoilé s'allume au coucher du soleil à Noisy-le-Sec (aujourd'hui "+hm(soleil(now,false))+") et s'éteint à son lever (demain vers "+hm(soleil(new Date(now.getTime()+86400000),true))+")."; }
   $("#prenom").value=E.prenom;
@@ -2051,7 +2136,7 @@ function rendreDuels(){
 (function attendreCloud(n){ if (cloud() && cloud().duelInvitations){ ecouterInvitations(); restaurerElo(); return; } if (n<60) setTimeout(()=>attendreCloud(n+1), 1000); })(0);
 document.addEventListener("visibilitychange",()=>{ if (!document.hidden && !unsubInv) ecouterInvitations(); });
 $("#exp-liste").addEventListener("click", e=>{ const b=e.target.closest("button.defi"); if (b) choisirChapitre(b.dataset.h, b.dataset.p); });
-if (window.__MOCK) window.__DU=()=>DU;
+if (window.__MOCK){ window.__DU=()=>DU; window.__Q=QUESTIONS; }
 
 })();
 
