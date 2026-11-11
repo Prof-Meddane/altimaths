@@ -24,6 +24,7 @@ window.ACCES = {
     { n: 15, h: "c865635cf15b18c39e791b245c357d35eabe4aabb8191c4f9d480f5754df35b3" },
     { n: 16, h: "40b74acb46a4f1e7919e692a8067aa9019c0b929a60b390d4930436dd8e6d898" },
     { n: 17, h: "7c4465c54549ef37663d110174fb18989909273d602b0850e05ee4284e23f461" },
-    { n: 18, h: "d9ac88f89de3b6dadb8483550918af7640db1cec3e2123aa07893a6aaf2d86de", prof: true }
+    { n: 18, h: "d9ac88f89de3b6dadb8483550918af7640db1cec3e2123aa07893a6aaf2d86de", prof: true },
+    { n: 19, h: "52016f9350495ce2473fdffc8041c1250ec5f8268365573b130c5d5cc92449a8", invite: true }
   ]
 };
