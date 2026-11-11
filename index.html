@@ -598,12 +598,16 @@ body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
     <div class="pad">
       <div class="segment matiere" id="cours-matiere"><button data-m="maths" class="on">Maths</button><button data-m="python">Python</button></div>
       <div id="maths-vue">
-      <div class="segment" id="cours-mode"><button data-m="lecons" class="on">Leçons</button><button data-m="complet">Cours complet</button></div>
-      <div class="chips clair-chips" id="cours-chap" style="margin-top:4px"></div>
+      <div id="maths-liste" hidden></div>
+      <div id="maths-ouvert">
+      <button class="py-retour" id="maths-retour">‹ Tous les chapitres</button>
+      <div class="segment py-mode" id="cours-mode"><button data-m="lecons" class="on">Leçons</button><button data-m="complet">Cours complet</button></div>
+      <div class="chips clair-chips" id="cours-chap" hidden></div>
       <div id="lecons-vue"></div>
       <div id="complet-vue">
         <div class="outils"><button id="tout-cacher">Tout cacher</button><button id="tout-voir">Tout révéler</button></div>
         <div class="cours" id="cours-contenu"></div>
+      </div>
       </div>
       </div>
       <div id="python-vue" hidden></div>
@@ -763,7 +767,7 @@ body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "3.2";
+const VERSION_APP = "3.3";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -1040,8 +1044,17 @@ function rendreCours(){
   $$("#cours-matiere button").forEach(b=>b.classList.toggle("on", (b.dataset.m==="python")===py));
   $("#maths-vue").hidden = py; $("#python-vue").hidden = !py;
   if (py){ $("#v-cours").classList.remove("immersif"); document.body.classList.remove("cours-immersif"); rendrePython(); return; }
+  const ouvert = E.mOuvert && CHAP[E.mOuvert] ? E.mOuvert : null;
+  $("#maths-liste").hidden = !!ouvert; $("#maths-ouvert").hidden = !ouvert;
+  if (!ouvert){
+    $("#v-cours").classList.remove("immersif"); document.body.classList.remove("cours-immersif");
+    $("#cours-titre").textContent="Maths";
+    $("#cours-aide").textContent="Choisissez un chapitre : les leçons vous attendent au pied du sentier, et le cours complet reste disponible.";
+    $("#maths-liste").innerHTML = CHAPS.map(c=>{ const ls=LECONS[c.id]||[], f=ls.filter(leconFaite).length;
+      return `<button class="py-chap${ls.length&&f===ls.length?" lu":""}" data-mc="${c.id}"><span class="num">${c.numero}</span><span class="txt"><b>${esc(c.titre)}</b><small>${RESUMES_MATHS[c.id]||""}</small>${ls.length?`<em class="py-prog">${f}/${ls.length} leçon${ls.length>1?"s":""}</em>`:""}</span>${ls.length&&f===ls.length?'<span class="ok" aria-label="Terminé">✓</span>':""}</button>`; }).join("");
+    return; }
+  chapCours = ouvert;
   const CH = CHAP[chapCours];
-  segChap($("#cours-chap"), chapCours, false, c=>{ chapCours=c; rendreCours(); window.scrollTo(0,0); });
   $("#cours-titre").textContent = "Chapitre "+CH.numero+" : "+CH.titre;
   const lec = E.modeCours!=="complet";
   $$("#cours-mode button").forEach(b=>b.classList.toggle("on", (b.dataset.m==="lecons")===lec));
@@ -1049,7 +1062,8 @@ function rendreCours(){
   const imm = lec && (LECONS[chapCours]||[]).length>0; $("#v-cours").classList.toggle("immersif", imm); document.body.classList.toggle("cours-immersif", imm && vueCourante==="cours");
   $("#complet-vue").style.display = lec?"none":"block";
   $("#cours-aide").textContent = lec ? "Une leçon par notion : des cartes à faire défiler vers le haut et de petits quiz. L'ordre est conseillé, toutes les leçons sont ouvertes." : "Touchez les cases en pointillés pour révéler la réponse, après avoir essayé de la retrouver de tête.";
-  if (lec) rendreSentier();
+  if (lec){ rendreSentier();
+    requestAnimationFrame(()=>{ const n=$("#lecons-vue .pt-lecon.suivante"); if (n && n.getBoundingClientRect().top>innerHeight*.7) window.scrollTo({top:scrollY+n.getBoundingClientRect().top-innerHeight*.55}); }); }
   const et={exemple:"Exemples",attention:"Attention",remarque:"Remarque"};
   $("#cours-contenu").innerHTML = CH.cours.map(b=>{
     if (b.type==="section") return `<h2 class="section">${b.titre}</h2>`;
@@ -1060,7 +1074,12 @@ function rendreCours(){
   }).join("");
   maths($("#cours-contenu"));
 }
-$$("#cours-matiere button").forEach(b=>b.addEventListener("click",()=>{ E.matiere=b.dataset.m; sauver(); rendreCours(); window.scrollTo(0,0); }));
+const RESUMES_MATHS={ch0:"Fractions, puissances, racines, identités remarquables, trinômes, inégalités, logarithmes, valeurs absolues.",
+  ch1:"Propositions, quantificateurs, raisonnements, récurrence, borne supérieure, partie entière.",
+  ch2:"Symboles somme et produit, sommes usuelles, télescopage, binôme de Newton, sommes doubles."};
+$$("#cours-matiere button").forEach(b=>b.addEventListener("click",()=>{ const m=b.dataset.m; if (m===(E.matiere||"maths")){ if (m==="maths") E.mOuvert=null; else { pyOuvert=null; E.py.ouvert=null; } } E.matiere=m; sauver(); rendreCours(); window.scrollTo(0,0); }));
+$("#maths-liste").addEventListener("click",e=>{ const b=e.target.closest("[data-mc]"); if (!b) return; E.mOuvert=b.dataset.mc; E.modeCours="lecons"; sauver(); window.scrollTo(0,0); rendreCours(); });
+$("#maths-retour").addEventListener("click",()=>{ E.mOuvert=null; sauver(); rendreCours(); window.scrollTo(0,0); });
 /* ================= Python : le manuel de l'atelier (cours) ================= */
 const PYC = (window.PYTHON && window.PYTHON.chapitres) || [];
 const PYO_URL = "https://cdn.jsdelivr.net/pyodide/v0.29.5/full/";
@@ -1310,7 +1329,7 @@ function rendrePython(){
     </div>`;
   maths(v);
 }
-function ouvrirPy(id){ pyOuvert=id; E.py.ouvert=id; sauver(); rendrePython(); window.scrollTo(0,0); }
+function ouvrirPy(id){ pyOuvert=id; E.py.ouvert=id; if (id) E.py.mode="lecons"; sauver(); window.scrollTo(0,0); rendrePython(); }
 $("#python-vue").addEventListener("click",e=>{
   const c=e.target.closest("[data-c]"); if (c){ ouvrirPy(c.dataset.c); return; }
   if (e.target.closest(".py-retour")){ ouvrirPy(null); return; }
