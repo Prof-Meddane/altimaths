@@ -59,6 +59,21 @@ h1,h2,h3{margin:0}
 .meteo.beau{background:#D8E9DF}.meteo.mauvais{background:var(--drapeau)}.meteo.fortes{background:#F2A65A}.meteo.tempete{background:#F3B7A3}.meteo.inconnu{background:var(--glace)}
 .meteo p{margin:0;font-size:13.5px;line-height:1.35}
 .meteo svg{flex:none}
+.algo-fiches{margin-top:18px}
+.algo-fiches>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:700;font-size:15px;cursor:pointer;min-height:28px}
+.algo-fiches>summary::-webkit-details-marker{display:none}
+.algo-fiches>summary:focus-visible{outline:2px solid var(--nuit);outline-offset:4px;border-radius:6px}
+.algo-fiches .chev{flex:none;color:var(--gris);transition:transform .2s ease}
+.algo-fiches[open] .chev{transform:rotate(180deg)}
+.algo-fiches[open]>summary{margin-bottom:6px}
+@media (prefers-reduced-motion:reduce){.algo-fiches .chev{transition:none}}
+.algo-fiches p,.algo-fiches li{font-size:14.5px;line-height:1.5}
+.algo-fiches ul{padding-left:18px;margin:6px 0}
+.algo-fiches li{margin-bottom:4px}
+.btn-fiche{flex-direction:column;line-height:1.15;min-height:58px}
+.btn-fiche small{font-weight:500;font-size:12.5px;opacity:.75;margin-top:2px}
+nav button{position:relative}
+.badge{position:absolute;top:4px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--orange);color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center}
 .deux{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .btn-marche{border-radius:16px;min-height:64px;padding:9px 14px;text-align:left;display:flex;flex-direction:column;justify-content:center}
 .btn-marche b{font-family:var(--d);font-weight:800;font-size:23px;line-height:1}
@@ -346,16 +361,26 @@ body.en-quiz nav.bas{display:none}
     <div class="entete"><h1>Fiches mémo</h1></div>
     <div class="pad clair">
       <div class="chips clair-chips" id="fiches-chap" style="margin-top:4px"></div>
-      <div class="segment" id="fiches-filtre"><button data-f="toutes" class="on">Toutes</button><button data-f="revoir">À revoir</button></div>
+      <div class="segment" id="fiches-filtre"><button data-f="jour" class="on">Fiches du jour</button><button data-f="toutes">Parcourir</button></div>
       <div style="display:flex;justify-content:space-between" class="petit"><span id="fiche-compteur"></span><span id="fiche-sues"></span></div>
       <div id="fiche-bloc">
         <div class="zone-fiche"><div class="fiche" id="fiche" tabindex="0" role="button" aria-label="Retourner la fiche">
           <div class="face recto"><span class="indice">Toucher pour retourner</span><div id="fiche-recto"></div></div>
           <div class="face verso"><span class="indice">Réponse</span><div id="fiche-verso"></div></div>
         </div></div>
-        <div class="deux"><button class="btn-rond btn-blanc" id="fiche-revoir">À revoir</button><button class="btn-rond btn-nuit" id="fiche-sue">Je savais</button></div>
+        <div class="deux"><button class="btn-rond btn-blanc btn-fiche" id="fiche-revoir">À revoir</button><button class="btn-rond btn-nuit btn-fiche" id="fiche-sue">Je savais</button></div>
       </div>
       <p id="fiche-vide" style="display:none;text-align:center;padding:30px 0" class="petit">Aucune fiche à revoir.</p>
+      <details class="carte algo-fiches">
+        <summary>Comment l'appli choisit vos fiches ?<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <p>On oublie vite juste après avoir appris, puis de plus en plus lentement. Pour chaque fiche, l'appli estime la probabilité que vous vous en souveniez aujourd'hui, et vous la redonne au moment où cette probabilité descend à <strong>90&nbsp;%</strong>&nbsp;: assez tôt pour ne pas l'avoir oubliée, assez tard pour que la révision soit utile.</p>
+        <ul>
+          <li><strong>Je savais</strong> : le souvenir se consolide et l'écart grandit. Une fiche toujours sue revient après 3 jours, puis 11, 35, et au plus 90 jours.</li>
+          <li><strong>À revoir</strong> : la fiche revient dans la séance, puis le lendemain, et repart sur des écarts courts. Elle est aussi notée plus difficile, donc ses écarts grandiront moins vite.</li>
+          <li>Une fiche sue alors qu'on la revoit en retard consolide davantage le souvenir.</li>
+        </ul>
+        <p>C'est l'algorithme <strong>FSRS</strong>, celui qu'utilise Anki. Il ne marche que si vous êtes honnête : cliquer « Je savais » sans savoir fait disparaître la fiche au moment où vous en avez besoin.</p>
+      </details>
     </div>
   </section>
 
@@ -400,6 +425,7 @@ body.en-quiz nav.bas{display:none}
       <h2 class="d" style="font-size:28px;margin:18px 0 6px">Règles de l'ascension</h2>
       <div class="carte" style="font-size:14.5px">
         <p style="margin:0 0 8px">Chaque bonne réponse correspond à une minute de marche, calculée avec la règle de Naismith utilisée par les randonneurs : une heure pour 5 km, plus une heure pour 600 m de montée.</p>
+        <p style="margin:0 0 8px">Fiches du jour : l'appli vous redonne chaque fiche juste avant que vous risquiez de l'oublier (méthode de répétition espacée, comme Anki). « Je savais » espace la prochaine révision, « À revoir » la fait revenir dans la séance. Soyez honnête : c'est la seule façon pour que le planning soit utile. Dix nouvelles fiches au plus par jour. Chaque fiche sue fait un peu monter (un quart de bonne réponse), dans la limite de 5 minutes de marche par jour.</p>
         <p style="margin:0 0 8px">Météo de Noisy-le-Sec (prévision Météo-France, de 8 h à 20 h) : par temps de pluie ou de vent, le gain est divisé par deux ; par fortes pluies (au moins 10 mm) ou grosses rafales (au moins 60 km/h), il est divisé par deux et les pistes noires sont fermées ; par tempête (orages durables, rafales d'au moins 70 km/h ou neige), il est divisé par quatre et les pistes rouges et noires sont fermées.</p>
         <p style="margin:0 0 8px">Les questions sont classées comme les pistes de ski : <span class="piste" style="--pc:#2C7A57;margin:0"><i></i>verte</span> <span class="piste" style="--pc:#2361B8;margin:0"><i></i>bleue</span> <span class="piste" style="--pc:#C8202F;margin:0"><i></i>rouge</span> <span class="piste" style="--pc:#141B2B;margin:0"><i></i>noire</span>. À partir de la piste rouge, il faut souvent écrire un peu au brouillon.</p>
         <p style="margin:0 0 8px">Marche normale : pistes vertes et bleues. Passage technique : pistes rouges et noires, gain double, aucune progression en cas d'erreur.</p>
@@ -425,7 +451,7 @@ body.en-quiz nav.bas{display:none}
 <nav class="bas" aria-label="Navigation principale"><div class="in">
   <button data-vue="ascension" class="actif"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 20l6-11 4 6 3-4 5 9z"/></svg>Ascension</button>
   <button data-vue="cours"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4z"/><path d="M13 7a2 2 0 0 1 2-2h5v13h-5a2 2 0 0 0-2 2"/></svg>Cours</button>
-  <button data-vue="fiches"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="7" width="14" height="12" rx="1.5"/><path d="M7 4h13v12"/></svg>Fiches</button>
+  <button data-vue="fiches"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="7" width="14" height="12" rx="1.5"/><path d="M7 4h13v12"/></svg><span class="badge" id="badge-fiches" style="display:none"></span>Fiches</button>
   <button data-vue="expedition"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>Expédition</button>
   <button data-vue="profil"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Carnet</button>
 </div></nav>
@@ -446,7 +472,7 @@ body.en-quiz nav.bas{display:none}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.5";
+const VERSION_APP = "2.6.3";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -484,7 +510,7 @@ function badgePiste(n){ const p=piste(n); return `<span class="piste" style="--p
 
 /* ================= Sauvegarde ================= */
 const CLE = "altimaths.v2";
-const VIDE = () => ({chap:"tous",prenom:"",acces:"",minutes:0,justes:0,total:0,jours:0,dernierJour:"",jour:"",jourJustes:0,q:{},f:{},etapes:{},serie:0});
+const VIDE = () => ({chap:"tous",prenom:"",acces:"",minutes:0,justes:0,total:0,jours:0,dernierJour:"",jour:"",jourJustes:0,q:{},f:{},fs:{},fn:{date:"",n:0},fg:{date:"",ids:[],alt:0},etapes:{},serie:0});
 let E;
 try { E = JSON.parse(localStorage.getItem(CLE)||"null"); } catch(e){ E=null; }
 if (!E){ E = VIDE(); try { const v1 = JSON.parse(localStorage.getItem("mathsECG1.v1")||"null");
@@ -741,23 +767,94 @@ function segChap(el, val, avecTous, fn){
   el.innerHTML = (avecTous?[["tous","Tous"]]:[]).concat(CHAPS.map(ch=>[ch.id,"Ch. "+ch.numero+" : "+ch.titre])).map(([id,l])=>`<button data-c="${id}" class="${val===id?"on":""}">${esc(l)}</button>`).join("");
   el.querySelectorAll("button").forEach(b=>b.onclick=()=>fn(b.dataset.c));
 }
-let filtreF="toutes", pile=[], iF=0;
-function preparer(){ const base=FICHES.filter(f=>chapFiches==="tous"||f.ch===chapFiches); pile=melanger(filtreF==="revoir"?base.filter(f=>E.f[f.id]!==1):base); iF=0; }
+/* ---- Répétition espacée : FSRS-5 (paramètres par défaut publiés), deux notes : 1 = À revoir, 3 = Je savais ---- */
+const W=[0.40255,1.18385,3.173,15.69105,7.1949,0.5345,1.4604,0.0046,1.54575,0.1192,1.01925,1.9395,0.11,0.29605,2.2698,0.2315,2.9898,0.51655,0.6621];
+const F_DECAY=-0.5, F_FACTOR=19/81, RETENTION=0.9, NOUVELLES_PAR_JOUR=10, IVL_MAX=90, GAIN_FICHE=0.25, GAIN_FICHES_MAX=5;
+const bornerD = d => Math.min(10, Math.max(1, d));
+const d0 = g => bornerD(W[4]-Math.exp(W[5]*(g-1))+1);
+const retenir = (t,S) => Math.pow(1+F_FACTOR*t/S, F_DECAY);
+const intervalle = S => Math.min(IVL_MAX, Math.max(1, Math.round(S/F_FACTOR*(Math.pow(RETENTION,1/F_DECAY)-1))));
+const JOUR_MS = 86400000;
+function joursEntre(a,b){ const x=new Date(a+"T12:00:00"), y=new Date(b+"T12:00:00"); return Math.round((y-x)/JOUR_MS); }
+function plusJours(n){ const d=new Date(); d.setDate(d.getDate()+n); return auj(d); }
+/* état après une note, sans modifier la fiche (sert aussi à afficher le délai sous chaque bouton) */
+function simuler(st, g){
+  const today=auj();
+  if (!st) { const S=W[g-1]; return {s:S, d:d0(g), last:today, due: g===1?today:plusJours(intervalle(S)), reps:1, lapses:g===1?1:0}; }
+  const t=Math.max(0, joursEntre(st.last,today)); let S=st.s, D=st.d;
+  if (t===0) S = S*Math.exp(W[17]*(g-3+W[18]));
+  else if (g===1){ const R=retenir(t,S); S=Math.min(S, W[11]*Math.pow(D,-W[12])*(Math.pow(S+1,W[13])-1)*Math.exp(W[14]*(1-R))); }
+  else { const R=retenir(t,S); S = S*(1+Math.exp(W[8])*(11-D)*Math.pow(S,-W[9])*(Math.exp(W[10]*(1-R))-1)); }
+  S=Math.max(0.1,S);
+  const dd=-W[6]*(g-3); D=bornerD(W[7]*d0(4)+(1-W[7])*(D+dd*(10-D)/9));
+  return {s:S, d:D, last:today, due: g===1?today:plusJours(intervalle(S)), reps:(st.reps||0)+1, lapses:(st.lapses||0)+(g===1?1:0)};
+}
+function delaiTexte(due){ const n=joursEntre(auj(),due); if (n<=0) return "revient tout à l'heure"; if (n===1) return "revient demain"; if (n<7) return "dans "+n+" jours"; if (n<30) return "dans "+Math.round(n/7)+" sem."; if (n<365) return "dans "+Math.round(n/30)+" mois"; return "dans 1 an"; }
+function nouvellesRestantes(){ if (E.fn.date!==auj()) E.fn={date:auj(),n:0}; return Math.max(0, NOUVELLES_PAR_JOUR-E.fn.n); }
+const dansChap = f => chapFiches==="tous"||f.ch===chapFiches;
+function fichesDues(){ const t=auj(); return FICHES.filter(f=>dansChap(f) && E.fs[f.id] && E.fs[f.id].due<=t); }
+function fichesNouvelles(){ return FICHES.filter(f=>dansChap(f) && !E.fs[f.id]).slice(0, nouvellesRestantes()); }
+function nbDuJour(){ const c=chapFiches; chapFiches="tous"; const n=fichesDues().length+fichesNouvelles().length; chapFiches=c; return n; }
+function majBadge(){ const b=$("#badge-fiches"); if(!b) return; const n=nbDuJour(); b.textContent=n>99?"99+":n; b.style.display=n?"":"none"; }
+
+let filtreF="jour", pile=[], iF=0, pileJour="";
+function preparer(){
+  pileJour=auj();
+  if (filtreF==="jour") pile = melanger(fichesDues()).concat(fichesNouvelles());
+  else pile = melanger(FICHES.filter(dansChap));
+  iF=0;
+}
 function rendreFiche(){
+  if (filtreF==="jour" && pileJour!==auj()) preparer();
   segChap($("#fiches-chap"), chapFiches, true, c=>{ chapFiches=c; preparer(); rendreFiche(); });
-  if (!pile.length||iF>=pile.length) preparer();
-  $("#fiche-sues").textContent = FICHES.filter(f=>E.f[f.id]===1).length+" / "+FICHES.length+" sues";
-  if (!pile.length){ $("#fiche-bloc").style.display="none"; $("#fiche-vide").style.display="block"; $("#fiche-compteur").textContent=""; return; }
+  const enCours=Object.keys(E.fs).length;
+  $("#fiche-sues").textContent = enCours+" / "+FICHES.length+" fiches à l'étude";
+  majBadge();
+  const jour = filtreF==="jour";
+  $("#fiche-revoir").innerHTML = jour ? 'À revoir<small id="sous-revoir"></small>' : "Précédente";
+  $("#fiche-sue").innerHTML = jour ? 'Je savais<small id="sous-sue"></small>' : "Suivante";
+  if (!pile.length || iF>=pile.length){
+    $("#fiche-bloc").style.display="none"; $("#fiche-vide").style.display="block"; $("#fiche-compteur").textContent="";
+    if (jour){ const demain=plusJours(1); const n=FICHES.filter(f=>dansChap(f)&&E.fs[f.id]&&E.fs[f.id].due<=demain).length;
+      $("#fiche-vide").innerHTML = "<strong>Fiches du jour terminées.</strong><br>"+(n?"Demain : "+n+" fiche"+(n>1?"s":"")+" à revoir, plus les nouvelles.":"Demain : de nouvelles fiches.")+"<br>Pour relire sans toucher au planning, choisissez « Parcourir ».";
+    } else $("#fiche-vide").textContent="Aucune fiche dans ce chapitre.";
+    return;
+  }
   $("#fiche-bloc").style.display="block"; $("#fiche-vide").style.display="none";
   const f=pile[iF]; $("#fiche").classList.remove("retournee");
-  $("#fiche-compteur").textContent = "Fiche "+(iF+1)+" sur "+pile.length;
+  if (jour){ const reste=pile.length-iF, nv=pile.slice(iF).filter(x=>!E.fs[x.id]).length;
+    $("#fiche-compteur").textContent = reste+" restante"+(reste>1?"s":"")+(nv?", dont "+nv+" nouvelle"+(nv>1?"s":""):"");
+    $("#sous-revoir").textContent = delaiTexte(simuler(E.fs[f.id],1).due);
+    $("#sous-sue").textContent = delaiTexte(simuler(E.fs[f.id],3).due);
+  } else $("#fiche-compteur").textContent = "Fiche "+(iF+1)+" sur "+pile.length;
   html($("#fiche-recto"),f.recto); setTimeout(()=>html($("#fiche-verso"),f.verso),150);
 }
 $("#fiche").addEventListener("click",()=>$("#fiche").classList.toggle("retournee"));
 $("#fiche").addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); $("#fiche").classList.toggle("retournee"); } });
-function noter(v){ const f=pile[iF]; if(!f) return; E.f[f.id]=v; sauver(); iF++; if(iF>=pile.length){ toast("Paquet terminé"); preparer(); } rendreFiche(); }
-$("#fiche-sue").addEventListener("click",()=>noter(1));
-$("#fiche-revoir").addEventListener("click",()=>noter(0));
+/* faible gain d'altitude : un quart de bonne réponse par fiche sue, une fois par fiche et par jour, plafonné, ralenti par la météo */
+function gainFiche(f){
+  if (E.fg.date!==auj()) E.fg={date:auj(),ids:[],alt:0};
+  if (E.fg.ids.includes(f.id) || E.minutes>=TOTAL) return;
+  const deja=E.fg.ids.length*GAIN_FICHE; if (deja>=GAIN_FICHES_MAX) return;
+  E.fg.ids.push(f.id);
+  const avant=position(E.minutes).a;
+  E.minutes=Math.min(TOTAL, E.minutes+GAIN_FICHE*FACTEUR[METEO.cat]);
+  E.fg.alt += Math.max(0, position(E.minutes).a-avant);
+  noterEtapes();
+}
+function noter(g){
+  const f=pile[iF]; if(!f) return;
+  if (!E.fs[f.id]) { nouvellesRestantes(); E.fn.n++; }
+  E.fs[f.id]=simuler(E.fs[f.id],g);
+  if (g===3) gainFiche(f);
+  sauver();
+  if (g===1) pile.push(f);               /* revient en fin de pile dans la même séance */
+  iF++;
+  if (iF>=pile.length){ const a=Math.round(E.fg.alt); envoyer(); if (a>0) toast("Fiches du jour terminées : +"+nf(a)+" m d'altitude aujourd'hui"); }
+  rendreFiche();
+}
+$("#fiche-sue").addEventListener("click",()=>{ if(filtreF==="jour") noter(3); else { iF=(iF+1)%pile.length; rendreFiche(); } });
+$("#fiche-revoir").addEventListener("click",()=>{ if(filtreF==="jour") noter(1); else { iF=(iF-1+pile.length)%pile.length; rendreFiche(); } });
 $$("#fiches-filtre button").forEach(b=>b.addEventListener("click",()=>{ filtreF=b.dataset.f; $$("#fiches-filtre button").forEach(x=>x.classList.toggle("on",x===b)); preparer(); rendreFiche(); }));
 
 /* ================= Classement commun (Firebase) ================= */
@@ -926,7 +1023,7 @@ if ("serviceWorker" in navigator){ try {
 
 /* ================= Démarrage ================= */
 majJour(); placerProf(); noterEtapes(); sauver();
-rendreCours(); preparer(); aller("ascension"); chargerMeteo();
+rendreCours(); preparer(); aller("ascension"); chargerMeteo(); majBadge();
 if (!valide(E.acces)) ouvrirPorte("code");
 else if (!E.prenom) ouvrirPorte("prenom");
 else attendreCloud(4000).then(()=>{ restaurer(); envoyer(); });
