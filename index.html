@@ -767,7 +767,7 @@ body.nuit .btn-ch{background:#24365F;color:var(--n-texte)}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "3.3";
+const VERSION_APP = "3.4";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -1081,7 +1081,7 @@ $$("#cours-matiere button").forEach(b=>b.addEventListener("click",()=>{ const m=
 $("#maths-liste").addEventListener("click",e=>{ const b=e.target.closest("[data-mc]"); if (!b) return; E.mOuvert=b.dataset.mc; E.modeCours="lecons"; sauver(); window.scrollTo(0,0); rendreCours(); });
 $("#maths-retour").addEventListener("click",()=>{ E.mOuvert=null; sauver(); rendreCours(); window.scrollTo(0,0); });
 /* ================= Python : le manuel de l'atelier (cours) ================= */
-const PYC = (window.PYTHON && window.PYTHON.chapitres) || [];
+const PYC = ((window.PYTHON && window.PYTHON.chapitres) || []).slice().sort((a,b)=>a.numero-b.numero);
 const PYO_URL = "https://cdn.jsdelivr.net/pyodide/v0.29.5/full/";
 let pyOuvert = (E.py && E.py.ouvert) || null;              // id du chapitre ouvert, null = liste
 E.py = Object.assign({lu:{}}, E.py||{});
@@ -1301,7 +1301,7 @@ function rendrePython(){
     const progr=c=>{ const ls=LECONS[c.id]||[]; if (!ls.length) return ""; const f=ls.filter(leconFaite).length; return `<em class="py-prog">${f}/${ls.length} leçon${ls.length>1?"s":""}</em>`; };
     const carte=c=>`<button class="py-chap${E.py.lu[c.id]?" lu":""}" data-c="${c.id}"><span class="num">${c.numero}</span><span class="txt"><b>${c.titre}</b><small>${c.resume||""}</small>${progr(c)}</span>${E.py.lu[c.id]?'<span class="ok" aria-label="Lu">✓</span>':""}</button>`;
     const ecg=PYC.filter(c=>c.ecg), plus=PYC.filter(c=>!c.ecg);
-    v.innerHTML=`<div class="py-intro"><b>Programme d'ECG.</b> On se concentre sur les chapitres 1 à 5 (des premiers pas à la récursivité), sur les graphes et sur la simulation de variables aléatoires. Les autres chapitres sont des bonus pour aller plus loin.</div>
+    v.innerHTML=`<div class="py-intro"><b>Programme d'ECG.</b> On se concentre sur les chapitres 1 à 7 : des premiers pas à la récursivité, puis les graphes et la simulation de variables aléatoires. Les autres chapitres sont des bonus pour aller plus loin.</div>
       <h2 class="py-groupe">Programme ECG</h2>${ecg.map(carte).join("")}
       <h2 class="py-groupe">Pour aller plus loin</h2>${plus.map(carte).join("")}`;
     return;

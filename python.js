@@ -876,7 +876,7 @@ print(suiteU_iter(50))
 print("formule : u_n = (2^n + 2(-1)^n)/3 ->", (2**50 + 2*(-1)**50) // 3)`},
 {type:"remarque", texte:R`<p>L'équation caractéristique $r^2 = r + 2$ a pour racines $2$ et $-1$ ; avec $u_0 = 1$, $u_1 = 0$, on trouve $u_n = \frac{2^n + 2(-1)^n}{3}$ (méthode du chapitre sur les suites récurrentes linéaires d'ordre 2).</p>`},
 ]},
-{ id:"py6", numero:6, ecg:false, titre:"Diviser pour régner", resume:"Exponentiation rapide, Fibonacci par les matrices, tri fusion, théorème maître.",
+{ id:"py6", numero:9, ecg:false, titre:"Diviser pour régner", resume:"Exponentiation rapide, Fibonacci par les matrices, tri fusion, théorème maître.",
 cours:[
 {type:"section", titre:"1. Exemple introductif : l'exponentiation rapide"},
 {type:"sous", titre:"Exponentiation naïve"},
@@ -941,7 +941,7 @@ import random
 L = [random.randint(0, 99) for _ in range(20)]
 print(tri_fusion(L) == sorted(L))`},
 {type:"sous", titre:"Complexité"},
-{type:"prop", texte:R`<p>Si $\alpha_n$ est le coût de la fusion (proportionnel à $n$), la complexité vérifie</p>$$C(0)=0,\qquad C(n)=C\!\left(\left\lfloor \tfrac n2\right\rfloor\right)+C\!\left(\left\lceil \tfrac n2\right\rceil\right)+\alpha_n,$$<p>et l'on obtient $C(n)=\Theta(n\ln n)$. C'est bien mieux que les tris naïfs en $\Theta(n^2)$ (chapitre 7).</p>`},
+{type:"prop", texte:R`<p>Si $\alpha_n$ est le coût de la fusion (proportionnel à $n$), la complexité vérifie</p>$$C(0)=0,\qquad C(n)=C\!\left(\left\lfloor \tfrac n2\right\rfloor\right)+C\!\left(\left\lceil \tfrac n2\right\rceil\right)+\alpha_n,$$<p>et l'on obtient $C(n)=\Theta(n\ln n)$. C'est bien mieux que les tris naïfs en $\Theta(n^2)$ (chapitre 10).</p>`},
 
 {type:"section", titre:"3. Les algorithmes DPR et leur complexité"},
 {type:"sous", titre:"Le principe diviser pour régner"},
@@ -963,7 +963,7 @@ for n in [3**6, 3**8, 3**10]:
 for n in [2**8, 2**12, 2**16]:
     print(n, round(C(n) / n**math.log2(5), 3))`},
 ]},
-{ id:"py7", numero:7, ecg:false, titre:"Les algorithmes de tri", resume:"Tris par sélection, insertion, bulles, puis tri fusion, tri rapide et tri par comptage.",
+{ id:"py7", numero:10, ecg:false, titre:"Les algorithmes de tri", resume:"Tris par sélection, insertion, bulles, puis tri fusion, tri rapide et tri par comptage.",
 cours:[
 {type:"texte", texte:R`<p>Trier une liste, c'est ranger ses éléments dans l'ordre croissant. Python le fait avec <code>sorted(L)</code> ou <code>L.sort()</code>, mais écrire ses propres tris est un excellent entraînement, et la comparaison de leurs coûts introduit la notion de complexité.</p>`},
 {type:"section", titre:"1. Premiers algorithmes de tri"},
@@ -1016,7 +1016,7 @@ tri_bulles(L)
 print(L)`},
 
 {type:"section", titre:"2. Tri fusion et tri rapide"},
-{type:"texte", texte:R`<p>Ces deux tris suivent la stratégie <b>diviser pour régner</b> (chapitre 6) : on découpe la liste, on trie les morceaux récursivement, et on reconstruit.</p>`},
+{type:"texte", texte:R`<p>Ces deux tris suivent la stratégie <b>diviser pour régner</b> (chapitre 9) : on découpe la liste, on trie les morceaux récursivement, et on reconstruit.</p>`},
 {type:"sous", titre:"Tri fusion"},
 {type:"code", code:R`def fusion(L1, L2):
     L = []
@@ -1135,7 +1135,7 @@ for n in [500, 1000, 2000]:
           " fusion :", chrono(tri_fusion, L), " sorted :", chrono(sorted, L))`},
 {type:"remarque", texte:R`<p>Ce bloc réutilise les fonctions définies plus haut : exécutez d'abord les blocs du tri par sélection, du tri par insertion et du tri fusion. Quand $n$ double, le temps des tris quadratiques est environ multiplié par 4, celui du tri fusion par un peu plus de 2.</p>`},
 ]},
-{ id:"py8", numero:8, ecg:false, titre:"Les algorithmes gloutons", resume:"Faire le meilleur choix local à chaque étape : rendu de monnaie, sac à dos, voyageur de commerce.",
+{ id:"py8", numero:11, ecg:false, titre:"Les algorithmes gloutons", resume:"Faire le meilleur choix local à chaque étape : rendu de monnaie, sac à dos, voyageur de commerce.",
 cours:[
 {type:"section", titre:"1. Le principe glouton"},
 {type:"def", texte:R`<p>Un algorithme <b>glouton</b> construit une solution étape par étape en faisant, à chaque étape, le choix qui semble <b>le meilleur sur le moment</b> (optimum local), sans jamais revenir en arrière.</p>`},
@@ -1249,7 +1249,7 @@ plt.title("Trajet du plus proche voisin")
 plt.show()`},
 {type:"remarque", texte:R`<p>Le trajet obtenu est souvent correct, mais rarement optimal : on voit parfois de longs retours en fin de parcours, quand les lieux restants sont éloignés. Exécutez plusieurs fois pour comparer.</p>`},
 ]},
-{ id:"py9", numero:9, ecg:false, titre:"Traitement d'images", resume:"Une image est une matrice de pixels : couleurs, négatif, sépia, symétries, rotations, gris, photomaton, stéganographie.",
+{ id:"py9", numero:12, ecg:false, titre:"Traitement d'images", resume:"Une image est une matrice de pixels : couleurs, négatif, sépia, symétries, rotations, gris, photomaton, stéganographie.",
 cours:[
 {type:"section", titre:"1. Coder une image"},
 {type:"def", texte:R`<p>Une image numérique est un tableau de <b>pixels</b> : $n$ lignes, $p$ colonnes. En couleur, chaque pixel est un triplet <code>[R, G, B]</code> (rouge, vert, bleu), chaque composante étant un entier de $0$ à $255$ (un octet). <code>[0, 0, 0]</code> est le noir, <code>[255, 255, 255]</code> le blanc.</p>`},
@@ -1431,7 +1431,7 @@ cachee = steganoDissimulation(image, secret)
 montrer(image, cachee, steganoRevelation(cachee))`},
 {type:"remarque", texte:R`<p>L'image du milieu contient le secret mais semble identique à l'originale : l'œil ne perçoit pas les modifications des bits faibles. Ici les calculs s'appliquent à tout le tableau numpy d'un coup, sans boucle.</p>`},
 ]},
-{ id:"py10", numero:10, ecg:false, titre:"Correction et complexité", resume:"Spécifier un algorithme, prouver qu'il termine et qu'il est correct (variants, invariants), mesurer son coût.",
+{ id:"py10", numero:13, ecg:false, titre:"Correction et complexité", resume:"Spécifier un algorithme, prouver qu'il termine et qu'il est correct (variants, invariants), mesurer son coût.",
 cours:[
 {type:"section", titre:"1. Spécifier un algorithme"},
 {type:"def", titre:"Définition (signature, spécification)", texte:R`<p>La <b>signature</b> d'une fonction : son nom, ses arguments et leur type, ses sorties et leur type.</p><p><b>Spécifier</b> une fonction, c'est donner :</p><ul><li>sa signature ;</li><li>ses <b>pré-conditions</b> : ce que les arguments doivent vérifier ;</li><li>ses <b>post-conditions</b> : ce que vérifient les valeurs renvoyées.</li></ul>`},
@@ -1584,7 +1584,7 @@ L = list(range(0, 200, 3))
 print(recherche_dichotomique(L, 99), recherche_dichotomique(L, 100))`},
 {type:"texte", texte:R`<ul><li><b>Variant</b> : $\texttt{fin} - \texttt{deb}$, qui décroît strictement à chaque tour (on retire au moins l'indice $m$).</li><li><b>Invariant</b> : si $x$ est dans la liste, il est dans <code>L[deb..fin]</code>. C'est vrai au départ, et chaque cas ($L[m] &gt; x$ ou $L[m] &lt; x$) conserve cette propriété car la liste est triée.</li><li><b>Complexité</b> : la longueur de la zone de recherche est au moins divisée par 2 à chaque tour, donc il y a au plus environ $\log_2 n + 1$ tours : $\Theta(\ln n)$ dans le pire cas, contre $\Theta(n)$ pour une recherche séquentielle.</li></ul>`},
 ]},
-{ id:"py11", numero:11, ecg:true, titre:"Les graphes", resume:"Vocabulaire, matrice d'adjacence, chaînes, connexité, cycles eulériens, piles et files, parcours, Dijkstra.",
+{ id:"py11", numero:6, ecg:true, titre:"Les graphes", resume:"Vocabulaire, matrice d'adjacence, chaînes, connexité, cycles eulériens, piles et files, parcours, Dijkstra.",
 cours:[
 {type:"section", titre:"1. Graphes non orientés"},
 {type:"sous", titre:"Définition"},
@@ -1799,7 +1799,7 @@ for t in range(6):
 {type:"sous", titre:"Correction et complexité"},
 {type:"prop", texte:R`<ul><li><b>Correction</b> : invariant « pour tout sommet traité $u$, $d[u] = \delta(u)$ ». Quand on sélectionne le sommet non traité $u$ de plus petite estimation, tout autre chemin vers $u$ sort de la zone traitée par un sommet d'estimation au moins $d[u]$, puis ne fait que s'allonger (poids positifs) : $d[u]$ est bien la distance minimale.</li><li><b>Complexité</b> : $n$ étapes, chacune parcourant les $n$ sommets pour la sélection puis pour le relâchement : $\Theta(n^2)$ avec une matrice des poids. Une file de priorité permet de faire mieux sur les graphes avec peu d'arêtes.</li></ul>`},
 ]},
-{ id:"py12", numero:12, ecg:false, titre:"Représentation des nombres", resume:"Bases 2, 10, 16, complément à deux, entiers multi-précision, flottants et leurs pièges.",
+{ id:"py12", numero:14, ecg:false, titre:"Représentation des nombres", resume:"Bases 2, 10, 16, complément à deux, entiers multi-précision, flottants et leurs pièges.",
 cours:[
 {type:"section", titre:"1. Représentation des entiers"},
 {type:"sous", titre:"Écriture en base B"},
@@ -1915,7 +1915,7 @@ for k in range(7):
     x1, x2 = racinesMalin(1, 1/a**2, -1)
     print("a =", a, " produit x1*x2 =", x1 * x2)`},
 ]},
-{ id:"py13", numero:13, ecg:true, titre:"Simulation de variables aléatoires discrètes", resume:"Bernoulli, binomiale, géométrique, Poisson : simuler avec random et comparer aux lois théoriques.",
+{ id:"py13", numero:7, ecg:true, titre:"Simulation de variables aléatoires discrètes", resume:"Bernoulli, binomiale, géométrique, Poisson : simuler avec random et comparer aux lois théoriques.",
 cours:[
 {type:"texte", texte:R`<p>Simuler une variable aléatoire, c'est écrire un programme qui renvoie une valeur au hasard selon la loi voulue. On s'en sert en statistiques, en finance, en physique, et pour <b>vérifier expérimentalement</b> un calcul de probabilités. On utilise les modules suivants :</p>`},
 {type:"code", code:R`import random
@@ -1969,7 +1969,7 @@ plt.bar(range(n + 1), freq, label="fréquences simulées")
 plt.plot(range(n + 1), theo, "ro-", label="P(X = k)")
 plt.legend()
 plt.show()`},
-{type:"remarque", texte:R`<p>La moyenne des valeurs simulées est proche de l'espérance $np$, et les fréquences sont proches des probabilités $\binom nk p^k(1-p)^{n-k}$. Plus on fait de simulations, meilleure est l'approximation (loi des grands nombres, chapitre 14).</p>`},
+{type:"remarque", texte:R`<p>La moyenne des valeurs simulées est proche de l'espérance $np$, et les fréquences sont proches des probabilités $\binom nk p^k(1-p)^{n-k}$. Plus on fait de simulations, meilleure est l'approximation (loi des grands nombres, chapitre 8).</p>`},
 
 {type:"section", titre:"3. Loi géométrique"},
 {type:"methode", texte:R`<p>$X \hookrightarrow \mathcal G(p)$ est le rang du premier succès dans une suite d'épreuves de Bernoulli indépendantes. On répète donc des épreuves jusqu'au premier succès :</p>`},
@@ -2043,7 +2043,7 @@ print("moyenne :", sum(Z) / N)`},
 print(np.random.geometric(0.3, 10))
 print(np.random.poisson(2.5, 10))`},
 ]},
-{ id:"py14", numero:14, ecg:true, titre:"Lois limites et convergences", resume:"Binomiale vers Poisson, loi des grands nombres, théorème limite central, processus de Galton-Watson.",
+{ id:"py14", numero:8, ecg:false, titre:"Lois limites et convergences", resume:"Binomiale vers Poisson, loi des grands nombres, théorème limite central, processus de Galton-Watson.",
 cours:[
 {type:"texte", texte:R`<p>On illustre numériquement les grands théorèmes de convergence en probabilités. On utilise les simulateurs de <code>numpy.random</code> : <code>np.random.binomial</code>, <code>np.random.geometric</code>, <code>np.random.poisson</code>.</p>`},
 {type:"code", code:R`import numpy as np
