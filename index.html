@@ -511,6 +511,31 @@ body.nuit .anneau .arc-noire{stroke:#C9D3E6}
 body.nuit .b-legende li{border-color:rgba(255,255,255,.08)}
 body.nuit .b-grille polygon,body.nuit .b-grille line{stroke:rgba(255,255,255,.14)}
 body.nuit .b-num{fill:var(--n-texte)}
+
+/* ===== Zone Zen ===== */
+.carte-zen{display:block;width:100%;text-align:left;margin:14px 0 4px;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff}
+.zen-titre{display:flex;justify-content:space-between;align-items:baseline}.zen-titre span{font-family:var(--d);font-weight:800;font-size:22px}.zen-titre small{color:#BFD0E8;font-size:12px}
+.zen-apercu{margin:6px 0 2px;font-size:15px;line-height:1.4;font-style:italic;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.zen-auteur{margin:0;font-size:13px;color:#BFD0E8}.zen-lien{display:block;margin-top:8px;font-size:13px;font-weight:700;color:#F6C27A}
+.zen-h1{font-family:var(--d);font-weight:800;font-size:40px;color:var(--nuit);margin:4px 0 10px}
+.zen-h2{font-family:var(--d);font-weight:800;font-size:26px;color:var(--nuit);margin:24px 0 8px}
+.zen-cit{margin:0;background:#fff;border:1px solid var(--trait);border-radius:18px;padding:18px 18px 14px}
+.zen-cit .orig{margin:0 0 8px;color:var(--gris);font-size:15px;line-height:1.45}
+.zen-cit .fr{margin:0;font-size:19px;line-height:1.45;font-style:italic;color:var(--nuit)}
+.zen-cit footer{margin-top:10px;font-weight:700;font-size:14px}.zen-cit footer span{display:block;font-weight:400;color:var(--gris);font-size:13px;margin-top:2px}
+.zen-souffle{background:#fff;border:1px solid var(--trait);border-radius:18px;padding:14px}
+.zen-aire{position:relative;height:230px;display:grid;place-items:center;margin:8px 0}
+.zen-bulle{position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#CFE0F5,#7FA3D8 60%,#3E6BB8);transform:scale(.55);opacity:.85}
+.zen-texte{position:relative;text-align:center;color:#fff;text-shadow:0 1px 4px rgba(20,40,90,.5)}.zen-texte b{display:block;font-size:20px}.zen-texte span{font-size:14px}
+.zen-photo{margin:0}.zen-photo .cadre{position:relative;border-radius:18px;overflow:hidden;background:#C9D6E8;aspect-ratio:3/2}
+.zen-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.zp{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(10,20,50,.45);color:#fff;font-size:26px;line-height:1}
+.zp.prec{left:8px}.zp.suiv{right:8px}
+.zen-photo figcaption{padding:8px 2px}.zen-photo figcaption b{display:block;font-size:16px;color:var(--nuit)}.zen-photo figcaption span{display:block;font-size:14px;color:var(--gris)}
+.zen-photo figcaption small{display:block;font-size:11.5px;color:var(--gris);margin-top:4px}.zen-photo figcaption a{color:inherit}
+body.nuit .zen-h1,body.nuit .zen-h2,body.nuit .zen-cit .fr,body.nuit .zen-photo figcaption b{color:var(--n-texte)}
+body.nuit .zen-cit,body.nuit .zen-souffle{background:#1B2B52;border-color:#2E4170;color:var(--n-texte)}
+body.nuit .zen-cit .orig,body.nuit .zen-cit footer span,body.nuit .zen-photo figcaption span,body.nuit .zen-photo figcaption small{color:var(--n-doux)}
 </style>
 </head>
 <body class="sombre">
@@ -577,6 +602,7 @@ body.nuit .b-num{fill:var(--n-texte)}
         <div class="jauge"><i id="obj-jauge" style="width:0"></i></div>
       </div>
       <button class="ligne-bouton" data-mode="erreurs"><span class="sym">↺</span><span class="txt"><b>Revoir mes erreurs</b><span class="petit" id="nb-err"></span></span></button>
+      <button class="carte-zen" id="carte-zen" aria-label="Ouvrir la Zone Zen"></button>
       <p class="sous-titre">S'entraîner par thème</p>
       <p class="petit" style="margin:-8px 0 2px">Chaque bonne réponse fait avancer deux fois moins qu'en marche normale.</p>
       <div id="themes" style="display:flex;flex-direction:column;gap:8px;padding-bottom:10px"></div>
@@ -715,6 +741,24 @@ body.nuit .b-num{fill:var(--n-texte)}
     <div class="pad" style="padding-top:12px"><button class="btn-rond btn-blanc" id="exp-maj" style="width:100%">Actualiser les positions</button></div>
   </section>
 
+  <!-- ===== ZONE ZEN ===== -->
+  <section class="vue" id="v-zen">
+    <div class="pad zen">
+      <button class="py-retour" id="zen-retour">‹ Retour à l'ascension</button>
+      <h1 class="zen-h1">Zone Zen</h1>
+      <div id="zen-cit"></div>
+      <h2 class="zen-h2">Respirer</h2>
+      <div class="zen-souffle">
+        <div class="segment" id="zen-rythme"><button data-r="carree" class="on">Respiration carrée</button><button data-r="coherence">Cohérence cardiaque</button></div>
+        <div class="zen-aire"><div class="zen-bulle" id="zen-bulle"></div><div class="zen-texte"><b id="zen-phase">Prêt ?</b><span id="zen-reste"></span></div></div>
+        <button class="btn-rond btn-nuit" id="zen-go" style="width:100%">Commencer une minute</button>
+        <p class="petit" style="margin:8px 0 0">Une minute avant un DS ou une khôlle : suivez le cercle, il grandit quand vous inspirez.</p>
+      </div>
+      <h2 class="zen-h2">Contempler l'Himalaya</h2>
+      <div id="zen-galerie"></div>
+    </div>
+  </section>
+
   <!-- ===== DUEL ===== -->
   <section class="vue" id="v-duel"><div id="duel-corps"></div></section>
 
@@ -791,13 +835,14 @@ body.nuit .b-num{fill:var(--n-texte)}
 <script src="contenu.js"></script>
 <script src="python.js"></script>
 <script src="justif.js"></script>
+<script src="zen.js"></script>
 <script src="eleves.js"></script>
 <script src="config-firebase.js"></script>
 <script src="firebase-alti.js" async></script>
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "3.6";
+const VERSION_APP = "3.7";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -2137,6 +2182,81 @@ function rendreDuels(){
 document.addEventListener("visibilitychange",()=>{ if (!document.hidden && !unsubInv) ecouterInvitations(); });
 $("#exp-liste").addEventListener("click", e=>{ const b=e.target.closest("button.defi"); if (b) choisirChapitre(b.dataset.h, b.dataset.p); });
 if (window.__MOCK){ window.__DU=()=>DU; window.__Q=QUESTIONS; }
+
+/* ================= Zone Zen : citation du jour, respiration guidée, photos de l'Himalaya ================= */
+const ZC = (window.ZEN && window.ZEN.citations) || [], ZP = (window.ZEN && window.ZEN.photos) || [];
+function citationDuJour(){
+  if (!ZC.length) return null;
+  const j = Math.floor((Date.now() - new Date().getTimezoneOffset()*60000) / 86400000);
+  /* ordre fixe mais mélangé (les familles alternent), le même pour toute la classe */
+  const ordre = ZC.map((_,i)=>i).sort((a,b)=>((a*7919)%ZC.length)-((b*7919)%ZC.length) || a-b);
+  return ZC[ordre[j % ZC.length]];
+}
+function citationHTML(c, court){
+  if (!c) return "";
+  const auteur = `${esc(c.a)}${c.att?" (attribuée)":""}`;
+  return `<blockquote class="zen-cit${court?" court":""}">${c.o?`<p class="orig" lang="">${esc(c.o)}</p>`:""}<p class="fr">${esc(c.t)}</p><footer>${auteur}${!court && c.s?`<span>${esc(c.s)}</span>`:""}${!court && c.o && c.l?`<span>Texte original en ${esc(c.l)}, traduction en dessous.</span>`:""}</footer></blockquote>`;
+}
+function rendreCarteZen(){
+  const el=$("#carte-zen"); if (!el) return; const c=citationDuJour();
+  el.innerHTML = `<div class="zen-titre"><span>Zone Zen</span><small>Citation du jour</small></div>${c?`<p class="zen-apercu">« ${esc(c.t)} »</p><p class="zen-auteur">${esc(c.a)}</p>`:""}<span class="zen-lien">Respirer, contempler l'Himalaya ›</span>`;
+}
+$("#carte-zen").addEventListener("click",()=>{ aller("zen"); rendreZen(); window.scrollTo(0,0); });
+
+let ZEN_PHOTOS=null, zenIdx=0, souffle=null;
+async function chargerPhotos(){
+  if (ZEN_PHOTOS) return ZEN_PHOTOS;
+  const titres = ZP.map(p=>"File:"+p.f).join("|");
+  const url = "https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1280&titles="+encodeURIComponent(titres);
+  const r = await fetch(url); const j = await r.json(); const pages = Object.values((j.query && j.query.pages) || {});
+  const nettoie = h => { const d=document.createElement("div"); d.innerHTML=h||""; return d.textContent.trim(); };
+  ZEN_PHOTOS = ZP.map(p=>{ const pg = pages.find(x=>x.title && x.title.replace(/^File:/,"").replace(/_/g," ")===p.f); const ii = pg && pg.imageinfo && pg.imageinfo[0]; if (!ii) return null;
+    const m = ii.extmetadata || {};
+    return {...p, src: ii.thumburl || ii.url, page: ii.descriptionurl, auteur: nettoie(m.Artist && m.Artist.value) || "Auteur inconnu", licence: nettoie(m.LicenseShortName && m.LicenseShortName.value) || "" }; }).filter(Boolean);
+  return ZEN_PHOTOS;
+}
+function rendreZen(){
+  $("#zen-cit").innerHTML = citationHTML(citationDuJour(), false);
+  arreterSouffle(); majSouffle("Prêt ?", 0.55);
+  const g=$("#zen-galerie");
+  if (!ZEN_PHOTOS){ g.innerHTML='<p class="petit">Chargement des photos…</p>';
+    chargerPhotos().then(()=>afficherPhoto()).catch(()=>{ g.innerHTML='<p class="petit">Les photos s\'affichent avec une connexion Internet.</p>'; }); }
+  else afficherPhoto();
+}
+function afficherPhoto(){
+  const g=$("#zen-galerie"); if (!ZEN_PHOTOS || !ZEN_PHOTOS.length){ g.innerHTML='<p class="petit">Aucune photo disponible.</p>'; return; }
+  zenIdx=(zenIdx+ZEN_PHOTOS.length)%ZEN_PHOTOS.length; const p=ZEN_PHOTOS[zenIdx];
+  g.innerHTML = `<figure class="zen-photo"><div class="cadre"><img src="${p.src}" alt="${esc(p.titre+", "+p.lieu)}" loading="lazy">
+      <button class="zp prec" aria-label="Photo précédente">‹</button><button class="zp suiv" aria-label="Photo suivante">›</button></div>
+    <figcaption><b>${esc(p.titre)}</b><span>${esc(p.lieu)}</span><small>Photo : ${esc(p.auteur)}${p.licence?", "+esc(p.licence):""}, <a href="${p.page}" target="_blank" rel="noopener">Wikimedia Commons</a> · ${zenIdx+1}/${ZEN_PHOTOS.length}</small></figcaption></figure>`;
+}
+$("#zen-galerie").addEventListener("click",e=>{ if (e.target.closest(".prec")){ zenIdx--; afficherPhoto(); } else if (e.target.closest(".suiv")){ zenIdx++; afficherPhoto(); } });
+(function(){ let x0=null; const g=$("#zen-galerie");
+  g.addEventListener("touchstart",e=>{ x0=e.touches[0].clientX; },{passive:true});
+  g.addEventListener("touchend",e=>{ if (x0==null) return; const dx=e.changedTouches[0].clientX-x0; if (Math.abs(dx)>50){ zenIdx+= dx<0?1:-1; afficherPhoto(); } x0=null; }); })();
+
+/* respiration guidée : 4 phases de 4 s (respiration carrée) ou 5 s / 5 s (cohérence cardiaque), pendant une minute */
+const RYTHMES={carree:[["Inspirez",4,1],["Retenez",4,1],["Expirez",4,0.55],["Retenez",4,0.55]], coherence:[["Inspirez",5,1],["Expirez",5,0.55]]};
+let rythme="carree";
+function majSouffle(txt, echelle, duree, reste){
+  const b=$("#zen-bulle"); b.style.transition = duree ? `transform ${duree}s ease-in-out` : "none"; b.style.transform=`scale(${echelle})`;
+  $("#zen-phase").textContent=txt; $("#zen-reste").textContent = reste!=null ? reste : "";
+}
+function arreterSouffle(){ if (souffle){ clearTimeout(souffle.t); clearInterval(souffle.c); souffle=null; } $("#zen-go").textContent="Commencer une minute"; }
+function lancerSouffle(){
+  if (souffle){ arreterSouffle(); majSouffle("Prêt ?", 0.55); return; }
+  const R=RYTHMES[rythme], fin=Date.now()+60000; let k=0;
+  souffle={}; $("#zen-go").textContent="Arrêter";
+  const tic=()=>{ const r=Math.max(0,Math.ceil((fin-Date.now())/1000)); $("#zen-reste").textContent = r+" s"; };
+  souffle.c=setInterval(tic,500);
+  const etape=()=>{ if (Date.now()>=fin){ arreterSouffle(); majSouffle("Bravo. Vous pouvez reprendre l'ascension.", 0.55); return; }
+    const [txt,d,s]=R[k%R.length]; majSouffle(txt, s, d); tic(); k++; souffle.t=setTimeout(etape, d*1000); };
+  etape();
+}
+$("#zen-go").addEventListener("click", lancerSouffle);
+$$("#zen-rythme button").forEach(b=>b.addEventListener("click",()=>{ rythme=b.dataset.r; $$("#zen-rythme button").forEach(x=>x.classList.toggle("on",x===b)); if (souffle){ arreterSouffle(); majSouffle("Prêt ?",0.55); } }));
+$("#zen-retour").addEventListener("click",()=>{ arreterSouffle(); aller("ascension"); });
+rendreCarteZen();
 
 })();
 

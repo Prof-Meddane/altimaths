@@ -1,7 +1,7 @@
-const VERSION = "v3.6"; // ← augmenter à chaque mise à jour du contenu (v2.1.3, v2.1.4…)
+const VERSION = "v3.7"; // ← augmenter à chaque mise à jour du contenu (v2.1.3, v2.1.4…)
 const CACHE = "altimaths-" + VERSION;
 const FICHIERS = [
-  "./", "index.html", "contenu.js", "python.js", "justif.js", "eleves.js", "config-firebase.js", "firebase-alti.js", "manifest.webmanifest",
+  "./", "index.html", "contenu.js", "python.js", "justif.js", "zen.js", "eleves.js", "config-firebase.js", "firebase-alti.js", "manifest.webmanifest",
   "katex/katex.min.css", "katex/katex.min.js", "katex/auto-render.min.js",
   "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"
 ];
