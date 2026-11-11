@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AltiMaths, prépa ECG1 du lycée Olympe de Gouges</title>
-<meta name="theme-color" content="#1E2D4F">
+<meta name="theme-color" content="#22418F">
 <meta name="description" content="AltiMaths : cours, fiches et QCM de mathématiques de la prépa ECG1 du lycée Olympe de Gouges (Noisy-le-Sec), en route vers le sommet de l'Everest.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -19,9 +19,9 @@
 <link rel="stylesheet" href="katex/katex.min.css">
 <style>
 :root{
-  --nuit:#1E2D4F; --nuit2:#16223D; --nuit3:#2A3C63; --glace:#CFDDE6; --neige:#F8FAFB; --orange:#E8541C; --drapeau:#E8B53A;
-  --loin:#9DB4C7; --pente:#5B7895; --vert:#2C7A57; --vert-pale:#E4F1EA; --rouge:#B8322A; --rouge-pale:#F8E3E1;
-  --gris:#5D6B78; --trait:#DDE3E8; --brume:#B9C7D6;
+  --nuit:#22418F; --nuit2:#1A3373; --nuit3:#31569F; --glace:#D6E4F3; --neige:#F8FAFB; --orange:#E8541C; --drapeau:#E8B53A;
+  --loin:#A3C0E3; --pente:#5A82BF; --vert:#2C7A57; --vert-pale:#E4F1EA; --rouge:#B8322A; --rouge-pale:#F8E3E1;
+  --gris:#55698A; --degrade:linear-gradient(180deg,#3E6BB8 0%,#2A4C9C 38%,#22418F 70%,#1B3577 100%); --trait:#DDE3E8; --brume:#BFD0E8;
   --d:"Big Shoulders Display", "Arial Narrow", sans-serif;
   --t:"Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --haut:env(safe-area-inset-top,0px); --bas:env(safe-area-inset-bottom,0px);
@@ -29,7 +29,7 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;font-family:var(--t);font-size:16px;line-height:1.45;color:var(--nuit);background:var(--neige)}
 body{min-height:100vh}
-body.sombre{background:var(--nuit)}
+body.sombre{background:var(--nuit) var(--degrade) fixed}
 #v-resultat{color:var(--neige)}
 button,input{font:inherit;color:inherit}
 button{border:0;background:none;cursor:pointer;padding:0}
@@ -53,7 +53,7 @@ h1,h2,h3{margin:0}
 .hero .ecole-hero{position:absolute;left:16px;top:calc(var(--haut) + 14px);font-size:12px;font-weight:700;line-height:1.3;color:var(--nuit);background:rgba(248,250,251,.82);border-radius:12px;padding:5px 10px}
 .porte .ecole{margin:6px 0 0;color:var(--drapeau);font-weight:700;font-size:15px}
 .hero .moi{position:absolute;z-index:2;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--orange);border:3px solid var(--neige);box-shadow:0 0 0 2px var(--nuit)}
-.bloc-asc{background:var(--nuit);color:var(--neige);padding:14px 20px 8px;display:flex;flex-direction:column;gap:12px}
+.bloc-asc{background:transparent;color:var(--neige);padding:14px 20px 8px;display:flex;flex-direction:column;gap:12px}
 .lieu{font-family:var(--d);font-weight:600;font-size:27px;line-height:1.1}
 .meteo{border-radius:14px;padding:11px 13px;display:flex;gap:11px;align-items:center;color:var(--nuit)}
 .meteo.beau{background:#D8E9DF}.meteo.mauvais{background:var(--drapeau)}.meteo.fortes{background:#F2A65A}.meteo.tempete{background:#F3B7A3}.meteo.inconnu{background:var(--glace)}
@@ -115,11 +115,14 @@ table.verite th{background:#EAF1F6}
 .sous-titre{font-family:var(--d);font-weight:800;font-size:24px;margin:14px 0 2px}
 
 /* ---------- Quiz ---------- */
-.tete-quiz{background:var(--nuit);color:var(--neige);border-radius:0 0 24px 24px;padding:calc(var(--haut) + 14px) 18px 16px;display:flex;align-items:center;gap:14px}
+.tete-quiz{background:var(--degrade);color:var(--neige);border-radius:0 0 24px 24px;padding:calc(var(--haut) + 14px) 18px 16px;display:flex;align-items:center;gap:14px}
 .rond{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--pente);display:grid;place-items:center;flex:none}
 .pastilles{display:flex;gap:4px}
 .pastilles span{flex:1;height:8px;border-radius:999px;background:var(--nuit3)}
 .pastilles span.fait{background:var(--orange)}
+.tete-quiz .petit,.tete-exp .petit{color:#D9E3F2}
+.tete-quiz .pastilles span:not(.fait){background:rgba(255,255,255,.28)}
+.tete-quiz .rond{border-color:rgba(255,255,255,.55)}
 .question{font-size:21px;line-height:1.35;font-weight:600;margin:6px 0 0;overflow-x:auto}
 .choix{display:flex;flex-direction:column;gap:10px;margin-top:20px}
 .choix button{display:flex;gap:12px;align-items:center;text-align:left;min-height:58px;padding:10px 14px;border-radius:16px;border:2px solid var(--trait);background:#fff;font-size:17px}
@@ -192,7 +195,7 @@ table.verite th{background:#EAF1F6}
 .btn-nuit{background:var(--nuit);color:var(--neige)}
 
 /* ---------- Expédition ---------- */
-.tete-exp{background:var(--nuit);color:var(--neige);padding:calc(var(--haut) + 18px) 20px 12px}
+.tete-exp{background:var(--degrade);color:var(--neige);padding:calc(var(--haut) + 18px) 20px 12px}
 .tete-exp h1{font-family:var(--d);font-weight:800;font-size:38px;line-height:1}
 .illus svg{display:block;width:100%;height:auto}
 .rang{display:grid;grid-template-columns:38px 1fr auto;gap:8px;align-items:center;padding:7px 10px;border-radius:12px}
@@ -214,7 +217,7 @@ table.verite th{background:#EAF1F6}
 .champ{width:100%;min-height:48px;padding:10px 14px;border-radius:12px;border:2px solid var(--trait);background:#fff}
 
 /* ---------- Porte (code d'accès) ---------- */
-.porte{position:fixed;inset:0;z-index:80;background:var(--nuit);color:var(--neige);display:none;align-items:center;justify-content:center;padding:calc(var(--haut) + 20px) 24px calc(var(--bas) + 20px);overflow:auto}
+.porte{position:fixed;inset:0;z-index:80;background:var(--nuit) var(--degrade);color:var(--neige);display:none;align-items:center;justify-content:center;padding:calc(var(--haut) + 20px) 24px calc(var(--bas) + 20px);overflow:auto}
 .porte.visible{display:flex}
 .porte form{width:100%;max-width:360px;text-align:center}
 .porte img{width:96px;height:96px;border-radius:24px;margin:0 auto 16px;display:block}
@@ -230,7 +233,7 @@ table.verite th{background:#EAF1F6}
 /* ---------- Navigation ---------- */
 nav.bas{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--nuit2);padding:6px 4px calc(var(--bas) + 6px)}
 nav.bas .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
-nav.bas button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11px;color:#AFC0D2;border-radius:12px}
+nav.bas button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11px;color:#C3D2E8;border-radius:12px}
 nav.bas button.actif{color:var(--orange);font-weight:700}
 body.en-quiz nav.bas{display:none}
 .toast{position:fixed;left:50%;top:calc(var(--haut) + 12px);transform:translate(-50%,-200%);visibility:hidden;z-index:60;background:var(--nuit);color:#fff;border-radius:999px;padding:10px 18px;font-weight:600;font-size:14px;transition:transform .3s;max-width:92vw;display:flex;gap:10px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.25)}
@@ -268,21 +271,21 @@ body.en-quiz nav.bas{display:none}
   <!-- ===== ASCENSION ===== -->
   <section class="vue active" id="v-ascension">
     <div class="hero">
-      <svg id="hero-svg" viewBox="0 0 390 430" role="img" aria-label="L'Everest, le col Sud et le Lhotse, avec votre progression sur le sentier"><rect width="390" height="430" fill="#CFDDE6"/>
+      <svg id="hero-svg" viewBox="0 0 390 430" role="img" aria-label="L'Everest, le col Sud et le Lhotse, avec votre progression sur le sentier"><rect width="390" height="430" fill="#D6E4F3"/>
 <circle cx="56" cy="118" r="20" fill="#E8B53A"/>
-<path d="M0,214 L38,192 L76,176 L112,160 L140,140 L160,134 L184,112 L204,86 L220,62 L229,52 L236,58 L246,72 L254,78 L259,76 L266,88 L278,104 L290,112 L298,110 L308,94 L318,80 L326,70 L332,72 L342,88 L356,104 L372,118 L390,124 L390,430 L0,430Z" fill="#9DB4C7"/>
+<path d="M0,214 L38,192 L76,176 L112,160 L140,140 L160,134 L184,112 L204,86 L220,62 L229,52 L236,58 L246,72 L254,78 L259,76 L266,88 L278,104 L290,112 L298,110 L308,94 L318,80 L326,70 L332,72 L342,88 L356,104 L372,118 L390,124 L390,430 L0,430Z" fill="#A3C0E3"/>
 <path d="M204,86 L220,62 L229,52 L236,58 L246,72 L254,78 L259,76 L262,84 L250,92 L238,88 L226,96 L214,92Z" fill="#4A5363"/>
 <path d="M210,84 L247,79 L250,84 L212,90Z" fill="#C9A05A" opacity=".9"/>
 <path d="M140,140 L160,134 L184,112 L204,86 L214,92 L200,110 L186,124 L170,134 L156,146Z" fill="#F8FAFB"/>
 <path d="M226,96 L238,88 L250,92 L262,84 L270,96 L262,110 L248,104 L236,112Z" fill="#F8FAFB"/>
 <path d="M298,110 L308,94 L318,80 L326,70 L332,72 L342,88 L334,96 L322,92 L312,104Z" fill="#F8FAFB"/>
 <path d="M236,58 C252,50 274,52 300,46 C284,56 266,58 246,64Z" fill="#F8FAFB" opacity=".85"/>
-<path d="M0,262 L26,240 L48,248 L72,226 L96,232 L118,212 L138,222 L160,206 L184,220 L206,204 L228,214 L252,196 L276,212 L300,200 L326,218 L352,206 L390,222 L390,430 L0,430Z" fill="#5B7895"/>
+<path d="M0,262 L26,240 L48,248 L72,226 L96,232 L118,212 L138,222 L160,206 L184,220 L206,204 L228,214 L252,196 L276,212 L300,200 L326,218 L352,206 L390,222 L390,430 L0,430Z" fill="#5A82BF"/>
 <path d="M72,226 L96,232 L118,212 L132,220 L110,226 L96,240Z M160,206 L184,220 L206,204 L218,210 L196,218 L180,230Z M252,196 L276,212 L300,200 L310,206 L286,214 L270,224Z" fill="#F8FAFB" opacity=".9"/>
-<path d="M0,360 L70,322 L120,342 L175,302 L235,336 L300,312 L390,348 L390,430 L0,430Z" fill="#1E2D4F"/>
-<text x="229" y="40" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="10.5" font-weight="700" fill="#1E2D4F">Everest 8 849</text>
-<text x="329" y="58" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="10" font-weight="600" fill="#1E2D4F">Lhotse</text>
-<text x="294" y="128" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="9.5" fill="#1E2D4F">col Sud</text>
+<path d="M0,360 L70,322 L120,342 L175,302 L235,336 L300,312 L390,348 L390,430 L0,430Z" fill="#22418F"/>
+<text x="229" y="40" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="10.5" font-weight="700" fill="#22418F">Everest 8 849</text>
+<text x="329" y="58" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="10" font-weight="600" fill="#22418F">Lhotse</text>
+<text x="294" y="128" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="9.5" fill="#22418F">col Sud</text>
 <text x="40" y="282" font-family="Public Sans,sans-serif" font-size="10" font-weight="600" fill="#F8FAFB">Nuptse</text><g id="hero-route"></g></svg>
       <div class="moi" id="hero-moi" aria-hidden="true"></div>
       <p class="alti num" id="alti"></p>
@@ -390,21 +393,21 @@ body.en-quiz nav.bas{display:none}
   <!-- ===== EXPÉDITION ===== -->
   <section class="vue" id="v-expedition">
     <div class="tete-exp"><h1>L'expédition ECG1</h1><p class="petit" id="exp-info" style="margin:5px 0 0"></p></div>
-    <div class="illus"><svg id="exp-svg" viewBox="0 0 390 420" role="img" aria-label="La voie normale de l'Everest, du trek depuis Lukla jusqu'au sommet, avec la position de chaque élève"><rect width="390" height="420" fill="#CFDDE6"/>
-<path d="M0,130 L50,104 L90,116 L120,96 L170,110 L220,84 L280,96 L330,74 L390,92 L390,200 L0,200Z" fill="#9DB4C7"/>
-<path d="M0,176 L40,150 L80,118 L112,82 L131,58 L141,45 L150,52 L162,62 L178,76 L204,92 L232,100 L256,84 L280,68 L300,58 L306,56 L318,68 L334,84 L360,108 L390,118 L390,420 L0,420Z" fill="#5B7895"/>
+    <div class="illus"><svg id="exp-svg" viewBox="0 0 390 420" role="img" aria-label="La voie normale de l'Everest, du trek depuis Lukla jusqu'au sommet, avec la position de chaque élève"><rect width="390" height="420" fill="#D6E4F3"/>
+<path d="M0,130 L50,104 L90,116 L120,96 L170,110 L220,84 L280,96 L330,74 L390,92 L390,200 L0,200Z" fill="#A3C0E3"/>
+<path d="M0,176 L40,150 L80,118 L112,82 L131,58 L141,45 L150,52 L162,62 L178,76 L204,92 L232,100 L256,84 L280,68 L300,58 L306,56 L318,68 L334,84 L360,108 L390,118 L390,420 L0,420Z" fill="#5A82BF"/>
 <path d="M141,45 L131,58 L112,82 L98,112 L118,126 L148,150 L166,112 L178,76 L162,62 L150,52Z" fill="#4A5363"/>
 <path d="M118,84 L160,74 L164,80 L116,92Z" fill="#C9A05A" opacity=".85"/>
 <path d="M98,112 L118,126 L108,150 L84,140Z M150,52 L162,62 L156,70 L146,60Z" fill="#F8FAFB" opacity=".9"/>
 <path d="M232,100 L256,84 L280,68 L300,58 L306,56 L318,68 L334,84 L310,170 L270,168 L246,150Z" fill="#F8FAFB"/>
-<path d="M98,252 L132,200 L166,150 L206,118 L232,104 L246,150 L270,168 L238,214 L176,246 L128,262Z" fill="#E6EEF4"/>
-<path d="M0,214 L44,196 L84,226 L98,252 L74,300 L0,310Z" fill="#4C6784"/>
-<path d="M238,238 L274,196 L310,170 L346,160 L390,170 L390,300 L232,300Z" fill="#4C6784"/>
+<path d="M98,252 L132,200 L166,150 L206,118 L232,104 L246,150 L270,168 L238,214 L176,246 L128,262Z" fill="#E8F0F9"/>
+<path d="M0,214 L44,196 L84,226 L98,252 L74,300 L0,310Z" fill="#44679F"/>
+<path d="M238,238 L274,196 L310,170 L346,160 L390,170 L390,300 L232,300Z" fill="#44679F"/>
 <path d="M274,196 L310,170 L346,160 L390,170 L390,178 L346,170 L312,180 L280,204Z M44,196 L84,226 L80,232 L42,204Z" fill="#F8FAFB" opacity=".9"/>
-<path d="M60,282 L98,252 L128,262 L150,290 L206,320 L280,348 L390,360 L390,420 L0,420 L0,312Z" fill="#B5C5D3"/>
+<path d="M60,282 L98,252 L128,262 L150,290 L206,320 L280,348 L390,360 L390,420 L0,420 L0,312Z" fill="#B9CDE6"/>
 <path d="M86,286 l6,-8 l5,6 l6,-9 l5,7 M100,268 l5,-7 l5,5 l6,-8 l5,6" fill="none" stroke="#F8FAFB" stroke-width="1.6" stroke-linejoin="round"/>
 <ellipse cx="300" cy="404" rx="16" ry="5" fill="#7CC4BD"/><ellipse cx="338" cy="398" rx="9" ry="3.5" fill="#7CC4BD"/>
-<path d="M0,346 L60,330 L120,350 L190,372 L270,388 L390,396 L390,420 L0,420Z" fill="#1E2D4F" opacity=".88"/><g id="exp-route"></g><g id="exp-points"></g></svg></div>
+<path d="M0,346 L60,330 L120,350 L190,372 L270,388 L390,396 L390,420 L0,420Z" fill="#22418F" opacity=".88"/><g id="exp-route"></g><g id="exp-points"></g></svg></div>
     <div id="exp-message"></div>
     <div id="exp-liste" style="padding:8px 10px 0;display:flex;flex-direction:column;gap:2px"></div>
     <div class="pad" style="padding-top:12px"><button class="btn-rond btn-blanc" id="exp-maj" style="width:100%">Actualiser les positions</button></div>
@@ -475,7 +478,7 @@ body.en-quiz nav.bas{display:none}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.6.4";
+const VERSION_APP = "2.7.1";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -883,13 +886,13 @@ const EXP_P={"Lukla":[372,392],"Phakding":[342,384],"Namche Bazaar":[306,376],"T
 function expPos(m){ const P=position(m); const a=EXP_P[P.depuis.n], b=P.vers?EXP_P[P.vers.n]:a; return [a[0]+(b[0]-a[0])*P.u, a[1]+(b[1]-a[1])*P.u]; }
 function dessinerVoie(){
   const pts=ETAPES.map(e=>EXP_P[e.n]);
-  let s=`<path d="${chemin(pts)}" fill="none" stroke="#1E2D4F" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/><path d="${chemin(pts)}" fill="none" stroke="#E2463B" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  let s=`<path d="${chemin(pts)}" fill="none" stroke="#22418F" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/><path d="${chemin(pts)}" fill="none" stroke="#E2463B" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
   ETAPES.forEach(e=>{ const [x,y]=EXP_P[e.n];
-    if (e.n.startsWith("Camp")) s+=`<path d="M${x-6},${y+1} L${x},${y-9} L${x+6},${y+1}Z" fill="#E8B53A" stroke="#1E2D4F" stroke-width="1.2" stroke-linejoin="round"/>`;
-    else if (e.n==="Sommet") s+=`<path d="M${x},${y} v-16" stroke="#1E2D4F" stroke-width="1.5"/><path d="M${x},${y-16} h10 l-3,3.5 l3,3.5 h-10z" fill="#E8541C"/>`;
-    else s+=`<circle cx="${x}" cy="${y}" r="2.6" fill="#F8FAFB" stroke="#1E2D4F" stroke-width="1.2"/>`; });
+    if (e.n.startsWith("Camp")) s+=`<path d="M${x-6},${y+1} L${x},${y-9} L${x+6},${y+1}Z" fill="#E8B53A" stroke="#22418F" stroke-width="1.2" stroke-linejoin="round"/>`;
+    else if (e.n==="Sommet") s+=`<path d="M${x},${y} v-16" stroke="#22418F" stroke-width="1.5"/><path d="M${x},${y-16} h10 l-3,3.5 l3,3.5 h-10z" fill="#E8541C"/>`;
+    else s+=`<circle cx="${x}" cy="${y}" r="2.6" fill="#F8FAFB" stroke="#22418F" stroke-width="1.2"/>`; });
   const lab=[["Sommet 8 849",155,30,"start",1],["Camp 4, col Sud 7 950",240,96,"start",1],["Camp 3 7 200",268,150,"start",1],["Camp 2 6 400",196,201,"start",1],["Camp 1 6 065",138,243,"start",1],["Camp de base 5 364",22,282,"start",1],["Lukla",372,408,"middle",0],["Namche",306,393,"middle",0],["Dingboche",216,370,"middle",0],["Gorak Shep",112,333,"middle",0]];
-  lab.forEach(([t,x,y,a,fonce])=>{ s+=`<text x="${x}" y="${y}" text-anchor="${a}" font-family="Public Sans,sans-serif" font-size="9.5" font-weight="600" fill="${fonce?"#1E2D4F":"#F8FAFB"}" paint-order="stroke" stroke="${fonce?"#E6EEF4":"#1E2D4F"}" stroke-width="3" stroke-linejoin="round">${t}</text>`; });
+  lab.forEach(([t,x,y,a,fonce])=>{ s+=`<text x="${x}" y="${y}" text-anchor="${a}" font-family="Public Sans,sans-serif" font-size="9.5" font-weight="600" fill="${fonce?"#22418F":"#F8FAFB"}" paint-order="stroke" stroke="${fonce?"#E8F0F9":"#22418F"}" stroke-width="3" stroke-linejoin="round">${t}</text>`; });
   $("#exp-route").innerHTML=s;
 }
 let GRIMPEURS=null, majGrimpeurs=0;
@@ -919,9 +922,9 @@ function rendreExpedition(sansCharger){
   let pts="";
   liste.slice().reverse().forEach((g,k)=>{ const [x,y]=expPos(g.minutes); const rang=g.prof?0:g.rang-1;
     const col=g.moi?"#E8541C":(g.prof?"#E8B53A":"#F8FAFB");
-    pts+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${g.moi||g.prof?6.5:4.5}" fill="${col}" stroke="#1E2D4F" stroke-width="2"/>`;
-    if (g.prof) pts+=`<text x="${(x-11).toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="end" font-family="Public Sans,sans-serif" font-size="11" font-weight="700" fill="#1E2D4F" paint-order="stroke" stroke="#E6EEF4" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)} (prof)</text>`;
-    else if (g.moi || rang<3) pts+=`<text x="${x.toFixed(1)}" y="${(y-(g.moi?14:11)).toFixed(1)}" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="${g.moi?12:10.5}" font-weight="700" fill="${col}" paint-order="stroke" stroke="#1E2D4F" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)}</text>`; });
+    pts+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${g.moi||g.prof?6.5:4.5}" fill="${col}" stroke="#22418F" stroke-width="2"/>`;
+    if (g.prof) pts+=`<text x="${(x-11).toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="end" font-family="Public Sans,sans-serif" font-size="11" font-weight="700" fill="#22418F" paint-order="stroke" stroke="#E8F0F9" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)} (prof)</text>`;
+    else if (g.moi || rang<3) pts+=`<text x="${x.toFixed(1)}" y="${(y-(g.moi?14:11)).toFixed(1)}" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="${g.moi?12:10.5}" font-weight="700" fill="${col}" paint-order="stroke" stroke="#22418F" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)}</text>`; });
   $("#exp-points").innerHTML=pts;
   const nbEleves = liste.filter(g=>!g.prof).length;
   $("#exp-info").textContent = (liste.length>1 ? nbEleves+" grimpeur"+(nbEleves>1?"s":"") : "Votre position") + (majGrimpeurs ? ", positions du "+new Date(majGrimpeurs).toLocaleString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}) : "");

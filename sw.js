@@ -1,4 +1,4 @@
-const VERSION = "v2.6.4"; // ← augmenter à chaque mise à jour du contenu (v2.1.3, v2.1.4…)
+const VERSION = "v2.7.1"; // ← augmenter à chaque mise à jour du contenu (v2.1.3, v2.1.4…)
 const CACHE = "altimaths-" + VERSION;
 const FICHIERS = [
   "./", "index.html", "contenu.js", "eleves.js", "config-firebase.js", "firebase-alti.js", "manifest.webmanifest",
