@@ -1,12 +1,12 @@
-const VERSION = "v2.9.5"; // ← augmenter à chaque mise à jour du contenu (v2.1.3, v2.1.4…)
+const VERSION = "v3.0"; // ← augmenter à chaque mise à jour du contenu (v2.1.3, v2.1.4…)
 const CACHE = "altimaths-" + VERSION;
 const FICHIERS = [
-  "./", "index.html", "contenu.js", "eleves.js", "config-firebase.js", "firebase-alti.js", "manifest.webmanifest",
+  "./", "index.html", "contenu.js", "python.js", "eleves.js", "config-firebase.js", "firebase-alti.js", "manifest.webmanifest",
   "katex/katex.min.css", "katex/katex.min.js", "katex/auto-render.min.js",
   "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"
 ];
 // Fichiers toujours relus sur le réseau quand c'est possible (le contenu change souvent)
-const FRAIS = ["/", "/index.html", "/contenu.js", "/eleves.js", "/manifest.webmanifest"];
+const FRAIS = ["/", "/index.html", "/contenu.js", "/python.js", "/eleves.js", "/manifest.webmanifest"];
 
 self.addEventListener("install", e => {
   e.waitUntil((async () => {

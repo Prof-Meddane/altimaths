@@ -364,6 +364,61 @@ body.nuit .lbl-fonce{fill:#E4EAF5;stroke:#0A1226}
 body.nuit .meteo{color:var(--n-texte)}
 body.nuit .meteo.beau{background:#1C3A2E} body.nuit .meteo.mauvais{background:#4A3B14} body.nuit .meteo.fortes{background:#4F2F12} body.nuit .meteo.tempete{background:#4C2420} body.nuit .meteo.inconnu{background:var(--n-surf2)}
 
+
+/* ===== Python ===== */
+.segment.matiere{background:#C9D6E8}
+.py-intro{background:#fff;border:1px solid var(--trait);border-radius:16px;padding:12px 14px;font-size:14px;line-height:1.45;margin:6px 0 4px}
+.py-groupe{font-family:var(--d);font-weight:800;font-size:24px;margin:18px 0 8px;color:var(--nuit)}
+.py-chap{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--trait);border-radius:16px;padding:12px 14px;margin:8px 0;color:inherit}
+.py-chap .num{flex:none;width:36px;height:36px;border-radius:10px;background:var(--nuit);color:#fff;display:grid;place-items:center;font-family:var(--d);font-weight:800;font-size:20px}
+.py-chap .txt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.py-chap .txt b{font-size:15px}
+.py-chap .txt small{color:var(--gris);font-size:13px;line-height:1.35}
+.py-chap .ok{flex:none;color:var(--vert);font-weight:800;font-size:18px}
+.py-chap.lu .num{background:var(--vert)}
+.py-retour{color:var(--nuit);font-weight:700;font-size:15px;padding:8px 0;min-height:40px}
+.py-badge{display:inline-block;margin:0 0 4px 10px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--vert-pale);color:var(--vert)}
+.py-badge.bonus{background:#FBF1D9;color:#8A5A00}
+.py-sommaire{display:flex;gap:6px;overflow-x:auto;padding:6px 0 4px;margin:4px 0;scrollbar-width:none}
+.py-sommaire button{flex:none;font-size:13px;font-weight:600;padding:7px 12px;border-radius:999px;background:#fff;border:1px solid var(--trait);color:var(--nuit);white-space:nowrap}
+.bloc.def{background:#fff;border-left:4px solid var(--nuit)}
+.bloc.texte{background:transparent;border:0;padding:2px 2px;margin:6px 0;overflow:visible}
+.bloc p{margin:6px 0}.bloc p:first-of-type{margin-top:0}.bloc p:last-child{margin-bottom:0}.bloc ul{padding-left:20px;margin:6px 0}
+.bloc.methode{background:#E4F1EA;border-color:transparent}
+.bloc.methode .etiquette{color:var(--vert)}
+.bloc.culture{background:#F1EEF8;border-color:transparent}
+.bloc.culture .etiquette{color:#5B4A9C}
+.bloc code,.py-cours p code,.py-cours li code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em;background:rgba(34,65,143,.08);padding:1px 5px;border-radius:5px}
+.bloc table{border-collapse:collapse;margin:6px 0;font-size:14px}.bloc td,.bloc th{border:1px solid var(--trait);padding:4px 8px;text-align:center}
+.py-code{margin:10px 0;border-radius:14px;background:#152A57;color:#E6EEF8;overflow:hidden}
+.py-titre{font-size:12px;font-weight:700;color:#A3C0E3;padding:9px 14px 0}
+.py-src{margin:0;padding:10px 14px 12px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.5;overflow-x:auto;white-space:pre;tab-size:4}
+.py-ed{display:block;width:100%;box-sizing:border-box;border:0;outline:2px solid #5A82BF;outline-offset:-2px;background:#0F2047;color:#fff;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.5;padding:10px 14px;white-space:pre;overflow-x:auto;resize:none;tab-size:4}
+.k-mc{color:#F7A26B}.k-fn{color:#8EC9FF}.k-str{color:#A6DBA0}.k-num{color:#F4CF74}.k-com{color:#8FA6C9;font-style:italic}.k-def{color:#fff;font-weight:700}.k-inv{color:#7F9BC8}.k-out{color:#C9D6EA}
+.py-barre{display:flex;gap:8px;padding:0 10px 10px;flex-wrap:wrap}
+.py-barre button{font-size:13px;font-weight:700;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.12);color:#E6EEF8;min-height:34px}
+.py-barre .py-run{background:#E8B53A;color:#152A57}
+.py-barre .py-run.stop{background:#E2463B;color:#fff}
+.py-ent{display:block;font-size:12px;color:#A3C0E3;padding:0 14px 10px}
+.py-ent textarea{display:block;width:100%;box-sizing:border-box;margin-top:4px;border-radius:8px;border:0;background:#0F2047;color:#fff;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;padding:6px 8px}
+.py-sortie{background:#0B1838;padding:10px 14px 12px;border-top:1px solid rgba(255,255,255,.08)}
+.py-sortie img{display:block;max-width:100%;background:#fff;border-radius:8px;margin-top:8px}
+.py-etat{font-size:12px;color:#A3C0E3}
+.py-flux{margin:0;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.45;white-space:pre-wrap;word-break:break-word;color:#E6EEF8}
+.py-flux:empty{display:none}
+.py-err{color:#FF9A8F}
+.py-fin{margin:24px 0 8px;display:flex;flex-direction:column;gap:12px}
+.py-nav{display:flex;justify-content:space-between;gap:10px}
+.py-nav button{font-size:13px;font-weight:600;color:var(--nuit);padding:8px 0;text-align:left;max-width:48%}
+.py-nav button:last-child{text-align:right}
+body.nuit .py-intro,body.nuit .py-chap,body.nuit .py-sommaire button{background:#1B2B52;border-color:#2E4170;color:var(--n-texte)}
+body.nuit .py-groupe,body.nuit .py-retour,body.nuit .py-nav button{color:var(--n-texte)}
+body.nuit .py-chap .txt small{color:var(--n-doux)}
+body.nuit .segment.matiere{background:#22355F}
+body.nuit .bloc.def{background:#1B2B52;border-left-color:#5A82BF!important}
+body.nuit .bloc.texte{background:transparent!important;border:0!important}
+body.nuit .bloc.methode{background:#1E3A33}
+body.nuit .bloc.culture{background:#2A2650}
 </style>
 </head>
 <body class="sombre">
@@ -474,6 +529,8 @@ body.nuit .meteo.beau{background:#1C3A2E} body.nuit .meteo.mauvais{background:#4
   <section class="vue" id="v-cours">
     <div class="entete"><h1 id="cours-titre"></h1><p class="petit" id="cours-aide" style="margin:6px 0 0"></p></div>
     <div class="pad">
+      <div class="segment matiere" id="cours-matiere"><button data-m="maths" class="on">Maths</button><button data-m="python">Python</button></div>
+      <div id="maths-vue">
       <div class="segment" id="cours-mode"><button data-m="lecons" class="on">Leçons</button><button data-m="complet">Cours complet</button></div>
       <div class="chips clair-chips" id="cours-chap" style="margin-top:4px"></div>
       <div id="lecons-vue"></div>
@@ -481,6 +538,8 @@ body.nuit .meteo.beau{background:#1C3A2E} body.nuit .meteo.mauvais{background:#4
         <div class="outils"><button id="tout-cacher">Tout cacher</button><button id="tout-voir">Tout révéler</button></div>
         <div class="cours" id="cours-contenu"></div>
       </div>
+      </div>
+      <div id="python-vue" hidden></div>
     </div>
   </section>
 
@@ -613,13 +672,14 @@ body.nuit .meteo.beau{background:#1C3A2E} body.nuit .meteo.mauvais{background:#4
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="contenu.js"></script>
+<script src="python.js"></script>
 <script src="eleves.js"></script>
 <script src="config-firebase.js"></script>
 <script src="firebase-alti.js" async></script>
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.9.5";
+const VERSION_APP = "3.0";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -892,6 +952,10 @@ $("#res-accueil").addEventListener("click",()=>aller("ascension"));
 
 /* ================= Cours ================= */
 function rendreCours(){
+  const py = E.matiere==="python";
+  $$("#cours-matiere button").forEach(b=>b.classList.toggle("on", (b.dataset.m==="python")===py));
+  $("#maths-vue").hidden = py; $("#python-vue").hidden = !py;
+  if (py){ $("#v-cours").classList.remove("immersif"); document.body.classList.remove("cours-immersif"); rendrePython(); return; }
   const CH = CHAP[chapCours];
   segChap($("#cours-chap"), chapCours, false, c=>{ chapCours=c; rendreCours(); window.scrollTo(0,0); });
   $("#cours-titre").textContent = "Chapitre "+CH.numero+" : "+CH.titre;
@@ -912,6 +976,240 @@ function rendreCours(){
   }).join("");
   maths($("#cours-contenu"));
 }
+$$("#cours-matiere button").forEach(b=>b.addEventListener("click",()=>{ E.matiere=b.dataset.m; sauver(); rendreCours(); window.scrollTo(0,0); }));
+/* ================= Python : le manuel de l'atelier (cours) ================= */
+const PYC = (window.PYTHON && window.PYTHON.chapitres) || [];
+const PYO_URL = "https://cdn.jsdelivr.net/pyodide/v0.29.5/full/";
+let pyOuvert = (E.py && E.py.ouvert) || null;              // id du chapitre ouvert, null = liste
+E.py = Object.assign({lu:{}}, E.py||{});
+
+/* --- coloration syntaxique minimale --- */
+const PY_MC = new Set("False None True and as assert break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield".split(" "));
+const PY_FN = new Set("print len range int float str bool list dict tuple set input type abs min max sum sorted enumerate zip round isinstance open map filter reversed".split(" "));
+function colorPy(src){
+  const re=/(#[^\n]*)|("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(\b\d+(?:\.\d*)?(?:e[+-]?\d+)?\b)|([A-Za-z_][A-Za-z0-9_]*)|([\s\S])/g;
+  let out="", m, apresDef=false;
+  while ((m=re.exec(src))){
+    if (m[1]) out+=`<span class="k-com">${esc(m[1])}</span>`;
+    else if (m[2]) out+=`<span class="k-str">${esc(m[2])}</span>`;
+    else if (m[3]) out+=`<span class="k-num">${m[3]}</span>`;
+    else if (m[4]){ const w=m[4];
+      if (apresDef){ out+=`<span class="k-def">${w}</span>`; apresDef=false; }
+      else if (PY_MC.has(w)){ out+=`<span class="k-mc">${w}</span>`; apresDef=(w==="def"||w==="class"); }
+      else if (PY_FN.has(w)) out+=`<span class="k-fn">${w}</span>`;
+      else out+=w; }
+    else out+=esc(m[5]);
+  }
+  return out;
+}
+function colorConsole(src){
+  return src.split("\n").map(l=>{
+    if (l.startsWith(">>> ")||l===">>>") return `<span class="k-inv">&gt;&gt;&gt;</span> `+colorPy(l.slice(4));
+    if (l.startsWith("... ")||l==="...") return `<span class="k-inv">...</span> `+colorPy(l.slice(4));
+    return `<span class="k-out">${esc(l)}</span>`;
+  }).join("\n");
+}
+
+/* --- exécution : Pyodide dans un Web Worker (on peut l'arrêter en cas de boucle infinie) --- */
+const PY_AIDE = String.raw`
+import sys, os, io, base64, traceback, warnings
+os.environ["MPLBACKEND"] = "agg"
+warnings.filterwarnings("ignore")
+_ns = {}
+def _espace(chap):
+    if chap not in _ns: _ns[chap] = {"__name__": "__main__"}
+    return _ns[chap]
+def _figures():
+    if "matplotlib.pyplot" not in sys.modules: return []
+    import matplotlib.pyplot as plt
+    res = []
+    for n in plt.get_fignums():
+        b = io.BytesIO(); plt.figure(n).savefig(b, format="png", dpi=90, bbox_inches="tight")
+        res.append(base64.b64encode(b.getvalue()).decode())
+    plt.close("all")
+    return res
+def _erreur(nom):
+    t, v, tb = sys.exc_info()
+    ligne = None
+    while tb is not None:
+        if tb.tb_frame.f_code.co_filename == nom: ligne = tb.tb_lineno
+        tb = tb.tb_next
+    msg = "".join(traceback.format_exception_only(t, v)).strip()
+    if t is NameError: msg += "\n(Ce nom n'est défini nulle part : faute de frappe ?)"
+    if t is RecursionError: msg += "\n(Trop d'appels récursifs imbriqués : la condition d'arrêt est-elle atteinte ?)"
+    if t is EOFError: msg += "\n(Le programme attend une saisie : remplissez le champ « Entrées ».)"
+    if ligne and nom == "<code>": msg = "Ligne " + str(ligne) + " : " + msg
+    print(msg, file=sys.stderr)
+def _prealables(prec, g):
+    # exécute en silence les blocs précédents du chapitre (quand un nom manque)
+    import contextlib
+    tampon = io.StringIO()
+    with contextlib.redirect_stdout(tampon), contextlib.redirect_stderr(tampon):
+        for code, mode in prec:
+            try:
+                if mode == "console":
+                    for b in _blocs(code):
+                        try: exec(compile("\n".join(b) + "\n", "<console>", "single"), g)
+                        except BaseException: pass
+                else: exec(compile(code, "<prec>", "exec"), g)
+            except BaseException: pass
+            if "matplotlib.pyplot" in sys.modules:
+                sys.modules["matplotlib.pyplot"].close("all")
+def _script(src, chap, prec=(), avec=False):
+    g = _espace(chap)
+    if avec: _prealables(prec, g)
+    try: exec(compile(src, "<code>", "exec"), g)
+    except NameError:
+        if prec and not avec: return None
+        _erreur("<code>")
+    except BaseException: _erreur("<code>")
+    return _figures()
+def _blocs(src):
+    blocs = []
+    for l in src.split("\n"):
+        if l.startswith(">>>"): blocs.append([l[4:]])
+        elif l.startswith("...") and blocs: blocs[-1].append(l[4:])
+    for b in blocs:
+        while len(b) > 1 and not b[-1].strip(): b.pop()
+    return blocs
+def _console(src, chap, prec=(), avec=False):
+    g = _espace(chap)
+    if avec: _prealables(prec, g)
+    for b in _blocs(src):
+        print(">>> " + "\n... ".join(b))
+        try: exec(compile("\n".join(b) + "\n", "<console>", "single"), g)
+        except NameError:
+            if prec and not avec: return None
+            _erreur("<console>")
+        except BaseException: _erreur("<console>")
+    return _figures()
+def _reset(chap):
+    _ns.pop(chap, None)
+`;
+const PY_WORKER = `
+let py=null;
+async function init(){ importScripts(${JSON.stringify(PYO_URL)}+"pyodide.js"); py=await loadPyodide({indexURL:${JSON.stringify(PYO_URL)}}); py.runPython(${JSON.stringify(PY_AIDE)}); }
+onmessage=async e=>{ const d=e.data;
+  try{
+    if(!py){ postMessage({id:d.id,etat:"charge"}); await init(); }
+    if(d.reset){ py.globals.get("_reset")(d.chap); postMessage({id:d.id,fini:true,images:[]}); return; }
+    let k=0; const ent=d.entrees||[];
+    py.setStdin({stdin:()=> k<ent.length ? ent[k++] : null});
+    py.setStdout({batched:s=>postMessage({id:d.id,flux:s+"\\n"})});
+    py.setStderr({batched:s=>postMessage({id:d.id,err:s+"\\n"})});
+    if (/^\\s*(import|from)\\s/m.test(d.code)){ postMessage({id:d.id,etat:"paquets"}); await py.loadPackagesFromImports(d.code.replace(/^>>> |^\\.\\.\\. /gm,""),{messageCallback:()=>{},errorCallback:()=>{}}); }
+    postMessage({id:d.id,etat:"exec"});
+    const f=py.globals.get(d.mode==="console"?"_console":"_script"), prec=py.toPy((d.prec||[]).map(x=>[x.code,x.mode]));
+    let r=f(d.code,d.chap,prec,false);
+    if (r==null){ /* un nom manque : on exécute d'abord les blocs précédents du chapitre */
+      postMessage({id:d.id,efface:true,etat:"prec"});
+      const tout=(d.prec||[]).map(x=>x.code).join("\\n");
+      if (/^\s*(import|from)\s/m.test(tout)) await py.loadPackagesFromImports(tout.replace(/^>>> |^\.\.\. /gm,""),{messageCallback:()=>{},errorCallback:()=>{}});
+      r=f(d.code,d.chap,prec,true); }
+    const im=r?r.toJs():[]; r&&r.destroy&&r.destroy(); prec.destroy&&prec.destroy();
+    postMessage({id:d.id,fini:true,images:im});
+  }catch(err){ postMessage({id:d.id,fini:true,images:[],echec:String(err&&err.message||err)}); }
+};`;
+let pyW=null, pyPret=false, pyN=0, pyEnCours=null;
+function pyWorker(){
+  if (!pyW){ pyW=new Worker(URL.createObjectURL(new Blob([PY_WORKER],{type:"text/javascript"}))); pyPret=false;
+    pyW.onmessage=e=>{ const d=e.data, j=pyEnCours; if(!j||d.id!==j.id) return; j.recevoir(d); }; }
+  return pyW;
+}
+function pyStop(msg){ if (pyW){ pyW.terminate(); pyW=null; pyPret=false; } if (pyEnCours){ const j=pyEnCours; pyEnCours=null; j.fin(msg); } }
+function pyLancer(code, mode, chap, entrees, sortie, bouton, prec){
+  if (pyEnCours) pyStop("Exécution précédente interrompue.");
+  const id=++pyN; let delai=null;
+  sortie.hidden=false; sortie.innerHTML=`<div class="py-etat">${pyPret?"Exécution…":"Démarrage de Python (environ 10 Mo au premier lancement, ensuite c'est rapide)…"}</div><pre class="py-flux"></pre>`;
+  const flux=sortie.querySelector(".py-flux"), etat=sortie.querySelector(".py-etat");
+  bouton.textContent="Arrêter"; bouton.classList.add("stop");
+  const armer=()=>{ clearTimeout(delai); delai=setTimeout(()=>pyStop("Arrêt automatique après 20 secondes : boucle infinie ?"),20000); };
+  pyEnCours={id,
+    recevoir(d){
+      if (d.etat==="charge"){ etat.textContent="Démarrage de Python (environ 10 Mo au premier lancement, ensuite c'est rapide)…"; return; }
+      if (d.etat==="paquets"){ etat.textContent="Chargement des bibliothèques (numpy, matplotlib…)…"; return; }
+      if (d.etat==="exec"){ pyPret=true; etat.textContent="Exécution…"; armer(); return; }
+      if (d.efface){ flux.textContent=""; etat.textContent="Exécution des blocs précédents du chapitre, dont ce bloc a besoin…"; return; }
+      if (d.flux!=null){ flux.insertAdjacentText("beforeend",d.flux); return; }
+      if (d.err!=null){ const s=document.createElement("span"); s.className="py-err"; s.textContent=d.err; flux.appendChild(s); return; }
+      if (d.fini){ (d.images||[]).forEach(b=>{ const i=new Image(); i.src="data:image/png;base64,"+b; i.alt="Figure produite par le programme"; sortie.appendChild(i); });
+        this.fin(d.echec ? "Python n'a pas pu démarrer : vérifiez votre connexion Internet (nécessaire au premier lancement)." : ""); }
+    },
+    fin(msg){ clearTimeout(delai); if (pyEnCours && pyEnCours.id===id) pyEnCours=null;
+      bouton.textContent="Exécuter"; bouton.classList.remove("stop");
+      if (msg) etat.textContent=msg; else if (!flux.textContent && !sortie.querySelector("img")) etat.textContent="Exécuté, sans affichage."; else etat.remove(); }
+  };
+  pyWorker().postMessage({id, code, mode, chap, entrees, prec:prec||[]});
+}
+
+/* --- rendu --- */
+const PY_ET={exemple:"Exemple",attention:"Attention",remarque:"Remarque",def:"Définition",prop:"À retenir",methode:"Méthode",culture:"Pour la culture"};
+function pyBloc(b,i){
+  if (b.type==="section") return `<h2 class="section" id="pys-${i}">${b.titre}</h2>`;
+  if (b.type==="sous") return `<h3 class="sous">${b.titre}</h3>`;
+  if (b.type==="code"||b.type==="console"){
+    const cons=b.type==="console", code=b.code.replace(/^\n+|\s+$/g,"");
+    const entree = /input\(/.test(code) ? `<label class="py-ent">Entrées (une par ligne)<textarea rows="2" spellcheck="false">${esc(b.entrees||"")}</textarea></label>` : "";
+    return `<div class="py-code${cons?" console":""}" data-i="${i}">${b.titre?`<div class="py-titre">${b.titre}</div>`:""}
+      <pre class="py-src">${cons?colorConsole(code):colorPy(code)}</pre>
+      ${b.run===false?"":`<div class="py-barre"><button class="py-run">Exécuter</button>${cons?"":`<button class="py-mod">Modifier</button>`}<button class="py-copie" aria-label="Copier le code">Copier</button></div>${entree}<div class="py-sortie" hidden></div>`}</div>`;
+  }
+  const t=prep(b.texte), ti=b.titre||PY_ET[b.type]||"";
+  return `<div class="bloc ${b.type}">${ti?`<span class="etiquette">${ti}</span>`:""}${t}</div>`;
+}
+function rendrePython(){
+  const v=$("#python-vue");
+  if (!PYC.length){ v.innerHTML=`<p class="info">Le cours de Python arrive bientôt.</p>`; return; }
+  const ch = pyOuvert && PYC.find(c=>c.id===pyOuvert);
+  if (!ch){
+    $("#cours-titre").textContent="Python";
+    $("#cours-aide").textContent="Le manuel de l'atelier : tout le cours d'informatique, avec du code à exécuter et à modifier directement dans l'application.";
+    const carte=c=>`<button class="py-chap${E.py.lu[c.id]?" lu":""}" data-c="${c.id}"><span class="num">${c.numero}</span><span class="txt"><b>${c.titre}</b><small>${c.resume||""}</small></span>${E.py.lu[c.id]?'<span class="ok" aria-label="Lu">✓</span>':""}</button>`;
+    const ecg=PYC.filter(c=>c.ecg), plus=PYC.filter(c=>!c.ecg);
+    v.innerHTML=`<div class="py-intro"><b>Programme d'ECG.</b> On se concentre sur les chapitres 1 à 5 (des premiers pas à la récursivité), sur les graphes et sur la simulation de variables aléatoires. Les autres chapitres sont des bonus pour aller plus loin.</div>
+      <h2 class="py-groupe">Programme ECG</h2>${ecg.map(carte).join("")}
+      <h2 class="py-groupe">Pour aller plus loin</h2>${plus.map(carte).join("")}`;
+    return;
+  }
+  const k=PYC.indexOf(ch), prec=PYC[k-1], suiv=PYC[k+1];
+  $("#cours-titre").textContent="Python "+ch.numero+" : "+ch.titre;
+  $("#cours-aide").textContent = ch.ecg ? "Chapitre au programme d'ECG." : "Chapitre bonus, pour aller plus loin.";
+  const secs=ch.cours.map((b,i)=>b.type==="section"?`<button data-s="${i}">${b.titre}</button>`:"").join("");
+  v.innerHTML=`<button class="py-retour">‹ Tous les chapitres</button>
+    <span class="py-badge${ch.ecg?"":" bonus"}">${ch.ecg?"Programme ECG":"Pour aller plus loin"}</span>
+    ${secs?`<div class="py-sommaire">${secs}</div>`:""}
+    <div class="cours py-cours">${ch.cours.map(pyBloc).join("")}</div>
+    <div class="py-fin">
+      <button class="btn-plein btn-ligne py-lu">${E.py.lu[ch.id]?"Chapitre lu ✓":"J'ai lu ce chapitre"}</button>
+      <div class="py-nav">${prec?`<button data-c="${prec.id}">‹ ${prec.numero}. ${prec.titre}</button>`:"<span></span>"}${suiv?`<button data-c="${suiv.id}">${suiv.numero}. ${suiv.titre} ›</button>`:""}</div>
+    </div>`;
+  maths(v);
+}
+function ouvrirPy(id){ pyOuvert=id; E.py.ouvert=id; sauver(); rendrePython(); window.scrollTo(0,0); }
+$("#python-vue").addEventListener("click",e=>{
+  const c=e.target.closest("[data-c]"); if (c){ ouvrirPy(c.dataset.c); return; }
+  if (e.target.closest(".py-retour")){ ouvrirPy(null); return; }
+  const s=e.target.closest("[data-s]"); if (s){ const h=$("#pys-"+s.dataset.s); if(h) window.scrollTo({top:h.getBoundingClientRect().top+scrollY-12,behavior:"smooth"}); return; }
+  if (e.target.closest(".py-lu")){ E.py.lu[pyOuvert]=!E.py.lu[pyOuvert]; sauver(); e.target.closest(".py-lu").textContent=E.py.lu[pyOuvert]?"Chapitre lu ✓":"J'ai lu ce chapitre"; return; }
+  const blocEl=e.target.closest(".py-code"); if (!blocEl) return;
+  const ch=PYC.find(x=>x.id===pyOuvert), b=ch.cours[+blocEl.dataset.i], cons=b.type==="console";
+  const ta=blocEl.querySelector("textarea.py-ed"), src=()=> ta ? ta.value : b.code.replace(/^\n+|\s+$/g,"");
+  if (e.target.closest(".py-run")){
+    const bt=e.target.closest(".py-run"); if (bt.classList.contains("stop")){ pyStop("Exécution arrêtée."); return; }
+    const ent=blocEl.querySelector(".py-ent textarea"); const k=+blocEl.dataset.i, prec=ch.cours.slice(0,k).filter(x=>(x.type==="code"||x.type==="console") && x.run!==false && !/input\(/.test(x.code)).map(x=>({code:x.code.replace(/^\n+|\s+$/g,""), mode:x.type==="console"?"console":"script"}));
+    pyLancer(src(), cons?"console":"script", ch.id, ent?ent.value.split("\n"):[], blocEl.querySelector(".py-sortie"), bt, prec); return; }
+  if (e.target.closest(".py-copie")){ const t=cons ? src().split("\n").filter(l=>/^(>>>|\.\.\.)/.test(l)).map(l=>l.slice(4)).join("\n") : src();
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Code copié"),()=>toast("Copie impossible sur cet appareil")); return; }
+  if (e.target.closest(".py-mod")){ const pre=blocEl.querySelector(".py-src"), bt=e.target.closest(".py-mod");
+    if (ta){ ta.remove(); pre.hidden=false; bt.textContent="Modifier"; return; }
+    const t=document.createElement("textarea"); t.className="py-ed"; t.spellcheck=false; t.autocapitalize="off"; t.setAttribute("autocorrect","off"); t.value=src();
+    const ajuste=()=>{ t.style.height="auto"; t.style.height=(t.scrollHeight+4)+"px"; };
+    t.addEventListener("input",ajuste);
+    t.addEventListener("keydown",ev=>{ if (ev.key==="Tab"){ ev.preventDefault(); const p=t.selectionStart; t.setRangeText("    ",p,t.selectionEnd,"end"); }
+      if (ev.key==="Enter"){ ev.preventDefault(); const p=t.selectionStart, deb=t.value.lastIndexOf("\n",p-1)+1, ligne=t.value.slice(deb,p); let ind=ligne.match(/^ */)[0]; if (/:\s*$/.test(ligne)) ind+="    "; t.setRangeText("\n"+ind,p,t.selectionEnd,"end"); ajuste(); } });
+    pre.hidden=true; pre.after(t); ajuste(); t.focus(); bt.textContent="Rétablir l'original"; }
+});
+
 $("#cours-contenu").addEventListener("click",e=>{ const t=e.target.closest(".trou"); if(t) t.classList.toggle("vu"); });
 $("#tout-voir").addEventListener("click",()=>$$(".trou").forEach(t=>t.classList.add("vu")));
 $("#tout-cacher").addEventListener("click",()=>$$(".trou").forEach(t=>t.classList.remove("vu")));
@@ -1205,7 +1503,7 @@ const CFG = window.FIREBASE_CONFIG;
 function cloud(){ return CFG && window.AltiCloud && navigator.onLine !== false ? window.AltiCloud : null; }
 let dernierEnvoi=0;
 async function envoyer(){
-  const c=cloud(); if (!c || !E.acces || !E.prenom) return;
+  const c=cloud(); if (!c || !E.acces || !E.prenom || estInvite(E.acces)) return;
   try { await c.push(CFG,{prenom:E.prenom, h:E.acces, minutes:Math.round(E.minutes*100)/100}); dernierEnvoi=Date.now(); } catch(e){}
 }
 async function restaurer(){
@@ -1250,9 +1548,9 @@ async function chargerClasse(){
 }
 function rendreExpedition(sansCharger){
   dessinerVoie();
-  const autorises = ACCES ? new Set(ACCES.codes.map(c=>c.h)) : null;
+  const autorises = ACCES ? new Set(ACCES.codes.filter(c=>!c.invite).map(c=>c.h)) : null;
   let liste = (GRIMPEURS||[]).filter(g=>g.h!==E.acces && (!autorises || autorises.has(g.h))).map(g=>({prenom:g.prenom||"?", minutes:estProfCode(g.h)?TOTAL:Math.min(TOTAL,g.minutes||0), moi:false, prof:estProfCode(g.h)}));
-  liste.push({prenom:E.prenom||"Vous", minutes:E.minutes, moi:true, prof:estProfCode(E.acces)});
+  if (!estInvite(E.acces)) liste.push({prenom:E.prenom||"Vous", minutes:E.minutes, moi:true, prof:estProfCode(E.acces)});
   liste.sort((a,b)=>(b.prof-a.prof)||(b.minutes-a.minutes));
   let rangEleve=0; liste.forEach(g=>{ g.rang = g.prof ? "" : ++rangEleve; });
   // points (noms affichés : vous et les trois premiers)
@@ -1265,7 +1563,7 @@ function rendreExpedition(sansCharger){
   $("#exp-points").innerHTML=pts;
   const nbEleves = liste.filter(g=>!g.prof).length;
   $("#exp-info").textContent = (liste.length>1 ? nbEleves+" grimpeur"+(nbEleves>1?"s":"") : "Votre position") + (majGrimpeurs ? ", positions du "+new Date(majGrimpeurs).toLocaleString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}) : "");
-  const msg = !CFG ? "Le classement commun n'est pas encore configuré." : (!window.AltiCloud||navigator.onLine===false) && !GRIMPEURS ? "Connectez-vous à Internet pour voir la position de la classe." : "";
+  const msg = estInvite(E.acces) ? "Compte invité : vous suivez la course de la classe sans y figurer." : !CFG ? "Le classement commun n'est pas encore configuré." : (!window.AltiCloud||navigator.onLine===false) && !GRIMPEURS ? "Connectez-vous à Internet pour voir la position de la classe." : "";
   $("#exp-message").innerHTML = msg ? `<p class="info">${msg}</p>` : "";
   $("#exp-liste").innerHTML = liste.map((g,i)=>`<div class="rang${g.moi?" moi":""}"><span class="r">${g.prof?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8B53A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="Professeur"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>':g.rang}</span><span class="n">${esc(g.prenom)}${g.prof?" (prof)":""}${g.moi&&E.prenom?" (vous)":""}<small> ${esc(lieuTexte(g.minutes).replace(/^À /,"à ").replace(/^Entre /,"entre ").replace(/^Départ de /,"à ").replace(/^Au sommet de l'Everest/,"au sommet"))}</small></span><span class="a">${nf(position(g.minutes).a)} m</span></div>`).join("");
   if (!sansCharger && Date.now()-majGrimpeurs>60000) chargerClasse();
@@ -1320,10 +1618,11 @@ const norm = c => String(c).toUpperCase().normalize("NFD").replace(/[^A-Z0-9]/g,
 let ACCES = window.ACCES;
 const valide = h => !ACCES || (h && ACCES.codes.some(c=>c.h===h));
 const estProfCode = h => !!(ACCES && h && ACCES.codes.some(c=>c.h===h && c.prof));
+const estInvite = h => !!(ACCES && h && ACCES.codes.some(c=>c.h===h && c.invite));
 function placerProf(){ if (estProfCode(E.acces) && E.minutes<TOTAL){ E.minutes=TOTAL; noterEtapes(); sauver(); } }
 async function listeFraiche(){
   try { const r=await fetch("eleves.js?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return false; const t=await r.text();
-    const sel=(t.match(/sel\s*:\s*"([^"]+)"/)||[])[1]; const codes=[...t.matchAll(/\{[^{}]*?h\s*:\s*"([0-9a-f]{64})"([^{}]*)\}/g)].map(m=>({h:m[1], prof:/prof\s*:\s*true/.test(m[2])}));
+    const sel=(t.match(/sel\s*:\s*"([^"]+)"/)||[])[1]; const codes=[...t.matchAll(/\{[^{}]*?h\s*:\s*"([0-9a-f]{64})"([^{}]*)\}/g)].map(m=>({h:m[1], prof:/prof\s*:\s*true/.test(m[2]), invite:/invite\s*:\s*true/.test(m[2])}));
     if(!sel||!codes.length) return false; ACCES={sel,codes}; return true; } catch(e){ return false; }
 }
 let etapePorte="code", occupe=false;
