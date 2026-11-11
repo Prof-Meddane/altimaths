@@ -43,10 +43,10 @@ window.CONTENU = {
 
       /* ------------------------------ COURS ------------------------------ */
       lecons: [
-        { titre: "Identités remarquables", parties: ["Identités remarquables"], themes: ["id"] },
-        { titre: "Fractions et puissances", parties: ["Fractions", "Puissances"], themes: ["frac"] },
-        { titre: "Équations et systèmes", parties: ["Équations du 1er degré", "Systèmes d'équations", "Équations du 2nd degré"], themes: ["eq"] },
-        { titre: "Inégalités et inéquations", parties: ["Règles de manipulation des inégalités", "Résoudre une inéquation"], themes: ["ineg", "abs"] }
+        { titre: "Identités remarquables", parties: ["Identités remarquables"], themes: ["id"], quiz: [[2, [R`Développer $(x+1)^2$.`, R`Développer $(2x-3)^2$.`]], [2, [R`Factoriser $x^2-9$.`, R`Factoriser $9x^2-25$.`, R`Développer $(x-5)(x+5)$.`]]], bonus: R`Calculer mentalement $101^2$.` },
+        { titre: "Fractions et puissances", parties: ["Fractions", "Puissances"], themes: ["frac"], quiz: [[2, [R`Calculer $\dfrac12+\dfrac13$.`, R`Calculer $\dfrac32+\dfrac57$.`, R`Simplifier $\dfrac{6}{8}$.`]], [4, [R`Calculer $2^3\times2^2$.`, R`$(3^2)^4$ est égal à :`, R`Que vaut $10^{-2}$ ?`]], [5, [R`Que vaut $2\times3^4$ ?`]]], bonus: R`Calculer $\dfrac{2^5\times4^3}{8^2}$.` },
+        { titre: "Équations et systèmes", parties: ["Équations du 1er degré", "Systèmes d'équations", "Équations du 2nd degré"], themes: ["eq"], quiz: [[1, [R`Résoudre $2x+6=0$.`, R`Résoudre $3x-4=x+2$.`]], [3, [R`Résoudre $\begin{cases}x+y=5`]], [5, [R`Le discriminant de`, R`Résoudre $x^2-5x+6=0$.`, R`Résoudre dans $\mathbb R$ : $x^2+x+1=0$.`]], [6, [R`Résoudre dans $\mathbb R$ : $\dfrac{x-4}{x+4}=0$.`, R`Résoudre dans $\mathbb R$ : $\sqrt{x-3}+2=9$.`]]], bonus: R`Résoudre dans $\mathbb R$ : $\dfrac{1}{x}=\dfrac{1}{x^2}$.` },
+        { titre: "Inégalités et inéquations", parties: ["Règles de manipulation des inégalités", "Résoudre une inéquation"], themes: ["ineg", "abs"], quiz: [[1, [R`Si $a\leq b$ et $c<0$, alors :`]], [2, [R`Si $0<a<b$, alors :`]], [4, [R`Résoudre $-6x+3<0$.`, R`Résoudre $-2x>4$.`, R`Résoudre $3x\leq 6$.`, R`Résoudre $x^2-2x+1>0$.`]]], bonus: R`Si $-3\leq a<1$` }
       ],
       cours: [
         { type: "section", titre: "1. Règles de calcul" },
@@ -508,13 +508,13 @@ window.CONTENU = {
       ],
 
       lecons: [
-        { titre: "Réels et valeur absolue", parties: ["Rappels du lycée", "Valeur absolue et distance"], themes: ["ens"] },
-        { titre: "Maximum et borne supérieure", parties: ["Maximum et borne supérieure"], themes: ["ens"] },
-        { titre: "Connecteurs logiques", parties: ["Vocabulaire et connecteurs logiques"], themes: ["quant"] },
-        { titre: "Négation et implication", parties: ["Négation et implication"], themes: ["neg"] },
-        { titre: "Types de raisonnement", parties: ["Prouver une implication", "Prouver ou infirmer une proposition", "Raisonnement par équivalence"], themes: ["rais"] },
-        { titre: "La fonction partie entière", parties: ["4. La fonction partie entière"], themes: ["pe"] },
-        { titre: "Raisonnement par récurrence", parties: ["5. Rédiger rigoureusement", "Raisonnement par récurrence"], themes: ["rec"] }
+        { titre: "Réels et valeur absolue", parties: ["Rappels du lycée", "Valeur absolue et distance"], themes: ["ens"], quiz: [[1, [R`Lequel de ces nombres n'est pas rationnel ?`]], [3, [R`Pour tout réel $x$, $\sqrt{x^2}$`, R`Écrire $|1-\sqrt3|$`, R`Résoudre $|x|=6$.`]], [5, [R`Quelle inégalité est l'inégalité triangulaire ?`]], [7, [R`$|x-2|\leq4$ équivaut à :`, R`Résoudre $|5x-2|=-2$.`]]], bonus: R`$|x+4|\leq3$ équivaut à :` },
+        { titre: "Maximum et borne supérieure", parties: ["Maximum et borne supérieure"], themes: ["ens"], quiz: [[1, [R`Que vaut $\min(3,-2)$ ?`]], [3, [R`Un réel $M$ majore`]], [4, [R`La borne supérieure de $E=[0`]], [5, [R`Laquelle de ces parties de $\mathbb R$ admet`]]], bonus: R`Soit $E=[0\,;1[$. Laquelle` },
+        { titre: "Connecteurs logiques", parties: ["Vocabulaire et connecteurs logiques"], themes: ["quant"], quiz: [[1, [R`Une définition :`]], [2, [R`Si $\mathcal P$ est vraie et $\mathcal Q$ est fausse, « $\mathcal P$ ou`, R`Si $\mathcal P$ est vraie et $\mathcal Q$ est fausse, « $\mathcal P$ et`]], [4, [R`Le symbole $\exists$ signifie :`, R`« $n$ est un entier pair » se traduit par :`]]], bonus: R`« Il existe un entier plus grand` },
+        { titre: "Négation et implication", parties: ["Négation et implication"], themes: ["neg"], quiz: [[3, [R`La négation de « $\forall x\in\mathbb R,\ x^2\geq0$ » est :`, R`La négation de « $\exists n\in\mathbb N,\ n=2n$ » est :`]], [6, [R`$\mathcal P\Rightarrow\mathcal Q$ a la même valeur logique que :`, R`Si $\mathcal P$ est fausse et $\mathcal Q$ est vraie`]], [8, [R`$\text{non}(\mathcal P\text{ et }\mathcal Q)$ équivaut à :`, R`La négation de « j'ai un chat ou un chien » est :`]]], bonus: R`La négation de $\mathcal P\Rightarrow\mathcal Q$ est :` },
+        { titre: "Types de raisonnement", parties: ["Prouver une implication", "Prouver ou infirmer une proposition", "Raisonnement par équivalence"], themes: ["rais"], quiz: [[3, [R`Raisonner par contraposée pour montrer`, R`La contraposée de $\mathcal P\Rightarrow\mathcal Q$ est :`]], [6, [R`Pour prouver que « $\forall n\in\mathbb N,\ n^2>n$ » est fausse`, R`Quel contre-exemple montre que « $x^2>16`]], [7, [R`Pour montrer que $\sqrt2$ est irrationnel`]]], bonus: R`Pour montrer $\mathcal P_1\Leftrightarrow` },
+        { titre: "La fonction partie entière", parties: ["4. La fonction partie entière"], themes: ["pe"], quiz: [[2, [R`On range $13$ chaussettes`]], [4, [R`Pour $x\in\mathbb R$ et $n\in\mathbb Z$, $n=\lfloor x\rfloor$ équivaut à :`]], [5, [R`Que vaut $\lfloor -1{,}5\rfloor$ ?`, R`Que vaut $\lfloor -\pi\rfloor$ ?`, R`Que vaut $\lfloor 4{,}2\rfloor$ ?`, R`Que vaut $\lfloor 7\rfloor$ ?`]]], bonus: R`Si $x\notin\mathbb Z$` },
+        { titre: "Raisonnement par récurrence", parties: ["5. Rédiger rigoureusement", "Raisonnement par récurrence"], themes: ["rec"], quiz: [[3, [R`Les étapes d'un raisonnement par récurrence sont :`, R`Dans l'hérédité, on écrit :`]], [4, [R`$1+2+\dots+n$ est égal à :`]], [6, [R`Dans une récurrence double, l'initialisation`]]], bonus: R`Pour quelles valeurs de $n\in\mathbb N$ l'inégalité` }
       ],
       cours: [
         { type: "section", titre: "1. Les ensembles numériques" },
@@ -673,6 +673,18 @@ window.CONTENU = {
       ],
 
       questions: [
+        { theme: "ens", niveau: 0, q: R`Un réel $M$ majore une partie $E$ de $\mathbb R$ si :`,
+          choix: [R`pour tout $x\in E$, $x\leq M$`, R`il existe $x\in E$ tel que $x\leq M$`, R`pour tout $x\in E$, $x\geq M$`, R`$M\in E$ et $M\leq x$ pour tout $x\in E$`], bonne: 0,
+          expl: R`Un majorant est plus grand que tous les éléments de $E$. Il n'appartient pas forcément à $E$ : s'il y appartient, c'est le maximum.` },
+        { theme: "ens", niveau: 0, q: R`La borne supérieure de $E=[0\,;1[$ est :`,
+          choix: [R`$1$`, R`$0$`, R`elle n'existe pas`, R`$0{,}999$`], bonne: 0,
+          expl: R`Les majorants de $E$ forment $[1\,;+\infty[$, dont le plus petit est $1$. Comme $1\notin E$, $E$ n'a pas de maximum, mais sa borne supérieure vaut $1$.` },
+        { theme: "ens", niveau: 0, q: R`Laquelle de ces parties de $\mathbb R$ admet une borne supérieure ?`,
+          choix: [R`$[0\,;1[$`, R`$\mathbb N$`, R`$\varnothing$`, R`$[0\,;+\infty[$`], bonne: 0,
+          expl: R`Il faut une partie non vide et majorée. $\mathbb N$ et $[0\,;+\infty[$ ne sont pas majorées, et $\varnothing$ est vide.` },
+        { theme: "pe", niveau: 0, q: R`On range $13$ chaussettes dans $12$ tiroirs. Que peut-on affirmer ?`,
+          choix: [R`Un tiroir contient au moins deux chaussettes`, R`Chaque tiroir contient au moins une chaussette`, R`Un tiroir est vide`, R`Un tiroir contient au moins trois chaussettes`], bonne: 0,
+          expl: R`C'est le principe des tiroirs : $13$ objets dans $12$ tiroirs, donc un tiroir en reçoit au moins deux. Les autres affirmations peuvent être fausses (toutes les chaussettes dans un seul tiroir, par exemple).` },
         /* ---------- Réels et valeur absolue ---------- */
         { theme: "ens", niveau: 0, q: R`Lequel de ces nombres n'est pas rationnel ?`,
           choix: [R`$\sqrt2$`, R`$0{,}75$`, R`$-\dfrac{7}{3}$`, R`$\sqrt{9}$`], bonne: 0,
@@ -971,16 +983,16 @@ window.CONTENU = {
       ],
 
       lecons: [
-        { titre: "Symboles Σ et Π", parties: ["Sur des exemples", "Définition théorique"], themes: ["sym", "prod"] },
-        { titre: "Propriétés et changement d'indice", parties: ["Propriétés générales des sommes"], themes: ["lin"] },
-        { titre: "Somme des entiers", parties: ["Somme des entiers"], themes: ["ent"] },
-        { titre: "Sommes géométriques", parties: ["Somme d'une suite géométrique"], themes: ["geo"] },
-        { titre: "Sommes télescopiques", parties: ["Sommes télescopiques"], themes: ["tel"] },
-        { titre: "Formule de Bernoulli", parties: ["La formule de Bernoulli"], themes: ["bern"] },
-        { titre: "Coefficients binomiaux", parties: ["Coefficients binomiaux"], themes: ["bin"] },
-        { titre: "Binôme de Newton", parties: ["La formule du binôme de Newton"], themes: ["newt"] },
-        { titre: "Sommes doubles rectangulaires", parties: ["Sommes rectangulaires"], themes: ["rect"] },
-        { titre: "Sommes triangulaires", parties: ["Sommes triangulaires", "Découper un carré en trois morceaux"], themes: ["tri"] }
+        { titre: "Symboles Σ et Π", parties: ["Sur des exemples", "Définition théorique"], themes: ["sym", "prod"], quiz: [[2, [R`Combien de termes compte la somme`, R`Que vaut $\displaystyle\sum_{k=1}^{4}k^2$ ?`]], [4, [R`L'indice étant muet`, R`Que vaut $\displaystyle\prod_{k=1}^{4}k$ ?`]], [6, [R`D'après la définition par récurrence`]], [8, [R`Que vaut la somme $\displaystyle\sum_{k=5}^{3}k$ ?`, R`Que vaut le produit vide`]]], bonus: R`Combien de termes compte $\displaystyle\sum_{k=n}^{2n}u_k$ ?` },
+        { titre: "Propriétés et changement d'indice", parties: ["Propriétés générales des sommes"], themes: ["lin"], quiz: [[2, [R`Que vaut $\displaystyle\sum_{k=1}^{n}5$ ?`, R`Que vaut $\displaystyle\sum_{k=0}^{n}3$ ?`, R`Par la relation de Chasles`]], [2, [R`Laquelle de ces égalités est vraie pour toutes suites`, R`$\displaystyle\sum_{k=1}^{n}(\alpha+a_k)$`]], [4, [R`En posant $j=k+1$`]]], bonus: R`En posant $j=n-k$` },
+        { titre: "Somme des entiers", parties: ["Somme des entiers"], themes: ["ent"], quiz: [[1, [R`$\displaystyle\sum_{k=1}^{n}k$ est égal à :`, R`Que vaut $1+2+3+\dots+100$ ?`]], [1, [R`$\displaystyle\sum_{k=1}^{n}k^2$ est égal à :`]]], bonus: R`Dans l'hérédité de la formule des carrés` },
+        { titre: "Sommes géométriques", parties: ["Somme d'une suite géométrique"], themes: ["geo"], quiz: [[1, [R`Pour $q\neq1$, $\displaystyle\sum_{k=0}^{n}q^k$ vaut :`, R`Que vaut $\displaystyle\sum_{k=0}^{n}1^k$ ?`]], [3, [R`Que vaut $\displaystyle\sum_{k=1}^{n}2^k$ ?`, R`Que vaut $\displaystyle\sum_{k=0}^{n}\frac1{2^k}$ ?`, R`Que vaut $1+2+4+8+\dots+1024$ ?`]]], bonus: R`Que vaut $\displaystyle\sum_{k=3}^{10}2^k$ ?` },
+        { titre: "Sommes télescopiques", parties: ["Sommes télescopiques"], themes: ["tel"], quiz: [[1, [R`Pour $a\leq b$, $\displaystyle\sum_{k=a}^{b}(u_{k+1}-u_k)$ vaut :`]], [2, [R`Que vaut $\displaystyle\sum_{k=1}^{n}\frac{1}{k(k+1)}$ ?`, R`Que vaut $\displaystyle\sum_{p=1}^{n}\left(\frac1p-\frac1{p+1}\right)$ ?`]], [3, [R`Pour faire apparaître un télescopage`, R`Que vaut $\displaystyle\sum_{k=1}^{n}\ln\left(\frac{k+1}{k}\right)$ ?`]]], bonus: R`Que vaut $\displaystyle\sum_{k=1}^{n}\frac{1}{\sqrt k+\sqrt{k+1}}$ ?` },
+        { titre: "Formule de Bernoulli", parties: ["La formule de Bernoulli"], themes: ["bern"], quiz: [[1, [R`La formule de Bernoulli s'écrit`]], [1, [R`$a^3-b^3$ est égal à :`]]], bonus: R`Dans la preuve de Bernoulli` },
+        { titre: "Coefficients binomiaux", parties: ["Coefficients binomiaux"], themes: ["bin"], quiz: [[3, [R`Que vaut $\dbinom52$ ?`, R`Que vaut $\dbinom83$ ?`, R`Que vaut $0!$ ?`]], [4, [R`Pour $n\geq2$, $\dbinom n2$ vaut :`, R`Par symétrie, $\dbinom{10}{7}$ vaut :`]], [5, [R`Quelle est la formule de Pascal ?`]], [7, [R`Combien de parties à $2$ éléments possède`]]], bonus: R`Pour $1\leq k\leq n$, la formule du capitaine` },
+        { titre: "Binôme de Newton", parties: ["La formule du binôme de Newton"], themes: ["newt"], quiz: [[1, [R`La formule du binôme s'écrit`, R`Quel est le coefficient de $X^2$ dans $(X+1)^5$ ?`]], [2, [R`Que vaut $\displaystyle\sum_{k=0}^{n}\binom nk$ ?`, R`Pour $n\geq1$, que vaut $\displaystyle\sum_{k=0}^{n}(-1)^k\binom nk$ ?`, R`Que vaut $\displaystyle\sum_{k=0}^{n}\binom nk2^k$ ?`]]], bonus: R`Pour $n\geq1$, que vaut $\displaystyle\sum_{k=0}^{n}k\binom nk$ ?` },
+        { titre: "Sommes doubles rectangulaires", parties: ["Sommes rectangulaires"], themes: ["rect"], quiz: [[2, [R`Combien de termes compte $\displaystyle\sum_{\substack`]], [3, [R`Le tableau $(x_{i,j})$ a pour lignes`]], [5, [R`Que vaut $\displaystyle\sum_{1\leq i,j\leq n}c$ ?`, R`$\displaystyle\sum_{\substack{1\leq i\leq n\\1\leq j\leq m}}a_ib_j$ est égal à :`, R`Que vaut $\displaystyle\sum_{\substack{1\leq i\leq3\\1\leq j\leq4}}ij$ ?`]]], bonus: R`Que vaut $\displaystyle\sum_{1\leq i,j\leq n}(i+j)$ ?` },
+        { titre: "Sommes triangulaires", parties: ["Sommes triangulaires", "Découper un carré en trois morceaux"], themes: ["tri"], quiz: [[2, [R`$\displaystyle\sum_{1\leq i\leq j\leq n}x_{i,j}$ s'écrit :`, R`Combien y a-t-il de couples`, R`Que vaut $\displaystyle\sum_{1\leq i\leq j\leq n}1$ ?`]], [4, [R`On intervertit :`]], [7, [R`Si $x_{i,j}=x_{j,i}$`]], [9, [R`Dans un tableau $p_{i,j}`]]], bonus: R`$\Big(\displaystyle\sum_{i=1}^{n}a_i\Big)^2$ est égal à :` }
       ],
       cours: [
         { type: "section", titre: "1. Définition des symboles Σ et Π" },
@@ -1425,7 +1437,7 @@ window.CONTENU = {
         { theme: "bin", niveau: 1, q: R`Que vaut $\dbinom94$ ?`,
           choix: [R`$126$`, R`$3024$`, R`$84$`, R`$36$`], bonne: 0,
           expl: R`$\frac{9\times8\times7\times6}{4\times3\times2\times1}=126$. ($84=\binom93=\binom96$.)` },
-        { theme: "bin", niveau: 1, q: R`Combien de parties à $2$ éléments possède $\{a,b,c,d,e\}$ ?`,
+        { theme: "bin", niveau: 0, q: R`Combien de parties à $2$ éléments possède $\{a,b,c,d,e\}$ ?`,
           choix: [R`$10$`, R`$20$`, R`$5$`, R`$25$`], bonne: 0,
           expl: R`$\binom52=10$ : $\{a,b\}$ et $\{b,a\}$ sont la même partie.` },
         { theme: "bin", niveau: 1, q: R`Le nombre de mains de $5$ cartes dans un jeu de $32$ cartes est :`,

@@ -604,7 +604,7 @@ body.nuit .meteo.beau{background:#1C3A2E} body.nuit .meteo.mauvais{background:#4
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.9.3";
+const VERSION_APP = "2.9.4";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -907,7 +907,9 @@ const LECONS={};
 CHAPS.forEach(ch=>{
   const m={}; let cle=null;
   ch.cours.forEach(b=>{ if (b.type==="section"||b.type==="sous"){ cle=b.titre; return; } (m[cle]=m[cle]||[]).push(b); });
-  LECONS[ch.id]=(ch.lecons||[]).map((l,i)=>({id:ch.id+"-L"+(i+1), ch:ch.id, n:i+1, titre:l.titre, themes:l.themes||[], blocs:l.parties.flatMap(p=>m[p]||[])})).filter(l=>l.blocs.length);
+  const trouve = p => QUESTIONS.find(q=>q.ch===ch.id && q.q.startsWith(p));
+  LECONS[ch.id]=(ch.lecons||[]).map((l,i)=>({id:ch.id+"-L"+(i+1), ch:ch.id, n:i+1, titre:l.titre, themes:l.themes||[], blocs:l.parties.flatMap(p=>m[p]||[]),
+    quiz:(l.quiz||[]).map(([ap,ps])=>({apres:ap, qs:ps.map(trouve).filter(Boolean)})).filter(x=>x.qs.length), bonus:l.bonus?trouve(l.bonus):null})).filter(l=>l.blocs.length);
 });
 const leconFaite = l => !!(E.lecons && E.lecons[l.id]);
 $$("#cours-mode button").forEach(b=>b.addEventListener("click",()=>{ E.modeCours=b.dataset.m; sauver(); rendreCours(); }));
@@ -991,11 +993,13 @@ const ETIQ={prop:"À retenir",exemple:"Exemple",attention:"Attention",remarque:"
 function demarrerLecon(id){
   const l=Object.values(LECONS).flat().find(x=>x.id===id); if(!l) return;
   const cartes=l.blocs.map(b=>({type:"carte",b}));
-  const pool=melanger(QUESTIONS.filter(q=>q.ch===l.ch && l.themes.includes(q.theme) && q.niveau<=1));
-  const nq=Math.min(pool.length, Math.max(1, Math.min(3, Math.ceil(cartes.length/2))));
-  const seq=[]; let k=0;
-  cartes.forEach((c,i)=>{ seq.push(c); while (k<nq && i+1>=Math.round((k+1)*cartes.length/nq)){ seq.push({type:"quiz",q:pool[k]}); k++; } });
-  L={l, seq, rendu:0, ok:0, total:nq, deja:leconFaite(l), fini:false};
+  /* quiz choisis à la main : chacun porte sur les cartes qui le précèdent ; une seule question tirée parmi les variantes, sans doublon */
+  const vus=new Set(), seq=[];
+  cartes.forEach((c,i)=>{ seq.push(c);
+    l.quiz.filter(x=>Math.min(x.apres,cartes.length)===i+1).forEach(x=>{ const dispo=x.qs.filter(q=>!vus.has(q.id)); if(!dispo.length) return; const q=melanger(dispo)[0]; vus.add(q.id); seq.push({type:"quiz",q}); }); });
+  const nq=seq.filter(x=>x.type==="quiz").length;
+  if (l.bonus) seq.push({type:"quiz", q:l.bonus, bonus:true});
+  L={l, seq, rendu:0, ok:0, bonusOk:false, total:nq, deja:leconFaite(l), fini:false};
   $("#lecon-fil").innerHTML=""; aller("lecon"); avancerLecon(); majSegments();
   $("#lecon-fil").scrollTop=0;
 }
@@ -1004,9 +1008,9 @@ function diapoHTML(it, i){
     const t=prep(b.texte).replace(/\[\[([\s\S]+?)\]\]/g,'<button class="trou"><span>$1</span></button>');
     return `<section class="diapo"><div class="carte-lecon"><span class="pastille-type ${b.type}">${ETIQ[b.type]||"Cours"}</span>${b.titre?`<h2>${b.titre}</h2>`:""}<div class="texte-lecon">${t}</div></div>${i===0?'<p class="glisser"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>Glisser vers le haut pour continuer</p>':""}</section>`; }
   if (it.type==="quiz"){ const q=it.q, ordre=melanger(q.choix.map((c,j)=>j)); it.ordre=ordre;
-    return `<section class="diapo"><div class="carte-lecon quiz-lecon" data-i="${i}"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span class="titre-quiz">${it.rejoue?"Deuxième chance":"Petit quiz"}</span>${badgePiste(q.niveau)}</div><div class="question">${prep(q.q)}</div><div class="choix">${ordre.map((j,m)=>`<button data-j="${j}"><span class="lettre">${"ABCD"[m]}</span><span>${prep(q.choix[j])}</span></button>`).join("")}</div><div class="corr-lecon" hidden></div></div></section>`; }
+    return `<section class="diapo"><div class="carte-lecon quiz-lecon" data-i="${i}"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span class="titre-quiz">${it.bonus?"Bonus":(it.rejoue?"Deuxième chance":"Petit quiz")}</span>${badgePiste(q.niveau)}</div><div class="question">${prep(q.q)}</div><div class="choix">${ordre.map((j,m)=>`<button data-j="${j}"><span class="lettre">${"ABCD"[m]}</span><span>${prep(q.choix[j])}</span></button>`).join("")}</div>${it.bonus?'<p class="petit" style="margin:0">Question facultative un peu plus difficile : elle rapporte un supplément si elle est juste, et rien n\'est perdu sinon.</p>':""}<div class="corr-lecon" hidden></div></div></section>`; }
   const gainTxt = L.deja ? "Leçon déjà validée : pas de nouveau gain, mais la révision compte !" : "";
-  return `<section class="diapo"><div class="fin-lecon"><div class="drapeau-fin"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg></div><h2>Leçon terminée</h2><p class="petit">${esc(L.l.titre)}</p><div class="stats-fin"><div><b>${L.ok} / ${L.total}</b><span>quiz réussis du premier coup</span></div><div><b id="fin-m">+0 m</b><span id="fin-min"></span></div></div><p class="petit" id="fin-detail">${gainTxt}</p><div class="boutons-fin">${it.suivante?`<button class="btn-rond btn-orange" data-suite="${it.suivante.id}">Leçon suivante : ${esc(it.suivante.titre)}</button>`:""}<button class="btn-rond btn-blanc" id="fin-sentier">Revenir au sentier</button></div></div></section>`;
+  return `<section class="diapo"><div class="fin-lecon"><div class="drapeau-fin"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg></div><h2>Leçon terminée</h2><p class="petit">${esc(L.l.titre)}</p><div class="stats-fin"><div><b>${L.ok} / ${L.total}</b><span>quiz réussis du premier coup${L.l.bonus?(L.bonusOk?", bonus réussi":", bonus manqué"):""}</span></div><div><b id="fin-m">+0 m</b><span id="fin-min"></span></div></div><p class="petit" id="fin-detail">${gainTxt}</p><div class="boutons-fin">${it.suivante?`<button class="btn-rond btn-orange" data-suite="${it.suivante.id}">Leçon suivante : ${esc(it.suivante.titre)}</button>`:""}<button class="btn-rond btn-blanc" id="fin-sentier">Revenir au sentier</button></div></div></section>`;
 }
 function avancerLecon(){
   const fil=$("#lecon-fil"); let html="";
@@ -1031,10 +1035,11 @@ $("#lecon-fil").addEventListener("click",e=>{
     it.repondu=true; const j=+c.dataset.j, juste=j===it.q.bonne;
     box.querySelectorAll(".choix button").forEach(b=>{ b.disabled=true; if(+b.dataset.j===it.q.bonne) b.classList.add("juste"); });
     if(!juste) c.classList.add("faux");
-    if (juste && !it.rejoue) L.ok++;
-    if (!juste){ L.seq.push({type:"quiz", q:it.q, rejoue:true}); }
+    if (it.bonus){ if (juste) L.bonusOk=true; }
+    else { if (juste && !it.rejoue) L.ok++;
+      if (!juste){ const ib=L.seq.findIndex((x,k)=>k>=L.rendu && x.bonus); const rj={type:"quiz", q:it.q, rejoue:true}; if (ib>=0) L.seq.splice(ib,0,rj); else L.seq.push(rj); } }
     const corr=box.querySelector(".corr-lecon"); corr.hidden=false; corr.className="corr-lecon "+(juste?"ok":"ko");
-    corr.innerHTML=`<b>${juste?(it.rejoue?"Juste, cette fois !":"Juste"+(L.deja?"":" : +"+String(GAIN_QUIZ_LECON).replace(".",",")+" min en fin de leçon")):"Pas tout à fait : la question reviendra en fin de leçon."}</b><div>${prep(it.q.expl||"")}</div><button class="btn-rond btn-nuit continuer-lecon">Continuer</button>`;
+    corr.innerHTML=`<b>${juste?(it.rejoue?"Juste, cette fois !":"Juste"+(L.deja?"":" : +"+String(GAIN_QUIZ_LECON).replace(".",",")+" min en fin de leçon")):(it.bonus?"Pas tout à fait : ce n'était qu'un bonus, rien n'est perdu.":"Pas tout à fait : la question reviendra en fin de leçon.")}</b><div>${prep(it.q.expl||"")}</div><button class="btn-rond btn-nuit continuer-lecon">Continuer</button>`;
     maths(corr); return; }
   if (e.target.closest(".continuer-lecon")){ avancerLecon(); const fil=$("#lecon-fil"); const box=e.target.closest(".diapo"); const nx=box.nextElementSibling; if(nx) fil.scrollTo({top:nx.offsetTop, behavior:"smooth"}); return; }
   const s=e.target.closest("[data-suite]"); if (s){ demarrerLecon(s.dataset.suite); return; }
@@ -1045,11 +1050,11 @@ $("#lecon-fil").addEventListener("scroll",()=>{ if(!L) return; const fil=$("#lec
   if (last && last.type==="carte" && fil.scrollTop+fil.clientHeight*1.5>=fil.scrollHeight) avancerLecon(); });
 function terminerLecon(){
   let gain=0;
-  if (!L.deja){ gain=(L.ok*GAIN_QUIZ_LECON+BONUS_LECON)*FACTEUR[METEO.cat]; const avant=position(E.minutes).a;
+  if (!L.deja){ const nOk=L.ok+(L.bonusOk?1:0); gain=(nOk*GAIN_QUIZ_LECON+BONUS_LECON)*FACTEUR[METEO.cat]; const avant=position(E.minutes).a;
     E.minutes=Math.min(TOTAL,E.minutes+gain); noterEtapes(); const m=Math.max(0,Math.round(position(E.minutes).a-avant));
-    E.lecons[L.l.id]={date:auj(), ok:L.ok, total:L.total}; sauver(); envoyer();
+    E.lecons[L.l.id]={date:auj(), ok:L.ok, total:L.total, bonus:L.bonusOk}; sauver(); envoyer();
     $("#fin-m").textContent="+"+nf(m)+" m"; $("#fin-min").textContent=String(Math.round(gain*10)/10).replace(".",",")+" min de marche";
-    $("#fin-detail").textContent=L.ok+" quiz réussi"+(L.ok>1?"s":"")+" × "+String(GAIN_QUIZ_LECON).replace(".",",")+" min + "+BONUS_LECON+" min de bonus"+(FACTEUR[METEO.cat]<1?", ralenti par la météo":"")+". Gain accordé la première fois seulement.";
+    $("#fin-detail").textContent=nOk+" quiz réussi"+(nOk>1?"s":"")+(L.bonusOk?" (dont le bonus)":"")+" × "+String(GAIN_QUIZ_LECON).replace(".",",")+" min + "+BONUS_LECON+" min de bonus"+(FACTEUR[METEO.cat]<1?", ralenti par la météo":"")+". Gain accordé la première fois seulement.";
   } else { $("#fin-m").textContent="+0 m"; $("#fin-min").textContent="déjà validée"; const p=E.lecons[L.l.id]; if (L.ok>p.ok){ p.ok=L.ok; sauver(); } }
 }
 $("#lecon-quitter").addEventListener("click",()=>{ L=null; aller("cours"); });
