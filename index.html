@@ -243,6 +243,50 @@ body.en-quiz nav.bas{display:none}
 .katex-display{margin:.5em 0;overflow-x:auto;overflow-y:hidden}
 .bloc .katex-display{font-size:.88em}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== Thème nuit ===== */
+.n-etoiles,.n-ombre{display:none}
+body.nuit{--n-fond:#0B1326;--n-surf:#141F3A;--n-surf2:#1C2A4C;--n-bord:#2A3A60;--n-texte:#E4EAF5;--n-doux:#A3B3CF;
+  --etoiles:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Ccircle cx='136' cy='168' r='0.9' fill='white' fill-opacity='1'/%3E%3Ccircle cx='152' cy='176' r='0.7' fill='white' fill-opacity='1'/%3E%3Ccircle cx='188' cy='236' r='0.6' fill='white' fill-opacity='1'/%3E%3Ccircle cx='92' cy='30' r='1.4' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='178' cy='119' r='0.9' fill='white' fill-opacity='0.65'/%3E%3Ccircle cx='186' cy='248' r='0.6' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='13' cy='262' r='1.1' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='232' cy='99' r='1.1' fill='white' fill-opacity='0.65'/%3E%3Ccircle cx='156' cy='191' r='0.9' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='198' cy='137' r='0.8' fill='white' fill-opacity='1'/%3E%3Ccircle cx='296' cy='296' r='0.6' fill='white' fill-opacity='0.8'/%3E%3Ccircle cx='96' cy='71' r='0.8' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='24' cy='228' r='0.9' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='252' cy='117' r='0.6' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='66' cy='276' r='0.6' fill='white' fill-opacity='1'/%3E%3Ccircle cx='113' cy='211' r='0.9' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='169' cy='61' r='1.4' fill='white' fill-opacity='0.8'/%3E%3Ccircle cx='102' cy='94' r='0.6' fill='white' fill-opacity='1'/%3E%3Ccircle cx='226' cy='38' r='0.7' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='6' cy='140' r='0.9' fill='white' fill-opacity='0.65'/%3E%3Ccircle cx='204' cy='58' r='1.1' fill='white' fill-opacity='0.65'/%3E%3Ccircle cx='293' cy='229' r='0.9' fill='white' fill-opacity='1'/%3E%3Ccircle cx='37' cy='127' r='0.7' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='82' cy='288' r='1.1' fill='white' fill-opacity='0.8'/%3E%3Ccircle cx='296' cy='9' r='0.7' fill='white' fill-opacity='1'/%3E%3Ccircle cx='296' cy='180' r='1.1' fill='white' fill-opacity='0.5'/%3E%3C/svg%3E");
+  --degrade-nuit:linear-gradient(180deg,#1B2A55 0%,#111D3D 40%,#0A1328 75%,#070D1D 100%);
+  color:var(--n-texte);background:var(--n-fond)}
+html:has(body.nuit){background:#0B1326}
+body.nuit.sombre,body.nuit .porte,body.nuit .tete-quiz,body.nuit .tete-exp{background:var(--etoiles),var(--degrade-nuit);background-size:300px 300px,100% 100%;background-repeat:repeat,no-repeat;background-color:#0A1328}
+body.nuit.sombre{background-attachment:fixed,fixed}
+body.nuit .n-etoiles,body.nuit .n-ombre{display:inline}
+body.nuit .n-ciel,body.nuit .n-ombre{fill:#0E1A38}
+body.nuit .n-astre{fill:#F1E9C9}
+body.nuit .n-loin{fill:#2C406C} body.nuit .n-mi{fill:#1F3159} body.nuit .n-avant{fill:#0A1226}
+body.nuit .n-neige{fill:#AFBCD4} body.nuit .n-lbl{fill:#DCE4F2}
+body.nuit .n-nup{fill:#22365F} body.nuit .n-glac{fill:#33476F} body.nuit .n-cwm{fill:#41557F}
+body.nuit nav.bas{background:#070D1C}
+body.nuit .acc{background:rgba(255,255,255,.06)}
+body.nuit .ligne-bouton{background:rgba(255,255,255,.09)}
+body.nuit .ligne-bouton .sym{background:var(--n-fond)}
+body.nuit .petit{color:var(--n-doux)}
+body.nuit .hero .jour,body.nuit .hero .ecole-hero{background:rgba(11,19,38,.82);color:var(--n-texte)}
+body.nuit .carte,body.nuit .bloc,body.nuit .choix button,body.nuit .face.recto,body.nuit .btn-blanc,body.nuit .outils button,body.nuit .champ,body.nuit .clair .stat,body.nuit .clair-chips button{background:var(--n-surf);border-color:var(--n-bord);color:var(--n-texte)}
+body.nuit .clair-chips button.on{background:var(--n-texte);color:var(--n-fond);border-color:var(--n-texte)}
+body.nuit .bloc.exemple,body.nuit .info{background:#17284A}
+body.nuit .bloc.attention,body.nuit .trou,body.nuit .rang.moi{background:#3A2422}
+body.nuit .bloc.remarque{background:#332E1E}
+body.nuit .trou.vu,body.nuit .choix button.juste{background:#123A2C}
+body.nuit .choix button.faux{background:#3E1D1D}
+body.nuit .choix .lettre{background:var(--n-bord);color:var(--n-texte)}
+body.nuit table.verite th{background:var(--n-surf2)}
+body.nuit .segment{background:var(--n-surf2)}
+body.nuit .segment button{color:var(--n-doux)}
+body.nuit .segment button.on{background:#2E4170;color:var(--n-texte)}
+body.nuit .face.verso{background:#22396E}
+body.nuit .btn-nuit{background:#2E4A8C}
+body.nuit .clair .jauge{background:var(--n-surf2)}
+body.nuit .toast{background:var(--n-surf2)}
+body.nuit .algo-fiches .chev{color:var(--n-doux)}
+body.nuit .cours h2.section,body.nuit .bloc .etiquette,body.nuit .rang .r,body.nuit #quiz-theme{color:#8FB0E6!important}
+body.nuit .lbl-fonce{fill:#E4EAF5;stroke:#0A1226}
+body.nuit .meteo{color:var(--n-texte)}
+body.nuit .meteo.beau{background:#1C3A2E} body.nuit .meteo.mauvais{background:#4A3B14} body.nuit .meteo.fortes{background:#4F2F12} body.nuit .meteo.tempete{background:#4C2420} body.nuit .meteo.inconnu{background:var(--n-surf2)}
+
 </style>
 </head>
 <body class="sombre">
@@ -271,21 +315,22 @@ body.en-quiz nav.bas{display:none}
   <!-- ===== ASCENSION ===== -->
   <section class="vue active" id="v-ascension">
     <div class="hero">
-      <svg id="hero-svg" viewBox="0 0 390 430" role="img" aria-label="L'Everest, le col Sud et le Lhotse, avec votre progression sur le sentier"><rect width="390" height="430" fill="#D6E4F3"/>
-<circle cx="56" cy="118" r="20" fill="#E8B53A"/>
-<path d="M0,214 L38,192 L76,176 L112,160 L140,140 L160,134 L184,112 L204,86 L220,62 L229,52 L236,58 L246,72 L254,78 L259,76 L266,88 L278,104 L290,112 L298,110 L308,94 L318,80 L326,70 L332,72 L342,88 L356,104 L372,118 L390,124 L390,430 L0,430Z" fill="#A3C0E3"/>
+      <svg id="hero-svg" viewBox="0 0 390 430" role="img" aria-label="L'Everest, le col Sud et le Lhotse, avec votre progression sur le sentier"><rect class="n-ciel" width="390" height="430" fill="#D6E4F3"/>
+<g class="n-etoiles" fill="#FFFFFF"><circle cx="127.7" cy="33.6" r="1.5" opacity="0.55"/><circle cx="31.7" cy="109.0" r="0.8" opacity="0.55"/><circle cx="351.5" cy="46.1" r="0.6" opacity="1"/><circle cx="163.7" cy="51.2" r="1.2" opacity="1"/><circle cx="26.6" cy="114.8" r="0.7" opacity="0.55"/><circle cx="224.5" cy="81.7" r="0.7" opacity="0.55"/><circle cx="216.6" cy="30.1" r="1.0" opacity="0.7"/><circle cx="210.5" cy="115.9" r="1.2" opacity="0.7"/><circle cx="43.4" cy="116.0" r="0.7" opacity="0.85"/><circle cx="41.2" cy="143.6" r="1.2" opacity="0.55"/><circle cx="240.5" cy="101.3" r="1.2" opacity="1"/><circle cx="300.9" cy="95.3" r="1.0" opacity="0.85"/><circle cx="118.5" cy="159.7" r="1.5" opacity="0.7"/><circle cx="35.3" cy="62.8" r="1.0" opacity="0.85"/><circle cx="282.6" cy="60.4" r="0.6" opacity="0.55"/><circle cx="199.6" cy="36.3" r="0.8" opacity="0.7"/><circle cx="360.5" cy="86.7" r="1.5" opacity="0.55"/><circle cx="296.1" cy="116.3" r="0.8" opacity="0.85"/><circle cx="269.6" cy="120.5" r="1.2" opacity="1"/><circle cx="30.3" cy="22.3" r="0.8" opacity="1"/><circle cx="270.3" cy="16.7" r="1.5" opacity="0.85"/><circle cx="251.2" cy="198.6" r="1.0" opacity="0.85"/><circle cx="277.8" cy="177.9" r="0.8" opacity="0.55"/><circle cx="363.3" cy="73.7" r="1.2" opacity="0.55"/><circle cx="192.6" cy="46.8" r="0.8" opacity="0.7"/><circle cx="286.1" cy="82.0" r="1.0" opacity="0.55"/><circle cx="67.6" cy="82.7" r="0.8" opacity="0.7"/><circle cx="317.0" cy="173.3" r="0.8" opacity="1"/><circle cx="380.8" cy="137.8" r="1.0" opacity="0.7"/><circle cx="61.7" cy="38.5" r="0.7" opacity="0.7"/><circle cx="8.6" cy="166.9" r="0.7" opacity="0.85"/><circle cx="111.7" cy="32.6" r="1.2" opacity="0.85"/><circle cx="236.9" cy="66.4" r="0.7" opacity="0.55"/><circle cx="178.4" cy="174.7" r="1.5" opacity="1"/><circle cx="156.1" cy="81.2" r="1.0" opacity="1"/><circle cx="27.8" cy="17.2" r="0.7" opacity="1"/><circle cx="66.0" cy="70.7" r="0.6" opacity="0.55"/><circle cx="4.1" cy="33.6" r="0.6" opacity="0.85"/><circle cx="238.4" cy="17.8" r="0.7" opacity="1"/><circle cx="60.7" cy="53.4" r="0.8" opacity="0.85"/><circle cx="185.1" cy="26.6" r="1.0" opacity="1"/><circle cx="187.5" cy="65.1" r="0.7" opacity="0.55"/><circle cx="290.4" cy="149.1" r="1.0" opacity="0.7"/><circle cx="201.2" cy="44.2" r="1.2" opacity="0.85"/><circle cx="60.0" cy="110.5" r="0.6" opacity="0.85"/><circle cx="377.8" cy="173.2" r="1.5" opacity="0.85"/><circle cx="202.0" cy="182.0" r="0.8" opacity="0.7"/><circle cx="207.5" cy="156.7" r="0.8" opacity="0.7"/><circle cx="238.3" cy="158.5" r="0.7" opacity="0.7"/><circle cx="316.6" cy="149.0" r="0.7" opacity="0.7"/><circle cx="201.7" cy="73.7" r="0.6" opacity="0.55"/><circle cx="305.8" cy="96.6" r="0.7" opacity="0.85"/><circle cx="174.8" cy="187.7" r="0.8" opacity="0.85"/><circle cx="34.8" cy="24.0" r="1.0" opacity="0.7"/><circle cx="133.0" cy="98.6" r="1.2" opacity="0.55"/><circle cx="187.2" cy="132.0" r="1.5" opacity="0.55"/><circle cx="322.8" cy="27.5" r="1.0" opacity="0.7"/><circle cx="186.6" cy="39.0" r="1.5" opacity="0.85"/><circle cx="37.1" cy="189.4" r="1.5" opacity="1"/><circle cx="180.9" cy="149.7" r="0.6" opacity="0.7"/><circle cx="68.9" cy="28.9" r="0.7" opacity="1"/><circle cx="312.1" cy="32.7" r="1.2" opacity="1"/><circle cx="255.1" cy="72.7" r="1.2" opacity="0.7"/><circle cx="12.2" cy="160.7" r="1.5" opacity="0.55"/><circle cx="205.2" cy="187.0" r="1.0" opacity="0.7"/><circle cx="319.6" cy="45.4" r="0.8" opacity="0.7"/><circle cx="115.9" cy="51.1" r="1.2" opacity="0.85"/><circle cx="103.1" cy="86.1" r="0.7" opacity="0.55"/><circle cx="351.6" cy="73.3" r="1.0" opacity="1"/><circle cx="320.0" cy="176.1" r="0.7" opacity="0.7"/></g>
+<circle class="n-astre" cx="56" cy="118" r="20" fill="#E8B53A"/><circle class="n-ombre" cx="64" cy="111" r="17" fill="#D6E4F3"/>
+<path d="M0,214 L38,192 L76,176 L112,160 L140,140 L160,134 L184,112 L204,86 L220,62 L229,52 L236,58 L246,72 L254,78 L259,76 L266,88 L278,104 L290,112 L298,110 L308,94 L318,80 L326,70 L332,72 L342,88 L356,104 L372,118 L390,124 L390,430 L0,430Z" class="n-loin" fill="#A3C0E3"/>
 <path d="M204,86 L220,62 L229,52 L236,58 L246,72 L254,78 L259,76 L262,84 L250,92 L238,88 L226,96 L214,92Z" fill="#4A5363"/>
 <path d="M210,84 L247,79 L250,84 L212,90Z" fill="#C9A05A" opacity=".9"/>
-<path d="M140,140 L160,134 L184,112 L204,86 L214,92 L200,110 L186,124 L170,134 L156,146Z" fill="#F8FAFB"/>
-<path d="M226,96 L238,88 L250,92 L262,84 L270,96 L262,110 L248,104 L236,112Z" fill="#F8FAFB"/>
-<path d="M298,110 L308,94 L318,80 L326,70 L332,72 L342,88 L334,96 L322,92 L312,104Z" fill="#F8FAFB"/>
-<path d="M236,58 C252,50 274,52 300,46 C284,56 266,58 246,64Z" fill="#F8FAFB" opacity=".85"/>
-<path d="M0,262 L26,240 L48,248 L72,226 L96,232 L118,212 L138,222 L160,206 L184,220 L206,204 L228,214 L252,196 L276,212 L300,200 L326,218 L352,206 L390,222 L390,430 L0,430Z" fill="#5A82BF"/>
+<path d="M140,140 L160,134 L184,112 L204,86 L214,92 L200,110 L186,124 L170,134 L156,146Z" class="n-neige" fill="#F8FAFB"/>
+<path d="M226,96 L238,88 L250,92 L262,84 L270,96 L262,110 L248,104 L236,112Z" class="n-neige" fill="#F8FAFB"/>
+<path d="M298,110 L308,94 L318,80 L326,70 L332,72 L342,88 L334,96 L322,92 L312,104Z" class="n-neige" fill="#F8FAFB"/>
+<path d="M236,58 C252,50 274,52 300,46 C284,56 266,58 246,64Z" class="n-neige" fill="#F8FAFB" opacity=".85"/>
+<path d="M0,262 L26,240 L48,248 L72,226 L96,232 L118,212 L138,222 L160,206 L184,220 L206,204 L228,214 L252,196 L276,212 L300,200 L326,218 L352,206 L390,222 L390,430 L0,430Z" class="n-mi" fill="#5A82BF"/>
 <path d="M72,226 L96,232 L118,212 L132,220 L110,226 L96,240Z M160,206 L184,220 L206,204 L218,210 L196,218 L180,230Z M252,196 L276,212 L300,200 L310,206 L286,214 L270,224Z" fill="#F8FAFB" opacity=".9"/>
-<path d="M0,360 L70,322 L120,342 L175,302 L235,336 L300,312 L390,348 L390,430 L0,430Z" fill="#22418F"/>
-<text x="229" y="40" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="10.5" font-weight="700" fill="#22418F">Everest 8 849</text>
-<text x="329" y="58" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="10" font-weight="600" fill="#22418F">Lhotse</text>
-<text x="294" y="128" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="9.5" fill="#22418F">col Sud</text>
+<path d="M0,360 L70,322 L120,342 L175,302 L235,336 L300,312 L390,348 L390,430 L0,430Z" class="n-avant" fill="#22418F"/>
+<text x="229" y="40" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="10.5" font-weight="700" class="n-lbl" fill="#22418F">Everest 8 849</text>
+<text x="329" y="58" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="10" font-weight="600" class="n-lbl" fill="#22418F">Lhotse</text>
+<text x="294" y="128" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="9.5" class="n-lbl" fill="#22418F">col Sud</text>
 <text x="40" y="282" font-family="Public Sans,sans-serif" font-size="10" font-weight="600" fill="#F8FAFB">Nuptse</text><g id="hero-route"></g></svg>
       <div class="moi" id="hero-moi" aria-hidden="true"></div>
       <p class="alti num" id="alti"></p>
@@ -393,21 +438,22 @@ body.en-quiz nav.bas{display:none}
   <!-- ===== EXPÉDITION ===== -->
   <section class="vue" id="v-expedition">
     <div class="tete-exp"><h1>L'expédition ECG1</h1><p class="petit" id="exp-info" style="margin:5px 0 0"></p></div>
-    <div class="illus"><svg id="exp-svg" viewBox="0 0 390 420" role="img" aria-label="La voie normale de l'Everest, du trek depuis Lukla jusqu'au sommet, avec la position de chaque élève"><rect width="390" height="420" fill="#D6E4F3"/>
-<path d="M0,130 L50,104 L90,116 L120,96 L170,110 L220,84 L280,96 L330,74 L390,92 L390,200 L0,200Z" fill="#A3C0E3"/>
-<path d="M0,176 L40,150 L80,118 L112,82 L131,58 L141,45 L150,52 L162,62 L178,76 L204,92 L232,100 L256,84 L280,68 L300,58 L306,56 L318,68 L334,84 L360,108 L390,118 L390,420 L0,420Z" fill="#5A82BF"/>
+    <div class="illus"><svg id="exp-svg" viewBox="0 0 390 420" role="img" aria-label="La voie normale de l'Everest, du trek depuis Lukla jusqu'au sommet, avec la position de chaque élève"><rect class="n-ciel" width="390" height="420" fill="#D6E4F3"/>
+<g class="n-etoiles" fill="#FFFFFF"><circle cx="204.0" cy="6.2" r="1.0" opacity="0.7"/><circle cx="236.5" cy="94.0" r="0.7" opacity="0.7"/><circle cx="58.1" cy="75.8" r="0.6" opacity="0.55"/><circle cx="128.5" cy="64.1" r="1.2" opacity="1"/><circle cx="303.6" cy="16.3" r="1.2" opacity="0.55"/><circle cx="98.9" cy="36.1" r="0.6" opacity="1"/><circle cx="218.6" cy="92.2" r="0.6" opacity="1"/><circle cx="128.4" cy="116.9" r="1.2" opacity="0.7"/><circle cx="268.6" cy="56.5" r="1.2" opacity="1"/><circle cx="198.0" cy="32.7" r="1.2" opacity="0.85"/><circle cx="356.5" cy="107.6" r="0.7" opacity="1"/><circle cx="56.4" cy="18.1" r="1.0" opacity="0.85"/><circle cx="31.7" cy="31.9" r="0.6" opacity="0.7"/><circle cx="259.7" cy="94.9" r="0.7" opacity="0.85"/><circle cx="58.6" cy="106.4" r="1.0" opacity="0.7"/><circle cx="289.2" cy="14.9" r="1.0" opacity="0.7"/><circle cx="382.1" cy="100.6" r="0.7" opacity="1"/><circle cx="383.7" cy="50.8" r="1.0" opacity="0.7"/><circle cx="140.2" cy="14.7" r="0.8" opacity="0.55"/><circle cx="133.1" cy="57.2" r="1.5" opacity="0.55"/><circle cx="150.8" cy="64.0" r="0.8" opacity="0.55"/><circle cx="47.1" cy="110.6" r="0.7" opacity="0.55"/><circle cx="36.1" cy="35.5" r="0.7" opacity="0.85"/><circle cx="292.7" cy="99.1" r="1.5" opacity="0.85"/><circle cx="159.1" cy="66.2" r="1.2" opacity="1"/><circle cx="271.6" cy="14.4" r="0.6" opacity="0.7"/><circle cx="166.5" cy="12.4" r="0.6" opacity="0.55"/><circle cx="310.2" cy="13.7" r="0.7" opacity="0.55"/><circle cx="105.0" cy="18.1" r="0.6" opacity="0.85"/><circle cx="383.8" cy="52.5" r="0.8" opacity="0.7"/><circle cx="20.5" cy="86.3" r="0.6" opacity="0.7"/><circle cx="104.0" cy="25.0" r="0.8" opacity="0.85"/><circle cx="206.9" cy="27.9" r="1.0" opacity="0.7"/><circle cx="107.3" cy="97.2" r="0.8" opacity="0.55"/><circle cx="9.9" cy="89.0" r="1.2" opacity="0.7"/><circle cx="200.4" cy="32.5" r="1.0" opacity="0.55"/><circle cx="255.5" cy="79.4" r="1.5" opacity="1"/><circle cx="212.5" cy="107.1" r="1.2" opacity="0.85"/><circle cx="266.7" cy="118.0" r="0.8" opacity="0.7"/><circle cx="321.9" cy="86.0" r="1.5" opacity="0.7"/><circle cx="158.6" cy="44.3" r="0.6" opacity="0.7"/><circle cx="9.4" cy="76.6" r="0.8" opacity="1"/><circle cx="66.4" cy="13.8" r="1.0" opacity="0.85"/><circle cx="232.7" cy="84.4" r="0.6" opacity="1"/><circle cx="74.8" cy="35.2" r="0.6" opacity="0.85"/></g>
+<path d="M0,130 L50,104 L90,116 L120,96 L170,110 L220,84 L280,96 L330,74 L390,92 L390,200 L0,200Z" class="n-loin" fill="#A3C0E3"/>
+<path d="M0,176 L40,150 L80,118 L112,82 L131,58 L141,45 L150,52 L162,62 L178,76 L204,92 L232,100 L256,84 L280,68 L300,58 L306,56 L318,68 L334,84 L360,108 L390,118 L390,420 L0,420Z" class="n-mi" fill="#5A82BF"/>
 <path d="M141,45 L131,58 L112,82 L98,112 L118,126 L148,150 L166,112 L178,76 L162,62 L150,52Z" fill="#4A5363"/>
 <path d="M118,84 L160,74 L164,80 L116,92Z" fill="#C9A05A" opacity=".85"/>
 <path d="M98,112 L118,126 L108,150 L84,140Z M150,52 L162,62 L156,70 L146,60Z" fill="#F8FAFB" opacity=".9"/>
-<path d="M232,100 L256,84 L280,68 L300,58 L306,56 L318,68 L334,84 L310,170 L270,168 L246,150Z" fill="#F8FAFB"/>
-<path d="M98,252 L132,200 L166,150 L206,118 L232,104 L246,150 L270,168 L238,214 L176,246 L128,262Z" fill="#E8F0F9"/>
-<path d="M0,214 L44,196 L84,226 L98,252 L74,300 L0,310Z" fill="#44679F"/>
-<path d="M238,238 L274,196 L310,170 L346,160 L390,170 L390,300 L232,300Z" fill="#44679F"/>
+<path d="M232,100 L256,84 L280,68 L300,58 L306,56 L318,68 L334,84 L310,170 L270,168 L246,150Z" class="n-neige" fill="#F8FAFB"/>
+<path d="M98,252 L132,200 L166,150 L206,118 L232,104 L246,150 L270,168 L238,214 L176,246 L128,262Z" class="n-cwm" fill="#E8F0F9"/>
+<path d="M0,214 L44,196 L84,226 L98,252 L74,300 L0,310Z" class="n-nup" fill="#44679F"/>
+<path d="M238,238 L274,196 L310,170 L346,160 L390,170 L390,300 L232,300Z" class="n-nup" fill="#44679F"/>
 <path d="M274,196 L310,170 L346,160 L390,170 L390,178 L346,170 L312,180 L280,204Z M44,196 L84,226 L80,232 L42,204Z" fill="#F8FAFB" opacity=".9"/>
-<path d="M60,282 L98,252 L128,262 L150,290 L206,320 L280,348 L390,360 L390,420 L0,420 L0,312Z" fill="#B9CDE6"/>
+<path d="M60,282 L98,252 L128,262 L150,290 L206,320 L280,348 L390,360 L390,420 L0,420 L0,312Z" class="n-glac" fill="#B9CDE6"/>
 <path d="M86,286 l6,-8 l5,6 l6,-9 l5,7 M100,268 l5,-7 l5,5 l6,-8 l5,6" fill="none" stroke="#F8FAFB" stroke-width="1.6" stroke-linejoin="round"/>
 <ellipse cx="300" cy="404" rx="16" ry="5" fill="#7CC4BD"/><ellipse cx="338" cy="398" rx="9" ry="3.5" fill="#7CC4BD"/>
-<path d="M0,346 L60,330 L120,350 L190,372 L270,388 L390,396 L390,420 L0,420Z" fill="#22418F" opacity=".88"/><g id="exp-route"></g><g id="exp-points"></g></svg></div>
+<path d="M0,346 L60,330 L120,350 L190,372 L270,388 L390,396 L390,420 L0,420Z" class="n-avant" fill="#22418F" opacity=".88"/><g id="exp-route"></g><g id="exp-points"></g></svg></div>
     <div id="exp-message"></div>
     <div id="exp-liste" style="padding:8px 10px 0;display:flex;flex-direction:column;gap:2px"></div>
     <div class="pad" style="padding-top:12px"><button class="btn-rond btn-blanc" id="exp-maj" style="width:100%">Actualiser les positions</button></div>
@@ -420,6 +466,11 @@ body.en-quiz nav.bas{display:none}
       <div class="carte">
         <label for="prenom" style="font-weight:600;display:block;margin-bottom:6px">Prénom affiché dans l'expédition</label>
         <input class="champ" id="prenom" maxlength="24" autocomplete="given-name">
+      </div>
+      <div class="carte">
+        <span style="font-weight:600;display:block">Thème</span>
+        <div class="segment" id="theme-choix" style="margin:8px 0 6px"><button data-t="auto">Automatique</button><button data-t="jour">Jour</button><button data-t="nuit">Nuit</button></div>
+        <p class="petit" style="margin:0" id="theme-info">En automatique, le thème sombre étoilé s'allume au coucher du soleil à Noisy-le-Sec et s'éteint à son lever.</p>
       </div>
       <div class="stats">
         <div class="stat"><b class="num" id="p-justes"></b><span>bonnes réponses</span></div>
@@ -478,7 +529,7 @@ body.en-quiz nav.bas{display:none}
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.7.1";
+const VERSION_APP = "2.8";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -516,7 +567,7 @@ function badgePiste(n){ const p=piste(n); return `<span class="piste" style="--p
 
 /* ================= Sauvegarde ================= */
 const CLE = "altimaths.v2";
-const VIDE = () => ({chap:"tous",prenom:"",acces:"",minutes:0,justes:0,total:0,jours:0,dernierJour:"",jour:"",jourJustes:0,q:{},f:{},fs:{},fn:{date:"",n:0},fg:{date:"",ids:[],alt:0},etapes:{},serie:0});
+const VIDE = () => ({chap:"tous",prenom:"",acces:"",minutes:0,justes:0,total:0,jours:0,dernierJour:"",jour:"",jourJustes:0,q:{},f:{},fs:{},fn:{date:"",n:0},theme:"auto",fg:{date:"",ids:[],alt:0},etapes:{},serie:0});
 let E;
 try { E = JSON.parse(localStorage.getItem(CLE)||"null"); } catch(e){ E=null; }
 if (!E){ E = VIDE(); try { const v1 = JSON.parse(localStorage.getItem("mathsECG1.v1")||"null");
@@ -767,6 +818,36 @@ $("#cours-contenu").addEventListener("click",e=>{ const t=e.target.closest(".tro
 $("#tout-voir").addEventListener("click",()=>$$(".trou").forEach(t=>t.classList.add("vu")));
 $("#tout-cacher").addEventListener("click",()=>$$(".trou").forEach(t=>t.classList.remove("vu")));
 
+
+/* ================= Thème nuit (coucher → lever du soleil à Noisy-le-Sec) ================= */
+function soleil(date, lever){
+  const rad=Math.PI/180, lat=48.8908, lon=2.4594, z=90.833;
+  const debut=new Date(date.getFullYear(),0,0), n=Math.floor((date-debut)/86400000);
+  const lh=lon/15, t=n+((lever?6:18)-lh)/24, M=0.9856*t-3.289;
+  let L=(M+1.916*Math.sin(M*rad)+0.020*Math.sin(2*M*rad)+282.634+360)%360;
+  let RA=(Math.atan(0.91764*Math.tan(L*rad))/rad+360)%360;
+  RA=(RA+Math.floor(L/90)*90-Math.floor(RA/90)*90)/15;
+  const sd=0.39782*Math.sin(L*rad), cd=Math.cos(Math.asin(sd));
+  const ch=(Math.cos(z*rad)-sd*Math.sin(lat*rad))/(cd*Math.cos(lat*rad));
+  if (ch>1||ch<-1) return null;
+  const H=(lever?360-Math.acos(ch)/rad:Math.acos(ch)/rad)/15;
+  const UT=((H+RA-0.06571*t-6.622-lh)%24+24)%24;
+  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate(),0,0,0)); d.setUTCMinutes(Math.round(UT*60)); return d;
+}
+function estNuit(){
+  if (E.theme==="nuit") return true; if (E.theme==="jour") return false;
+  const now=new Date(), l=soleil(now,true), c=soleil(now,false);
+  if (!l||!c) { const h=now.getHours(); return h<7||h>=19; }
+  return now<l || now>=c;
+}
+function hm(d){ return d? String(d.getHours()).padStart(2,"0")+" h "+String(d.getMinutes()).padStart(2,"0") : "?"; }
+function appliquerTheme(){
+  const n=estNuit(); document.body.classList.toggle("nuit",n);
+  const m=document.querySelector('meta[name="theme-color"]'); if(m) m.content=n?"#0A1328":"#22418F";
+}
+setInterval(appliquerTheme, 60000);
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) appliquerTheme(); });
+appliquerTheme();
 /* ================= Fiches ================= */
 let chapCours = CHAPS[CHAPS.length-1].id, chapFiches="tous";
 function segChap(el, val, avecTous, fn){
@@ -892,7 +973,7 @@ function dessinerVoie(){
     else if (e.n==="Sommet") s+=`<path d="M${x},${y} v-16" stroke="#22418F" stroke-width="1.5"/><path d="M${x},${y-16} h10 l-3,3.5 l3,3.5 h-10z" fill="#E8541C"/>`;
     else s+=`<circle cx="${x}" cy="${y}" r="2.6" fill="#F8FAFB" stroke="#22418F" stroke-width="1.2"/>`; });
   const lab=[["Sommet 8 849",155,30,"start",1],["Camp 4, col Sud 7 950",240,96,"start",1],["Camp 3 7 200",268,150,"start",1],["Camp 2 6 400",196,201,"start",1],["Camp 1 6 065",138,243,"start",1],["Camp de base 5 364",22,282,"start",1],["Lukla",372,408,"middle",0],["Namche",306,393,"middle",0],["Dingboche",216,370,"middle",0],["Gorak Shep",112,333,"middle",0]];
-  lab.forEach(([t,x,y,a,fonce])=>{ s+=`<text x="${x}" y="${y}" text-anchor="${a}" font-family="Public Sans,sans-serif" font-size="9.5" font-weight="600" fill="${fonce?"#22418F":"#F8FAFB"}" paint-order="stroke" stroke="${fonce?"#E8F0F9":"#22418F"}" stroke-width="3" stroke-linejoin="round">${t}</text>`; });
+  lab.forEach(([t,x,y,a,fonce])=>{ s+=`<text x="${x}" y="${y}" text-anchor="${a}" font-family="Public Sans,sans-serif" font-size="9.5" font-weight="600" class="${fonce?"lbl-fonce":""}" fill="${fonce?"#22418F":"#F8FAFB"}" paint-order="stroke" stroke="${fonce?"#E8F0F9":"#22418F"}" stroke-width="3" stroke-linejoin="round">${t}</text>`; });
   $("#exp-route").innerHTML=s;
 }
 let GRIMPEURS=null, majGrimpeurs=0;
@@ -923,7 +1004,7 @@ function rendreExpedition(sansCharger){
   liste.slice().reverse().forEach((g,k)=>{ const [x,y]=expPos(g.minutes); const rang=g.prof?0:g.rang-1;
     const col=g.moi?"#E8541C":(g.prof?"#E8B53A":"#F8FAFB");
     pts+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${g.moi||g.prof?6.5:4.5}" fill="${col}" stroke="#22418F" stroke-width="2"/>`;
-    if (g.prof) pts+=`<text x="${(x-11).toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="end" font-family="Public Sans,sans-serif" font-size="11" font-weight="700" fill="#22418F" paint-order="stroke" stroke="#E8F0F9" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)} (prof)</text>`;
+    if (g.prof) pts+=`<text x="${(x-11).toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="end" font-family="Public Sans,sans-serif" font-size="11" font-weight="700" class="lbl-fonce" fill="#22418F" paint-order="stroke" stroke="#E8F0F9" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)} (prof)</text>`;
     else if (g.moi || rang<3) pts+=`<text x="${x.toFixed(1)}" y="${(y-(g.moi?14:11)).toFixed(1)}" text-anchor="middle" font-family="Public Sans,sans-serif" font-size="${g.moi?12:10.5}" font-weight="700" fill="${col}" paint-order="stroke" stroke="#22418F" stroke-width="3" stroke-linejoin="round">${esc(g.prenom)}</text>`; });
   $("#exp-points").innerHTML=pts;
   const nbEleves = liste.filter(g=>!g.prof).length;
@@ -937,6 +1018,8 @@ $("#exp-maj").addEventListener("click",()=>chargerClasse());
 
 /* ================= Carnet ================= */
 function rendreProfil(){
+  $$("#theme-choix button").forEach(b=>b.classList.toggle("on",b.dataset.t===(E.theme||"auto")));
+  { const now=new Date(); $("#theme-info").textContent="En automatique, le thème sombre étoilé s'allume au coucher du soleil à Noisy-le-Sec (aujourd'hui "+hm(soleil(now,false))+") et s'éteint à son lever (demain vers "+hm(soleil(new Date(now.getTime()+86400000),true))+")."; }
   $("#prenom").value=E.prenom;
   $("#p-justes").textContent=nf(E.justes);
   $("#p-taux").textContent=E.total?Math.round(100*E.justes/E.total)+" %":"–";
@@ -949,6 +1032,7 @@ let tPrenom;
 $("#prenom").addEventListener("input",e=>{ E.prenom=e.target.value.trim().slice(0,24); sauver(); clearTimeout(tPrenom); tPrenom=setTimeout(envoyer,1500); });
 $("#btn-reset").addEventListener("click",()=>$("#reset-confirme").style.display="block");
 $("#reset-non").addEventListener("click",()=>$("#reset-confirme").style.display="none");
+$$("#theme-choix button").forEach(b=>b.addEventListener("click",()=>{ E.theme=b.dataset.t; sauver(); appliquerTheme(); rendreProfil(); }));
 $("#reset-oui").addEventListener("click",()=>{ const p=E.prenom,a=E.acces; E=VIDE(); E.prenom=p; E.acces=a; noterEtapes(); sauver(); envoyer(); rendreProfil(); toast("Retour à Lukla"); });
 
 /* ================= Petits outils ================= */
@@ -1029,7 +1113,7 @@ if ("serviceWorker" in navigator){ try {
 
 /* ================= Démarrage ================= */
 majJour(); placerProf(); noterEtapes(); sauver();
-rendreCours(); preparer(); aller("ascension"); chargerMeteo(); majBadge(); maths($("#algo-corps"));
+appliquerTheme(); rendreCours(); preparer(); aller("ascension"); chargerMeteo(); majBadge(); maths($("#algo-corps"));
 if (!valide(E.acces)) ouvrirPorte("code");
 else if (!E.prenom) ouvrirPorte("prenom");
 else attendreCloud(4000).then(()=>{ restaurer(); envoyer(); });

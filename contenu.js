@@ -960,14 +960,14 @@ window.CONTENU = {
         { type: "sous", titre: "Sur des exemples" },
         { type: "prop", titre: "Le symbole somme", texte: R`
           $$\sum_{i=1}^{6}x_i=x_1+x_2+x_3+x_4+x_5+x_6.$$
-          L'indice sous le symbole est [[l'indice de départ]], le nombre au-dessus est [[l'indice de fin]] L'indice prend des valeurs entières. Notation équivalente : $\displaystyle\sum_{i\in[\![1,6]\!]}x_i$.` },
+          L'indice sous le symbole est [[l'indice de départ]], le nombre au-dessus est [[l'indice de fin]]. L'indice prend des valeurs entières. Notation équivalente : $\displaystyle\sum_{i\in[\![1,6]\!]}x_i$.` },
         { type: "exemple", texte: R`$\displaystyle\sum_{i=2}^{5}i=2+3+4+5$ et $\displaystyle\sum_{i=1}^{6}i=1+2+3+4+5+6$.` },
         { type: "prop", titre: "Indice muet", texte: R`L'indice de sommation est <strong>muet</strong> : on peut le remplacer par [[n'importe quelle autre lettre non déjà utilisée]]
           $$\sum_{i=1}^{6}x_i=\sum_{k=1}^{6}x_k=\sum_{j=1}^{6}x_j.$$` },
         { type: "prop", titre: "Le symbole produit", texte: R`
           $$\prod_{i=1}^{6}x_i=x_1\times x_2\times x_3\times x_4\times x_5\times x_6,\qquad \prod_{i=2}^{6}x_i=x_2x_3x_4x_5x_6.$$` },
         { type: "sous", titre: "Définition théorique" },
-        { type: "prop", titre: "Définition (Symbole somme)", texte: R`Soit $(u_k)$ une suite réelle et $n_0\in\mathbb N$. On définit par récurrence $S_{n_0}=u_{n_0}$ et, pour $n\geq n_0$, [[$S_{n+1}=S_n+u_{n+1}$]] Pour $a\leq b$, on note $\displaystyle\sum_{k=a}^{b}u_k=S_b$ (avec $n_0=a$).
+        { type: "prop", titre: "Définition (Symbole somme)", texte: R`Soit $(u_k)$ une suite réelle et $n_0\in\mathbb N$. On définit par récurrence $S_{n_0}=u_{n_0}$ et, pour $n\geq n_0$, [[$S_{n+1}=S_n+u_{n+1}$]]. Pour $a\leq b$, on note $\displaystyle\sum_{k=a}^{b}u_k=S_b$ (avec $n_0=a$).
           <div class="ligne">$\displaystyle\sum_{k=a}^{a}u_k=u_a,\qquad \sum_{k=a}^{b+1}u_k=$ [[$\displaystyle\sum_{k=a}^{b}u_k+u_{b+1}$]]</div>` },
         { type: "remarque", texte: R`Comme la somme est définie par récurrence, ses propriétés se démontrent [[par récurrence sur la borne supérieure]]` },
         { type: "prop", titre: "Conventions", texte: R`Si $b<a$ : une somme vide vaut [[$0$]] et un produit vide vaut [[$1$]]` },
@@ -1015,7 +1015,7 @@ window.CONTENU = {
         { type: "sous", titre: "Coefficients binomiaux" },
         { type: "prop", titre: "Point de départ : le triangle de Pascal", texte: R`Les coefficients de $(X+1)^n$ se rangent dans un triangle : chaque ligne commence et finit par $1$, et chaque autre nombre est [[la somme du nombre au-dessus et de celui au-dessus à gauche]]
           $$\begin{array}{l|cccccc} n=0&1\\ n=1&1&1\\ n=2&1&2&1\\ n=3&1&3&3&1\\ n=4&1&4&6&4&1\\ n=5&1&5&10&10&5&1\end{array}$$` },
-        { type: "prop", titre: "Définition (Factorielle, coefficient binomial)", texte: R`Pour $j\in\mathbb N^*$, $j!=1\times2\times\cdots\times j$ et $0!=$ [[$1$]] Pour $0\leq k\leq n$ :
+        { type: "prop", titre: "Définition (Factorielle, coefficient binomial)", texte: R`Pour $j\in\mathbb N^*$, $j!=1\times2\times\cdots\times j$ et $0!=$ [[$1$]]. Pour $0\leq k\leq n$ :
           <div class="ligne">$\dbinom nk=$ [[$\dfrac{n!}{k!\,(n-k)!}$]] $=\dfrac{n(n-1)\cdots(n-k+1)}{k!}$</div>
           Par convention, $\binom nk=0$ si $k<0$ ou $k>n$.` },
         { type: "exemple", texte: R`$\dbinom52=\dfrac{5\times4}{2}=10$, $\quad\dbinom83=\dfrac{8\times7\times6}{3\times2\times1}=56$, $\quad\dbinom63=20$.` },
