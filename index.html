@@ -248,6 +248,14 @@ body.en-quiz nav.bas{display:none}
 /* ===== Leçons ===== */
 .avance-lecons{display:flex;flex-direction:column;gap:6px;margin:12px 0 4px}
 .sentier{position:relative;margin:8px auto;border-radius:22px;overflow:hidden;max-width:100%}
+#v-cours.immersif{background:#CFE0F2}
+#v-cours.immersif .sentier{margin:6px -20px 0;border-radius:0;max-width:none}
+#v-cours.immersif #lecons-vue{margin-bottom:-90px}
+body.cours-immersif,html:has(body.cours-immersif){background:#6E9F5C}
+#v-cours.immersif .clair-chips button{background:rgba(255,255,255,.75)}
+#v-cours.immersif .clair-chips button.on{background:var(--nuit)}
+#v-cours.immersif .segment{background:rgba(255,255,255,.55)}
+#v-cours.immersif .jauge{background:rgba(255,255,255,.6)}
 .sentier>svg{position:absolute;left:0;top:0}
 .piste-bord{fill:none;stroke:rgba(40,50,70,.22);stroke-width:17;stroke-linecap:round}
 .piste-fond{fill:none;stroke-width:12;stroke-linecap:round}
@@ -298,7 +306,14 @@ body.nuit #v-lecon.active{background:var(--n-fond)}
 body.nuit .carte-lecon{background:var(--n-surf);box-shadow:none;border:1px solid var(--n-bord)}
 body.nuit .pt-lecon.ouverte{background:var(--n-surf);color:var(--n-texte);border-color:var(--n-texte)}
 body.nuit .pt-lecon.suivante{border-color:var(--n-texte)}
-body.nuit .sentier-fond{filter:brightness(.55) saturate(.9)}
+body.nuit .sentier-fond .terrain,body.nuit .sentier-fond>rect{filter:brightness(.55) saturate(.9)}
+body.nuit .s-ciel{fill:#0E1A38}
+body.nuit #v-cours.immersif{background:var(--etoiles),#0E1A38;background-size:300px 300px,auto}
+body.nuit.cours-immersif,html:has(body.nuit.cours-immersif){background:#3B5532}
+body.nuit #v-cours.immersif .clair-chips button{background:rgba(20,31,58,.8)}
+body.nuit #v-cours.immersif .clair-chips button.on{background:var(--n-texte)}
+body.nuit #v-cours.immersif .segment{background:rgba(28,42,76,.85)}
+body.nuit #v-cours.immersif .jauge{background:rgba(255,255,255,.15)}
 body.nuit .et-lecon{background:rgba(11,19,38,.88);color:var(--n-texte)}
 body.nuit .fin-lecon{background:var(--etoiles),var(--degrade-nuit);background-size:300px 300px,100% 100%;background-repeat:repeat,no-repeat}
 body.nuit .glisser{color:var(--n-doux)}
@@ -604,7 +619,7 @@ body.nuit .meteo.beau{background:#1C3A2E} body.nuit .meteo.mauvais{background:#4
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.9.4";
+const VERSION_APP = "2.9.5";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -732,6 +747,7 @@ function aller(v){
   $$("nav.bas button").forEach(b=>b.classList.toggle("actif", b.dataset.vue===v));
   document.body.classList.toggle("en-quiz", v==="quiz"||v==="lecon");
   document.body.classList.toggle("sombre", SOMBRES.includes(v));
+  document.body.classList.toggle("cours-immersif", v==="cours" && $("#v-cours").classList.contains("immersif"));
   window.scrollTo(0,0);
   ({ascension:rendreAscension, cours:rendreCours, profil:rendreProfil, fiches:rendreFiche, expedition:rendreExpedition}[v]||(()=>{}))();
 }
@@ -882,6 +898,7 @@ function rendreCours(){
   const lec = E.modeCours!=="complet";
   $$("#cours-mode button").forEach(b=>b.classList.toggle("on", (b.dataset.m==="lecons")===lec));
   $("#lecons-vue").style.display = lec?"block":"none";
+  const imm = lec && (LECONS[chapCours]||[]).length>0; $("#v-cours").classList.toggle("immersif", imm); document.body.classList.toggle("cours-immersif", imm && vueCourante==="cours");
   $("#complet-vue").style.display = lec?"none":"block";
   $("#cours-aide").textContent = lec ? "Une leçon par notion : des cartes à faire défiler vers le haut et de petits quiz. L'ordre est conseillé, toutes les leçons sont ouvertes." : "Touchez les cases en pointillés pour révéler la réponse, après avoir essayé de la retrouver de tête.";
   if (lec) rendreSentier();
@@ -930,9 +947,9 @@ function fondSentier(W,H,pts){
     <linearGradient id="trace" gradientUnits="userSpaceOnUse" x1="0" y1="${H}" x2="0" y2="0">
     <stop offset="0" stop-color="#E07B39"/><stop offset=".26" stop-color="#E07B39"/><stop offset=".3" stop-color="#F6D3AE"/><stop offset=".48" stop-color="#F6D3AE"/>
     <stop offset=".52" stop-color="#F3F9FF"/><stop offset=".76" stop-color="#F3F9FF"/><stop offset=".8" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs>
-    <rect width="${W}" height="${H}" fill="url(#sol)"/>`;
+    <rect width="${W}" height="${H}" fill="url(#sol)"/><g class="terrain">`;
   /* sommet et ciel */
-  g+=`<path d="M0,${Y(.07)} L${W*.18},${Y(.035)} L${W*.34},${Y(.06)} L${W*.55},${Y(.012)} L${W*.62},${Y(.022)} L${W*.78},${Y(.05)} L${W},${Y(.03)} L${W},0 L0,0Z" fill="#CFE0F2"/>
+  g+=`</g><path class="s-ciel" d="M0,${Y(.07)} L${W*.18},${Y(.035)} L${W*.34},${Y(.06)} L${W*.55},${Y(.012)} L${W*.62},${Y(.022)} L${W*.78},${Y(.05)} L${W},${Y(.03)} L${W},0 L0,0Z" fill="#CFE0F2"/><g class="n-etoiles" fill="#fff">${Array.from({length:14},(_,k)=>`<circle cx="${(rnd()*W).toFixed(0)}" cy="${(rnd()*Y(.03)).toFixed(0)}" r="${(0.6+rnd()*0.8).toFixed(1)}"/>`).join("")}</g><g class="terrain">
     <path d="M${W*.55},${Y(.012)} L${W*.62},${Y(.022)} L${W*.6},${Y(.05)} L${W*.5},${Y(.04)}Z" fill="#FFFFFF" opacity=".9"/>
     <path d="M${W*.55},${Y(.012)} v-14" stroke="#22418F" stroke-width="1.5"/><path d="M${W*.55},${Y(.012)-14} h10 l-3,3.5 l3,3.5 h-10z" fill="#E8541C"/>`;
   /* congères dans la neige */
@@ -964,14 +981,14 @@ function fondSentier(W,H,pts){
   for(let i=0;i<26;i++){ const y=Y(.76+rnd()*.24), x=rnd()*W; if(!libre(x,y,W*.13)) continue; const s=8+rnd()*10;
     g+=`<rect x="${x-1.5}" y="${y-2}" width="3" height="6" fill="#7A4A2A"/><path d="M${x},${y-s*2.2} L${x+s*.7},${y-s*.9} L${x+s*.35},${y-s*.9} L${x+s},${y} L${x-s},${y} L${x-s*.35},${y-s*.9} L${x-s*.7},${y-s*.9}Z" fill="${rnd()<.5?"#2F6B45":"#3A7A4F"}"/>`; }
   for(let i=0;i<40;i++){ const y=Y(.77+rnd()*.23), x=rnd()*W; if(!libre(x,y,W*.08)) continue; g+=`<circle cx="${x}" cy="${y}" r="1.6" fill="${["#F8FAFB","#E8B53A","#E07AA3"][i%3]}"/>`; }
-  return g;
+  return g+"</g>";
 }
 function rendreSentier(){
   const ls=LECONS[chapCours]||[], el=$("#lecons-vue");
   if (!ls.length){ el.innerHTML='<p class="petit" style="padding:20px 0">Les leçons de ce chapitre arrivent bientôt. Le cours complet est disponible dans l\'autre onglet.</p>'; return; }
   const faites=ls.filter(leconFaite).length, prochaine=ls.find(l=>!leconFaite(l));
-  const PAS=112, H=150+ls.length*PAS, W=Math.max(280, Math.min(560, el.clientWidth||340));
-  const pts=ls.map((l,i)=>({x: (i%2===0?.3:.7)*W, y: H-70-i*PAS}));
+  const PAS=112, H=240+ls.length*PAS, W=Math.max(300, Math.min(560, ($("#v-cours").clientWidth||window.innerWidth||390)));
+  const pts=ls.map((l,i)=>({x: (i%2===0?.3:.7)*W, y: H-150-i*PAS}));
   let d=`M${pts[0].x},${pts[0].y+40}`; pts.forEach((p,i)=>{ const a=i?pts[i-1]:{x:p.x,y:p.y+40}; d+=` C${a.x},${a.y-PAS/2} ${p.x},${p.y+PAS/2} ${p.x},${p.y}`; });
   let dFait=""; const der=ls.reduce((k,l,i)=>leconFaite(l)?i:k,-1);
   if (der>=0){ dFait=`M${pts[0].x},${pts[0].y+40}`; for(let i=0;i<=der;i++){ const p=pts[i], a=i?pts[i-1]:{x:p.x,y:p.y+40}; dFait+=` C${a.x},${a.y-PAS/2} ${p.x},${p.y+PAS/2} ${p.x},${p.y}`; } }
@@ -981,9 +998,8 @@ function rendreSentier(){
     const cls=f?"fait":(suiv?"suivante":"ouverte");
     const lab=`<span class="et-lecon ${gauche?"a-droite":"a-gauche"}">${suiv?'<b class="bulle">Prochaine leçon</b>':""}${esc(l.titre)}</span>`;
     return `<div class="noeud" style="left:${p.x}px;top:${p.y}px"><button class="pt-lecon ${cls}" data-lecon="${l.id}" aria-label="Leçon ${l.n} : ${esc(l.titre)}${f?", terminée":""}">${f?ok:(suiv?play:l.n)}</button>${lab}</div>`; }).join("");
-  el.innerHTML = `<div class="avance-lecons"><div class="petit" style="display:flex;justify-content:space-between"><span>${faites} leçon${faites>1?"s":""} sur ${ls.length} terminée${faites>1?"s":""}</span><span>ordre conseillé</span></div><div class="jauge"><i style="width:${Math.round(100*faites/ls.length)}%"></i></div></div>
-  <div class="sentier" style="height:${H}px;width:${W}px"><svg class="sentier-fond" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">${fondSentier(W,H,pts)}<path d="${d}" class="piste-bord"/><path d="${d}" class="piste-fond" stroke="url(#trace)"/>${dFait?`<path d="${dFait}" class="piste-faite"/>`:""}</svg>${noeuds}</div>
-  <p class="petit" style="text-align:center;margin:4px 0 0">Gain : ${String(GAIN_QUIZ_LECON).replace(".",",")} min par quiz réussi du premier coup et ${BONUS_LECON} min de bonus en fin de leçon, la première fois seulement.</p>`;
+  el.innerHTML = `<div class="avance-lecons"><div class="petit" style="display:flex;justify-content:space-between"><span>${faites} leçon${faites>1?"s":""} sur ${ls.length} terminée${faites>1?"s":""}</span><span>ordre conseillé</span></div><div class="jauge"><i style="width:${Math.round(100*faites/ls.length)}%"></i></div><p class="petit" style="margin:0">Gain : ${String(GAIN_QUIZ_LECON).replace(".",",")} min par quiz réussi du premier coup et ${BONUS_LECON} min de bonus en fin de leçon, la première fois seulement.</p></div>
+  <div class="sentier" style="height:${H}px;width:${W}px"><svg class="sentier-fond" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">${fondSentier(W,H,pts)}<path d="${d}" class="piste-bord"/><path d="${d}" class="piste-fond" stroke="url(#trace)"/>${dFait?`<path d="${dFait}" class="piste-faite"/>`:""}</svg>${noeuds}</div>`;
 }
 let largeurSentier=0; window.addEventListener("resize",()=>{ const w=$("#lecons-vue").clientWidth; if (vueCourante==="cours" && E.modeCours!=="complet" && Math.abs(w-largeurSentier)>30){ largeurSentier=w; rendreSentier(); } });
 $("#lecons-vue").addEventListener("click",e=>{ const b=e.target.closest("[data-lecon]"); if(b) demarrerLecon(b.dataset.lecon); });
