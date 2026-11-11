@@ -244,6 +244,68 @@ body.en-quiz nav.bas{display:none}
 .bloc .katex-display{font-size:.88em}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
+
+/* ===== Leçons ===== */
+.avance-lecons{display:flex;flex-direction:column;gap:6px;margin:12px 0 4px}
+.sentier{position:relative;margin:8px auto;border-radius:22px;overflow:hidden;max-width:100%}
+.sentier>svg{position:absolute;left:0;top:0}
+.piste-bord{fill:none;stroke:rgba(40,50,70,.22);stroke-width:17;stroke-linecap:round}
+.piste-fond{fill:none;stroke-width:12;stroke-linecap:round}
+.piste-faite{fill:none;stroke:#E8541C;stroke-width:4;stroke-dasharray:1 9;stroke-linecap:round}
+.noeud{position:absolute;width:0;height:0}
+.pt-lecon{position:absolute;left:-30px;top:-30px;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-family:var(--d);font-weight:800;font-size:24px}
+.pt-lecon.fait{background:var(--drapeau);color:var(--nuit)}
+.pt-lecon.ouverte{background:#fff;color:var(--nuit);border:3px solid var(--nuit)}
+.pt-lecon.suivante{left:-38px;top:-38px;width:76px;height:76px;background:var(--orange);color:#fff;border:5px solid #fff;box-shadow:0 0 0 7px rgba(232,84,28,.25)}
+.pt-lecon:focus-visible{outline:3px solid var(--nuit);outline-offset:3px}
+.et-lecon{position:absolute;top:0;transform:translateY(-50%);width:max-content;max-width:clamp(110px,34vw,170px);font-size:13.5px;font-weight:600;line-height:1.3;background:rgba(255,255,255,.9);color:var(--nuit);border-radius:12px;padding:5px 9px;box-shadow:0 2px 8px rgba(20,30,60,.12)}
+.et-lecon.a-droite{left:46px}
+.et-lecon.a-gauche{right:46px;text-align:right}
+.et-lecon .bulle{display:block;font-size:12px;color:var(--orange);font-weight:700}
+#v-lecon.active{position:fixed;inset:0;display:flex;flex-direction:column;z-index:30;background:#EEF3F9}
+.lecon-fil{flex:1;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain}
+.diapo{height:100%;scroll-snap-align:start;scroll-snap-stop:always;box-sizing:border-box;padding:14px 14px 10px;display:flex;flex-direction:column;max-width:560px;margin:0 auto}
+.carte-lecon{flex:1;min-height:0;overflow-y:auto;background:#fff;border-radius:24px;box-shadow:0 8px 26px rgba(34,65,143,.10);padding:22px 20px;display:flex;flex-direction:column;gap:12px}
+.carte-lecon h2{margin:0;font-family:var(--d);font-weight:800;font-size:30px;line-height:1.05}
+.texte-lecon{font-size:17px;line-height:1.55}
+.texte-lecon .ligne{margin:8px 0}
+.pastille-type{align-self:flex-start;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700;background:#E3ECF8;color:var(--nuit)}
+.pastille-type.exemple{background:#E4F1EA;color:#1F5C41}
+.pastille-type.attention{background:#FDE7DD;color:#A33A12}
+.pastille-type.remarque{background:#FBF1D9;color:#7A5A0E}
+.glisser{display:flex;flex-direction:column;align-items:center;margin:8px 0 0;font-size:13.5px;font-weight:600;color:var(--gris)}
+.titre-quiz{font-family:var(--d);font-weight:800;font-size:24px}
+.quiz-lecon .question{font-size:19px}
+.quiz-lecon .choix{margin-top:6px}
+.corr-lecon{border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.45}
+.corr-lecon.ok{background:var(--vert-pale);color:#1F5C41}
+.corr-lecon.ko{background:var(--rouge-pale);color:#8A2620}
+.fin-lecon{flex:1;border-radius:24px;background:var(--degrade);color:var(--neige);padding:34px 22px 22px;display:flex;flex-direction:column;gap:12px;text-align:center}
+.fin-lecon h2{margin:0;font-family:var(--d);font-weight:800;font-size:42px}
+.fin-lecon .petit{color:#D9E3F2}
+.drapeau-fin{align-self:center;width:90px;height:90px;border-radius:50%;background:var(--drapeau);color:var(--nuit);display:grid;place-items:center}
+.stats-fin{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:6px}
+.stats-fin div{background:rgba(255,255,255,.12);border-radius:16px;padding:12px 8px;display:flex;flex-direction:column}
+.stats-fin b{font-family:var(--d);font-weight:800;font-size:32px}
+.stats-fin span{font-size:13px;color:#D9E3F2}
+.boutons-fin{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+.boutons-fin .btn-rond{padding:0 16px}
+.fin-lecon .btn-blanc{color:var(--nuit)}
+body.nuit .fin-lecon .btn-blanc{background:transparent;color:var(--n-texte);border-color:rgba(255,255,255,.5)}
+#v-lecon .pastilles span.ici{background:#fff}
+#v-lecon .pastilles span.fait{background:var(--drapeau)}
+body.nuit #v-lecon.active{background:var(--n-fond)}
+body.nuit .carte-lecon{background:var(--n-surf);box-shadow:none;border:1px solid var(--n-bord)}
+body.nuit .pt-lecon.ouverte{background:var(--n-surf);color:var(--n-texte);border-color:var(--n-texte)}
+body.nuit .pt-lecon.suivante{border-color:var(--n-texte)}
+body.nuit .sentier-fond{filter:brightness(.55) saturate(.9)}
+body.nuit .et-lecon{background:rgba(11,19,38,.88);color:var(--n-texte)}
+body.nuit .fin-lecon{background:var(--etoiles),var(--degrade-nuit);background-size:300px 300px,100% 100%;background-repeat:repeat,no-repeat}
+body.nuit .glisser{color:var(--n-doux)}
+body.nuit .pastille-type{background:var(--n-surf2);color:var(--n-texte)}
+body.nuit .corr-lecon.ok{background:#123A2C;color:#BFE6D2} body.nuit .corr-lecon.ko{background:#3E1D1D;color:#F3C4BE}
+@media (prefers-reduced-motion:reduce){.lecon-fil{scroll-behavior:auto}}
+
 /* ===== Thème nuit ===== */
 .n-etoiles,.n-ombre{display:none}
 body.nuit{--n-fond:#0B1326;--n-surf:#141F3A;--n-surf2:#1C2A4C;--n-bord:#2A3A60;--n-texte:#E4EAF5;--n-doux:#A3B3CF;
@@ -395,12 +457,25 @@ body.nuit .meteo.beau{background:#1C3A2E} body.nuit .meteo.mauvais{background:#4
 
   <!-- ===== COURS ===== -->
   <section class="vue" id="v-cours">
-    <div class="entete"><h1 id="cours-titre"></h1><p class="petit" style="margin:6px 0 0">Touchez les cases en pointillés pour révéler la réponse, après avoir essayé de la retrouver de tête.</p></div>
+    <div class="entete"><h1 id="cours-titre"></h1><p class="petit" id="cours-aide" style="margin:6px 0 0"></p></div>
     <div class="pad">
-      <div class="chips clair-chips" id="cours-chap" style="margin-top:8px"></div>
-      <div class="outils"><button id="tout-cacher">Tout cacher</button><button id="tout-voir">Tout révéler</button></div>
-      <div class="cours" id="cours-contenu"></div>
+      <div class="segment" id="cours-mode"><button data-m="lecons" class="on">Leçons</button><button data-m="complet">Cours complet</button></div>
+      <div class="chips clair-chips" id="cours-chap" style="margin-top:4px"></div>
+      <div id="lecons-vue"></div>
+      <div id="complet-vue">
+        <div class="outils"><button id="tout-cacher">Tout cacher</button><button id="tout-voir">Tout révéler</button></div>
+        <div class="cours" id="cours-contenu"></div>
+      </div>
     </div>
+  </section>
+
+  <!-- ===== LEÇON ===== -->
+  <section class="vue" id="v-lecon">
+    <div class="tete-quiz">
+      <button class="rond" id="lecon-quitter" aria-label="Quitter la leçon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div style="flex:1;min-width:0"><div class="pastilles" id="lecon-segs"></div><p class="petit" id="lecon-info" style="margin:6px 0 0"></p></div>
+    </div>
+    <div class="lecon-fil" id="lecon-fil"></div>
   </section>
 
   <!-- ===== FICHES ===== -->
@@ -529,7 +604,7 @@ body.nuit .meteo.beau{background:#1C3A2E} body.nuit .meteo.mauvais{background:#4
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "2.8";
+const VERSION_APP = "2.9.3";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -567,7 +642,7 @@ function badgePiste(n){ const p=piste(n); return `<span class="piste" style="--p
 
 /* ================= Sauvegarde ================= */
 const CLE = "altimaths.v2";
-const VIDE = () => ({chap:"tous",prenom:"",acces:"",minutes:0,justes:0,total:0,jours:0,dernierJour:"",jour:"",jourJustes:0,q:{},f:{},fs:{},fn:{date:"",n:0},theme:"auto",fg:{date:"",ids:[],alt:0},etapes:{},serie:0});
+const VIDE = () => ({chap:"tous",prenom:"",acces:"",minutes:0,justes:0,total:0,jours:0,dernierJour:"",jour:"",jourJustes:0,q:{},f:{},fs:{},fn:{date:"",n:0},lecons:{},modeCours:"lecons",theme:"auto",fg:{date:"",ids:[],alt:0},etapes:{},serie:0});
 let E;
 try { E = JSON.parse(localStorage.getItem(CLE)||"null"); } catch(e){ E=null; }
 if (!E){ E = VIDE(); try { const v1 = JSON.parse(localStorage.getItem("mathsECG1.v1")||"null");
@@ -655,10 +730,10 @@ function aller(v){
   vueCourante=v;
   $$(".vue").forEach(s=>s.classList.toggle("active", s.id==="v-"+v));
   $$("nav.bas button").forEach(b=>b.classList.toggle("actif", b.dataset.vue===v));
-  document.body.classList.toggle("en-quiz", v==="quiz");
+  document.body.classList.toggle("en-quiz", v==="quiz"||v==="lecon");
   document.body.classList.toggle("sombre", SOMBRES.includes(v));
   window.scrollTo(0,0);
-  ({ascension:rendreAscension, profil:rendreProfil, fiches:rendreFiche, expedition:rendreExpedition}[v]||(()=>{}))();
+  ({ascension:rendreAscension, cours:rendreCours, profil:rendreProfil, fiches:rendreFiche, expedition:rendreExpedition}[v]||(()=>{}))();
 }
 $$("nav.bas button").forEach(b=>b.addEventListener("click",()=>aller(b.dataset.vue)));
 
@@ -804,6 +879,12 @@ function rendreCours(){
   const CH = CHAP[chapCours];
   segChap($("#cours-chap"), chapCours, false, c=>{ chapCours=c; rendreCours(); window.scrollTo(0,0); });
   $("#cours-titre").textContent = "Chapitre "+CH.numero+" : "+CH.titre;
+  const lec = E.modeCours!=="complet";
+  $$("#cours-mode button").forEach(b=>b.classList.toggle("on", (b.dataset.m==="lecons")===lec));
+  $("#lecons-vue").style.display = lec?"block":"none";
+  $("#complet-vue").style.display = lec?"none":"block";
+  $("#cours-aide").textContent = lec ? "Une leçon par notion : des cartes à faire défiler vers le haut et de petits quiz. L'ordre est conseillé, toutes les leçons sont ouvertes." : "Touchez les cases en pointillés pour révéler la réponse, après avoir essayé de la retrouver de tête.";
+  if (lec) rendreSentier();
   const et={exemple:"Exemples",attention:"Attention",remarque:"Remarque"};
   $("#cours-contenu").innerHTML = CH.cours.map(b=>{
     if (b.type==="section") return `<h2 class="section">${b.titre}</h2>`;
@@ -818,6 +899,160 @@ $("#cours-contenu").addEventListener("click",e=>{ const t=e.target.closest(".tro
 $("#tout-voir").addEventListener("click",()=>$$(".trou").forEach(t=>t.classList.add("vu")));
 $("#tout-cacher").addEventListener("click",()=>$$(".trou").forEach(t=>t.classList.remove("vu")));
 
+
+
+/* ================= Leçons (mode apprentissage) ================= */
+const GAIN_QUIZ_LECON=0.5, BONUS_LECON=2;
+const LECONS={};
+CHAPS.forEach(ch=>{
+  const m={}; let cle=null;
+  ch.cours.forEach(b=>{ if (b.type==="section"||b.type==="sous"){ cle=b.titre; return; } (m[cle]=m[cle]||[]).push(b); });
+  LECONS[ch.id]=(ch.lecons||[]).map((l,i)=>({id:ch.id+"-L"+(i+1), ch:ch.id, n:i+1, titre:l.titre, themes:l.themes||[], blocs:l.parties.flatMap(p=>m[p]||[])})).filter(l=>l.blocs.length);
+});
+const leconFaite = l => !!(E.lecons && E.lecons[l.id]);
+$$("#cours-mode button").forEach(b=>b.addEventListener("click",()=>{ E.modeCours=b.dataset.m; sauver(); rendreCours(); }));
+
+
+/* décor du sentier : vallée verte en bas, moraine, cascade de glace, neige et sommet en haut */
+function aleaGraine(g){ return ()=>{ g=(g*16807)%2147483647; return (g-1)/2147483646; }; }
+function fondSentier(W,H,pts){
+  const rnd=aleaGraine(7+Math.round(H)), Y=f=>f*H;
+  const px=y=>{ /* abscisse approximative du chemin à la hauteur y */
+    const P=[{x:pts[0].x,y:H}].concat(pts);
+    for(let i=1;i<P.length;i++){ const a=P[i-1], b=P[i]; if (y<=a.y && y>=b.y){ const t=(a.y-y)/Math.max(1,a.y-b.y), s=t*t*(3-2*t); return a.x+(b.x-a.x)*s; } }
+    return P[P.length-1].x; };
+  const libre=(x,y,m)=>Math.abs(x-px(y))>m;
+  let g=`<defs><linearGradient id="sol" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#E9F1FA"/><stop offset=".2" stop-color="#F5F9FD"/><stop offset=".25" stop-color="#D3E6F6"/><stop offset=".48" stop-color="#B7D4EC"/>
+    <stop offset=".53" stop-color="#F2C08E"/><stop offset=".7" stop-color="#E5A066"/><stop offset=".75" stop-color="#9CC786"/><stop offset="1" stop-color="#6E9F5C"/></linearGradient>
+    <linearGradient id="trace" gradientUnits="userSpaceOnUse" x1="0" y1="${H}" x2="0" y2="0">
+    <stop offset="0" stop-color="#E07B39"/><stop offset=".26" stop-color="#E07B39"/><stop offset=".3" stop-color="#F6D3AE"/><stop offset=".48" stop-color="#F6D3AE"/>
+    <stop offset=".52" stop-color="#F3F9FF"/><stop offset=".76" stop-color="#F3F9FF"/><stop offset=".8" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs>
+    <rect width="${W}" height="${H}" fill="url(#sol)"/>`;
+  /* sommet et ciel */
+  g+=`<path d="M0,${Y(.07)} L${W*.18},${Y(.035)} L${W*.34},${Y(.06)} L${W*.55},${Y(.012)} L${W*.62},${Y(.022)} L${W*.78},${Y(.05)} L${W},${Y(.03)} L${W},0 L0,0Z" fill="#CFE0F2"/>
+    <path d="M${W*.55},${Y(.012)} L${W*.62},${Y(.022)} L${W*.6},${Y(.05)} L${W*.5},${Y(.04)}Z" fill="#FFFFFF" opacity=".9"/>
+    <path d="M${W*.55},${Y(.012)} v-14" stroke="#22418F" stroke-width="1.5"/><path d="M${W*.55},${Y(.012)-14} h10 l-3,3.5 l3,3.5 h-10z" fill="#E8541C"/>`;
+  /* congères dans la neige */
+  for(let i=0;i<9;i++){ const y=Y(.06+rnd()*.15), x=rnd()*W; if(!libre(x,y,W*.16)) continue; const w=30+rnd()*50;
+    g+=`<ellipse cx="${x}" cy="${y+3}" rx="${w/2}" ry="5" fill="#C9DBEE" opacity=".7"/><ellipse cx="${x}" cy="${y}" rx="${w/2}" ry="5" fill="#FFFFFF"/>`; }
+  /* séracs et crevasses */
+  for(let i=0;i<16;i++){ const y=Y(.26+rnd()*.22), x=rnd()*W; if(!libre(x,y,W*.15)) continue; const s=10+rnd()*16;
+    g+=`<path d="M${x-s},${y} L${x-s*.6},${y-s*1.3} L${x+s*.3},${y-s*1.5} L${x+s},${y-s*.4} L${x+s*.8},${y}Z" fill="#E6F1FB" stroke="#9EC3E3" stroke-width="1"/><path d="M${x+s*.3},${y-s*1.5} L${x+s},${y-s*.4} L${x+s*.8},${y} L${x+s*.1},${y}Z" fill="#A9CBE8"/>`; }
+  for(let i=0;i<10;i++){ const y=Y(.27+rnd()*.2), x=rnd()*W; if(!libre(x,y,W*.12)) continue; const l=20+rnd()*30;
+    g+=`<path d="M${x},${y} l${l*.25},3 l${l*.25},-2 l${l*.25},3 l${l*.25},-1" fill="none" stroke="#6E9BC6" stroke-width="1.6" stroke-linecap="round"/>`; }
+  /* moraine : rochers, cairns, drapeaux de prière */
+  for(let i=0;i<18;i++){ const y=Y(.52+rnd()*.2), x=rnd()*W; if(!libre(x,y,W*.13)) continue; const s=5+rnd()*11;
+    g+=`<path d="M${x-s},${y} L${x-s*.7},${y-s*.8} L${x+s*.2},${y-s} L${x+s},${y-s*.3} L${x+s*.9},${y}Z" fill="${rnd()<.5?"#C97A43":"#D68A50"}"/><path d="M${x+s*.2},${y-s} L${x+s},${y-s*.3} L${x+s*.9},${y} L${x+s*.3},${y}Z" fill="#A85F31"/>`; }
+  { const y=Y(.6), side=px(y)<W/2; const x0=side?W*.62:W*.06, x1=x0+W*.3;
+    g+=`<path d="M${x0},${y} v-26 M${x1},${y+6} v-26" stroke="#7A4A2A" stroke-width="2"/><path d="M${x0},${y-24} Q${(x0+x1)/2},${y-12} ${x1},${y-18}" fill="none" stroke="#7A4A2A" stroke-width=".8"/>`;
+    const cols=["#2361B8","#F8FAFB","#C8202F","#2C7A57","#E8B53A"];
+    for(let k=1;k<10;k++){ const t=k/10, xx=x0+(x1-x0)*t, yy=(1-t)*(y-24)+t*(y-18)+12*2*t*(1-t)*0.5*2; g+=`<rect x="${xx-3}" y="${yy}" width="6" height="8" fill="${cols[k%5]}"/>`; } }
+  /* moraine : touffes d'herbe, buissons de rhododendrons, rochers de granit gris */
+  for(let i=0;i<10;i++){ const y=Y(.54+rnd()*.19), x=rnd()*W; if(!libre(x,y,W*.12)) continue; const w=26+rnd()*40;
+    g+=`<ellipse cx="${x}" cy="${y}" rx="${w/2}" ry="${5+rnd()*4}" fill="#9DBB72" opacity=".55"/>`; }
+  for(let i=0;i<14;i++){ const y=Y(.53+rnd()*.2), x=rnd()*W; if(!libre(x,y,W*.12)) continue; const s=7+rnd()*7;
+    g+=`<circle cx="${x-s*.5}" cy="${y-s*.5}" r="${s*.6}" fill="#4F7E45"/><circle cx="${x+s*.45}" cy="${y-s*.45}" r="${s*.55}" fill="#5C8C4E"/><circle cx="${x}" cy="${y-s*.85}" r="${s*.6}" fill="#679A57"/>`;
+    if (rnd()<.6) g+=`<circle cx="${x-s*.3}" cy="${y-s*.9}" r="1.8" fill="#E2557A"/><circle cx="${x+s*.4}" cy="${y-s*.6}" r="1.8" fill="#F07C9B"/><circle cx="${x+s*.05}" cy="${y-s*1.2}" r="1.6" fill="#E2557A"/>`; }
+  for(let i=0;i<30;i++){ const y=Y(.53+rnd()*.21), x=rnd()*W; if(!libre(x,y,W*.09)) continue;
+    g+=`<path d="M${x-4},${y} l1.5,-7 M${x},${y} l0,-9 M${x+4},${y} l-1.5,-7" stroke="${rnd()<.5?"#5E8F45":"#78A653"}" stroke-width="1.6" stroke-linecap="round"/>`; }
+  for(let i=0;i<12;i++){ const y=Y(.53+rnd()*.2), x=rnd()*W; if(!libre(x,y,W*.13)) continue; const s=6+rnd()*10;
+    g+=`<path d="M${x-s},${y} L${x-s*.8},${y-s*.7} L${x-s*.1},${y-s*1.05} L${x+s*.7},${y-s*.75} L${x+s},${y}Z" fill="#9AA0A8"/><path d="M${x-s*.1},${y-s*1.05} L${x+s*.7},${y-s*.75} L${x+s},${y} L${x+s*.1},${y}Z" fill="#787F89"/><path d="M${x-s*.8},${y-s*.7} L${x-s*.1},${y-s*1.05} L${x},${y-s*.8} L${x-s*.6},${y-s*.55}Z" fill="#B7BCC3"/>`; }
+  /* vallée : sapins et fleurs */
+  for(let i=0;i<26;i++){ const y=Y(.76+rnd()*.24), x=rnd()*W; if(!libre(x,y,W*.13)) continue; const s=8+rnd()*10;
+    g+=`<rect x="${x-1.5}" y="${y-2}" width="3" height="6" fill="#7A4A2A"/><path d="M${x},${y-s*2.2} L${x+s*.7},${y-s*.9} L${x+s*.35},${y-s*.9} L${x+s},${y} L${x-s},${y} L${x-s*.35},${y-s*.9} L${x-s*.7},${y-s*.9}Z" fill="${rnd()<.5?"#2F6B45":"#3A7A4F"}"/>`; }
+  for(let i=0;i<40;i++){ const y=Y(.77+rnd()*.23), x=rnd()*W; if(!libre(x,y,W*.08)) continue; g+=`<circle cx="${x}" cy="${y}" r="1.6" fill="${["#F8FAFB","#E8B53A","#E07AA3"][i%3]}"/>`; }
+  return g;
+}
+function rendreSentier(){
+  const ls=LECONS[chapCours]||[], el=$("#lecons-vue");
+  if (!ls.length){ el.innerHTML='<p class="petit" style="padding:20px 0">Les leçons de ce chapitre arrivent bientôt. Le cours complet est disponible dans l\'autre onglet.</p>'; return; }
+  const faites=ls.filter(leconFaite).length, prochaine=ls.find(l=>!leconFaite(l));
+  const PAS=112, H=150+ls.length*PAS, W=Math.max(280, Math.min(560, el.clientWidth||340));
+  const pts=ls.map((l,i)=>({x: (i%2===0?.3:.7)*W, y: H-70-i*PAS}));
+  let d=`M${pts[0].x},${pts[0].y+40}`; pts.forEach((p,i)=>{ const a=i?pts[i-1]:{x:p.x,y:p.y+40}; d+=` C${a.x},${a.y-PAS/2} ${p.x},${p.y+PAS/2} ${p.x},${p.y}`; });
+  let dFait=""; const der=ls.reduce((k,l,i)=>leconFaite(l)?i:k,-1);
+  if (der>=0){ dFait=`M${pts[0].x},${pts[0].y+40}`; for(let i=0;i<=der;i++){ const p=pts[i], a=i?pts[i-1]:{x:p.x,y:p.y+40}; dFait+=` C${a.x},${a.y-PAS/2} ${p.x},${p.y+PAS/2} ${p.x},${p.y}`; } }
+  const ok='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+  const play='<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  const noeuds=ls.map((l,i)=>{ const p=pts[i], f=leconFaite(l), suiv=l===prochaine, gauche=p.x<W/2;
+    const cls=f?"fait":(suiv?"suivante":"ouverte");
+    const lab=`<span class="et-lecon ${gauche?"a-droite":"a-gauche"}">${suiv?'<b class="bulle">Prochaine leçon</b>':""}${esc(l.titre)}</span>`;
+    return `<div class="noeud" style="left:${p.x}px;top:${p.y}px"><button class="pt-lecon ${cls}" data-lecon="${l.id}" aria-label="Leçon ${l.n} : ${esc(l.titre)}${f?", terminée":""}">${f?ok:(suiv?play:l.n)}</button>${lab}</div>`; }).join("");
+  el.innerHTML = `<div class="avance-lecons"><div class="petit" style="display:flex;justify-content:space-between"><span>${faites} leçon${faites>1?"s":""} sur ${ls.length} terminée${faites>1?"s":""}</span><span>ordre conseillé</span></div><div class="jauge"><i style="width:${Math.round(100*faites/ls.length)}%"></i></div></div>
+  <div class="sentier" style="height:${H}px;width:${W}px"><svg class="sentier-fond" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">${fondSentier(W,H,pts)}<path d="${d}" class="piste-bord"/><path d="${d}" class="piste-fond" stroke="url(#trace)"/>${dFait?`<path d="${dFait}" class="piste-faite"/>`:""}</svg>${noeuds}</div>
+  <p class="petit" style="text-align:center;margin:4px 0 0">Gain : ${String(GAIN_QUIZ_LECON).replace(".",",")} min par quiz réussi du premier coup et ${BONUS_LECON} min de bonus en fin de leçon, la première fois seulement.</p>`;
+}
+let largeurSentier=0; window.addEventListener("resize",()=>{ const w=$("#lecons-vue").clientWidth; if (vueCourante==="cours" && E.modeCours!=="complet" && Math.abs(w-largeurSentier)>30){ largeurSentier=w; rendreSentier(); } });
+$("#lecons-vue").addEventListener("click",e=>{ const b=e.target.closest("[data-lecon]"); if(b) demarrerLecon(b.dataset.lecon); });
+
+let L=null;
+const ETIQ={prop:"À retenir",exemple:"Exemple",attention:"Attention",remarque:"Remarque"};
+function demarrerLecon(id){
+  const l=Object.values(LECONS).flat().find(x=>x.id===id); if(!l) return;
+  const cartes=l.blocs.map(b=>({type:"carte",b}));
+  const pool=melanger(QUESTIONS.filter(q=>q.ch===l.ch && l.themes.includes(q.theme) && q.niveau<=1));
+  const nq=Math.min(pool.length, Math.max(1, Math.min(3, Math.ceil(cartes.length/2))));
+  const seq=[]; let k=0;
+  cartes.forEach((c,i)=>{ seq.push(c); while (k<nq && i+1>=Math.round((k+1)*cartes.length/nq)){ seq.push({type:"quiz",q:pool[k]}); k++; } });
+  L={l, seq, rendu:0, ok:0, total:nq, deja:leconFaite(l), fini:false};
+  $("#lecon-fil").innerHTML=""; aller("lecon"); avancerLecon(); majSegments();
+  $("#lecon-fil").scrollTop=0;
+}
+function diapoHTML(it, i){
+  if (it.type==="carte"){ const b=it.b;
+    const t=prep(b.texte).replace(/\[\[([\s\S]+?)\]\]/g,'<button class="trou"><span>$1</span></button>');
+    return `<section class="diapo"><div class="carte-lecon"><span class="pastille-type ${b.type}">${ETIQ[b.type]||"Cours"}</span>${b.titre?`<h2>${b.titre}</h2>`:""}<div class="texte-lecon">${t}</div></div>${i===0?'<p class="glisser"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>Glisser vers le haut pour continuer</p>':""}</section>`; }
+  if (it.type==="quiz"){ const q=it.q, ordre=melanger(q.choix.map((c,j)=>j)); it.ordre=ordre;
+    return `<section class="diapo"><div class="carte-lecon quiz-lecon" data-i="${i}"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span class="titre-quiz">${it.rejoue?"Deuxième chance":"Petit quiz"}</span>${badgePiste(q.niveau)}</div><div class="question">${prep(q.q)}</div><div class="choix">${ordre.map((j,m)=>`<button data-j="${j}"><span class="lettre">${"ABCD"[m]}</span><span>${prep(q.choix[j])}</span></button>`).join("")}</div><div class="corr-lecon" hidden></div></div></section>`; }
+  const gainTxt = L.deja ? "Leçon déjà validée : pas de nouveau gain, mais la révision compte !" : "";
+  return `<section class="diapo"><div class="fin-lecon"><div class="drapeau-fin"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg></div><h2>Leçon terminée</h2><p class="petit">${esc(L.l.titre)}</p><div class="stats-fin"><div><b>${L.ok} / ${L.total}</b><span>quiz réussis du premier coup</span></div><div><b id="fin-m">+0 m</b><span id="fin-min"></span></div></div><p class="petit" id="fin-detail">${gainTxt}</p><div class="boutons-fin">${it.suivante?`<button class="btn-rond btn-orange" data-suite="${it.suivante.id}">Leçon suivante : ${esc(it.suivante.titre)}</button>`:""}<button class="btn-rond btn-blanc" id="fin-sentier">Revenir au sentier</button></div></div></section>`;
+}
+function avancerLecon(){
+  const fil=$("#lecon-fil"); let html="";
+  while (L.rendu<L.seq.length){ const it=L.seq[L.rendu]; html+=diapoHTML(it,L.rendu); L.rendu++; if (it.type==="quiz") break; }
+  if (L.rendu>=L.seq.length && !L.seq.slice(L.rendu-1).some(x=>x.type==="quiz" && !x.repondu) && !L.fini){
+    const ls=LECONS[L.l.ch], i=ls.indexOf(L.l); const fin={type:"fin", suivante: ls.slice(i+1).find(x=>!leconFaite(x)) || ls[i+1]};
+    L.fini=true; L.seq.push(fin); L.rendu++; html+=diapoHTML(fin,L.rendu-1); fil.insertAdjacentHTML("beforeend",html); maths(fil); terminerLecon(); majSegments(); return;
+  }
+  const tmp=document.createElement("div"); tmp.innerHTML=html; [...tmp.children].forEach(c=>{ fil.appendChild(c); maths(c); });
+  majSegments();
+}
+function majSegments(){
+  if(!L) return; const fil=$("#lecon-fil"), n=L.seq.length+(L.fini?0:1), i=Math.min(n-1, Math.round(fil.scrollTop/Math.max(1,fil.clientHeight)));
+  $("#lecon-segs").innerHTML=Array.from({length:n},(_,k)=>`<span class="${k<i?"fait":(k===i?"ici":"")}"></span>`).join("");
+  $("#lecon-info").textContent=L.l.titre+", écran "+(i+1)+" sur "+n;
+}
+$("#lecon-fil").addEventListener("scroll",()=>{ if(!L) return; clearTimeout(L.t); L.t=setTimeout(majSegments,80); });
+$("#lecon-fil").addEventListener("click",e=>{
+  const t=e.target.closest(".trou"); if(t){ t.classList.toggle("vu"); return; }
+  const c=e.target.closest(".quiz-lecon .choix button");
+  if (c){ const box=c.closest(".quiz-lecon"), it=L.seq[+box.dataset.i]; if (it.repondu) return;
+    it.repondu=true; const j=+c.dataset.j, juste=j===it.q.bonne;
+    box.querySelectorAll(".choix button").forEach(b=>{ b.disabled=true; if(+b.dataset.j===it.q.bonne) b.classList.add("juste"); });
+    if(!juste) c.classList.add("faux");
+    if (juste && !it.rejoue) L.ok++;
+    if (!juste){ L.seq.push({type:"quiz", q:it.q, rejoue:true}); }
+    const corr=box.querySelector(".corr-lecon"); corr.hidden=false; corr.className="corr-lecon "+(juste?"ok":"ko");
+    corr.innerHTML=`<b>${juste?(it.rejoue?"Juste, cette fois !":"Juste"+(L.deja?"":" : +"+String(GAIN_QUIZ_LECON).replace(".",",")+" min en fin de leçon")):"Pas tout à fait : la question reviendra en fin de leçon."}</b><div>${prep(it.q.expl||"")}</div><button class="btn-rond btn-nuit continuer-lecon">Continuer</button>`;
+    maths(corr); return; }
+  if (e.target.closest(".continuer-lecon")){ avancerLecon(); const fil=$("#lecon-fil"); const box=e.target.closest(".diapo"); const nx=box.nextElementSibling; if(nx) fil.scrollTo({top:nx.offsetTop, behavior:"smooth"}); return; }
+  const s=e.target.closest("[data-suite]"); if (s){ demarrerLecon(s.dataset.suite); return; }
+  if (e.target.closest("#fin-sentier")){ L=null; aller("cours"); }
+});
+/* une carte de cours ne bloque pas : on ajoute la suite dès qu'on approche de la dernière diapo affichée */
+$("#lecon-fil").addEventListener("scroll",()=>{ if(!L) return; const fil=$("#lecon-fil"); const last=L.seq[L.rendu-1];
+  if (last && last.type==="carte" && fil.scrollTop+fil.clientHeight*1.5>=fil.scrollHeight) avancerLecon(); });
+function terminerLecon(){
+  let gain=0;
+  if (!L.deja){ gain=(L.ok*GAIN_QUIZ_LECON+BONUS_LECON)*FACTEUR[METEO.cat]; const avant=position(E.minutes).a;
+    E.minutes=Math.min(TOTAL,E.minutes+gain); noterEtapes(); const m=Math.max(0,Math.round(position(E.minutes).a-avant));
+    E.lecons[L.l.id]={date:auj(), ok:L.ok, total:L.total}; sauver(); envoyer();
+    $("#fin-m").textContent="+"+nf(m)+" m"; $("#fin-min").textContent=String(Math.round(gain*10)/10).replace(".",",")+" min de marche";
+    $("#fin-detail").textContent=L.ok+" quiz réussi"+(L.ok>1?"s":"")+" × "+String(GAIN_QUIZ_LECON).replace(".",",")+" min + "+BONUS_LECON+" min de bonus"+(FACTEUR[METEO.cat]<1?", ralenti par la météo":"")+". Gain accordé la première fois seulement.";
+  } else { $("#fin-m").textContent="+0 m"; $("#fin-min").textContent="déjà validée"; const p=E.lecons[L.l.id]; if (L.ok>p.ok){ p.ok=L.ok; sauver(); } }
+}
+$("#lecon-quitter").addEventListener("click",()=>{ L=null; aller("cours"); });
 
 /* ================= Thème nuit (coucher → lever du soleil à Noisy-le-Sec) ================= */
 function soleil(date, lever){
