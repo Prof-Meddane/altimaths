@@ -536,6 +536,14 @@ body.nuit .b-num{fill:var(--n-texte)}
 body.nuit .zen-h1,body.nuit .zen-h2,body.nuit .zen-cit .fr,body.nuit .zen-photo figcaption b{color:var(--n-texte)}
 body.nuit .zen-cit,body.nuit .zen-souffle{background:#1B2B52;border-color:#2E4170;color:var(--n-texte)}
 body.nuit .zen-cit .orig,body.nuit .zen-cit footer span,body.nuit .zen-photo figcaption span,body.nuit .zen-photo figcaption small{color:var(--n-doux)}
+
+.hero .jour.serie{background:#FDE7DD;color:#C2410C;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.hero .jour svg{position:static;width:14px;height:14px;flex:none}
+.hero .jour.serie.a-risque{background:#FFF4D6;color:#8A5A00}
+.serie-msg{background:rgba(232,84,28,.16);border:1px solid rgba(232,84,28,.35);color:#fff;border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.4;margin:10px 0 0}
+.serie-msg b{color:#FFD2BD}
+.serie-carnet{margin:0 0 12px;font-size:14px;color:#C2410C;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+body.nuit .serie-carnet{color:#FFB08A}
 </style>
 </head>
 <body class="sombre">
@@ -591,6 +599,7 @@ body.nuit .zen-cit .orig,body.nuit .zen-cit footer span,body.nuit .zen-photo fig
         <p class="lieu" id="lieu"></p>
         <p class="petit" id="prochaine" style="margin:4px 0 0"></p>
       </div>
+      <div class="serie-msg" id="serie-msg" hidden></div>
       <div class="meteo inconnu" id="meteo"></div>
       <div class="choix-chap"><span class="petit">Questions :</span><div class="chips" id="chap-choix"></div></div>
       <div class="deux">
@@ -842,7 +851,7 @@ body.nuit .zen-cit .orig,body.nuit .zen-cit footer span,body.nuit .zen-photo fig
 <script>
 (function(){
 "use strict";
-const VERSION_APP = "3.7";
+const VERSION_APP = "3.8";
 const C = window.CONTENU, CHAPS = C.chapitres;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -890,7 +899,25 @@ function sauver(){ try{ localStorage.setItem(CLE, JSON.stringify(E)); }catch(e){
 function auj(d){ d=d||new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 function hier(){ const d=new Date(); d.setDate(d.getDate()-1); return auj(d); }
 function majJour(){ if (E.jour!==auj()){ E.jour=auj(); E.jourJustes=0; } }
-function activite(){ if (E.dernierJour===auj()) return; E.serie = E.dernierJour===hier() ? E.serie+1 : 1; E.jours++; E.dernierJour=auj(); }
+function activite(){ if (E.dernierJour===auj()) return; E.serie = E.dernierJour===hier() ? (E.serie||0)+1 : 1; E.jours++; E.dernierJour=auj();
+  E.serieMax=Math.max(E.serieMax||0, E.serie); sauver();
+  if ([3,7,14,21,30,50,75,100].includes(E.serie)) setTimeout(()=>toast(`Série de ${E.serie} jours de marche d'affilée !`), 600);
+  if (typeof rendreSerie==="function") rendreSerie(); }
+/* série de jours : en cours si l'on a marché aujourd'hui ou hier */
+function serieActuelle(){ return (E.dernierJour===auj() || E.dernierJour===hier()) ? (E.serie||0) : 0; }
+function joursSansMarcher(){ if (!E.dernierJour) return null; const d=(new Date(auj()+"T12:00")-new Date(E.dernierJour+"T12:00"))/86400000; return Math.round(d); }
+const FLAMME='<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 .2 1.8 1 3 2.2 3.5C11 9 11 5.5 12 2z"/></svg>';
+function rendreSerie(){
+  const n=serieActuelle(), el=$("#jour");
+  el.innerHTML = n>0 ? `${FLAMME} ${n} jour${n>1?"s":""}` : "Jour "+Math.max(1,E.jours); el.title = n>0 ? "Jours de marche d'affilée" : "";
+  el.classList.toggle("serie", n>0); el.classList.toggle("a-risque", n>0 && E.dernierJour!==auj());
+  const m=$("#serie-msg"), j=joursSansMarcher(), cat=METEO.cat;
+  const ciel = cat==="beau" ? "Il fait beau à Noisy aujourd'hui : c'est le moment de monter." : cat==="tempete" ? "Tempête aujourd'hui, mais les pistes vertes et bleues restent ouvertes." : cat==="inconnu" ? "" : "Un peu de mauvais temps, mais on avance quand même.";
+  let t="";
+  if (n>0 && E.dernierJour!==auj()) t=`<b>Votre série de ${n} jour${n>1?"s":""} est en jeu.</b> Un exercice, une leçon ou quelques fiches aujourd'hui suffisent pour la garder. ${ciel}`;
+  else if (j!=null && j>=2) t=`<b>Vous n'avez pas marché depuis ${j} jours.</b> Votre cordée continue de monter… ${ciel}`;
+  m.innerHTML=t; m.hidden=!t;
+}
 function noterEtapes(){ ETAPES.forEach(e=>{ if (E.minutes>=e.min-1e-6 && !E.etapes[e.n]) E.etapes[e.n]=auj(); }); }
 
 /* ================= Météo de Noisy-le-Sec (Open-Meteo) ================= */
@@ -1004,7 +1031,7 @@ function rendreAscension(){
   $("#hero-route").innerHTML = `<path d="${chemin(L.apres)}" fill="none" stroke="#F8FAFB" stroke-width="2" stroke-dasharray="3 6" stroke-linecap="round" opacity=".85"/><path d="${chemin(L.avant)}" fill="none" stroke="#E8541C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
   const moi=$("#hero-moi"); moi.style.left=(100*L.p[0]/390)+"%"; moi.style.top=(100*L.p[1]/430)+"%";
   $("#alti").innerHTML = nf(P.a)+"<small>m</small>";
-  $("#jour").textContent = "Jour "+Math.max(1,E.jours);
+  rendreSerie();
   $("#lieu").textContent = lieuTexte(E.minutes);
   $("#prochaine").textContent = P.vers ? `Prochaine étape : ${P.vers.n}, ${nf(P.vers.a)} m, à ${kmTxt(P.vers.km-P.km)}` : `Sommet atteint le ${new Date(E.etapes["Sommet"]||Date.now()).toLocaleDateString("fr-FR")}. Bravo !`;
   const cat=METEO.cat;
@@ -1592,7 +1619,7 @@ $("#lecon-fil").addEventListener("click",e=>{
   const t=e.target.closest(".trou"); if(t){ t.classList.toggle("vu"); return; }
   const c=e.target.closest(".quiz-lecon .choix button");
   if (c){ const box=c.closest(".quiz-lecon"), it=L.seq[+box.dataset.i]; if (it.repondu) return;
-    it.repondu=true; const j=+c.dataset.j, juste=j===it.q.bonne;
+    it.repondu=true; activite(); const j=+c.dataset.j, juste=j===it.q.bonne;
     box.querySelectorAll(".choix button").forEach(b=>{ b.disabled=true; if(+b.dataset.j===it.q.bonne) b.classList.add("juste"); });
     if(!juste) c.classList.add("faux");
     if (it.bonus){ if (juste) L.bonusOk=true; }
@@ -1730,6 +1757,7 @@ function gainFiche(f){
   noterEtapes();
 }
 function noter(g){
+  activite();
   const f=pile[iF]; if(!f) return;
   if (!E.fs[f.id]) { nouvellesRestantes(); E.fn.n++; }
   E.fs[f.id]=simuler(E.fs[f.id],g);
@@ -1830,7 +1858,8 @@ function rendreGraphiques(){
   const parCh=CHAPS.map(c=>{ const r=taux(QUESTIONS.filter(q=>q.ch===c.id)); return anneau(r.t, r.n, "#E8541C", "Chapitre "+c.numero); }).join("");
   const parPiste=PISTES.map((p,i)=>{ const r=taux(QUESTIONS.filter(q=>(q.niveau||0)===i)); return anneau(r.t, r.n, p.c, p.nom.replace("Piste ","")); }).join("");
   const col=n=>`style="grid-template-columns:repeat(${Math.min(4,n)},1fr)"`;
-  $("#p-graph").innerHTML=`<div class="anneaux-titre">Réussite par chapitre</div><div class="anneaux" ${col(CHAPS.length)}>${parCh}</div>
+  const sa=serieActuelle();
+  $("#p-graph").innerHTML=`<p class="serie-carnet">${FLAMME} Série en cours : <b>${sa} jour${sa>1?"s":""}</b> · meilleure série : <b>${Math.max(E.serieMax||0,sa)} jour${Math.max(E.serieMax||0,sa)>1?"s":""}</b></p><div class="anneaux-titre">Réussite par chapitre</div><div class="anneaux" ${col(CHAPS.length)}>${parCh}</div>
     <div class="anneaux-titre">Réussite par couleur de piste</div><div class="anneaux" ${col(PISTES.length)}>${parPiste}</div>
     <div class="anneaux-titre" style="margin-top:4px">Boussole des thèmes</div>
     <div class="chips clair-chips" id="bous-chap" style="margin:0 0 4px"></div><div id="boussole"></div>
@@ -2135,6 +2164,7 @@ $("#duel-corps").addEventListener("click", async e=>{
   if (e.target.closest("#duel-retour")||e.target.closest("#duel-fermer")){ fermerDuel(); return; }
   if (e.target.closest("#duel-abandon")){ if (!confirmerAbandon()) return; try{ await c.duelMaj(CFG, DU.id, {etat:"abandon", abandon:DU.moi}); }catch(x){} return; }
   if (Date.now()<DU.verrou) return;
+  activite();
   const b=e.target.closest("button[data-c],button[data-j]"); if (!b || DU.k<0) return;
   const Q=DU.qs[DU.k];
   const juste = b.dataset.c!=null ? +b.dataset.c===Q.q.bonne : +b.dataset.j===0;
