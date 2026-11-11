@@ -42,6 +42,12 @@ window.CONTENU = {
       ],
 
       /* ------------------------------ COURS ------------------------------ */
+      lecons: [
+        { titre: "Identités remarquables", parties: ["Identités remarquables"], themes: ["id"] },
+        { titre: "Fractions et puissances", parties: ["Fractions", "Puissances"], themes: ["frac"] },
+        { titre: "Équations et systèmes", parties: ["Équations du 1er degré", "Systèmes d'équations", "Équations du 2nd degré"], themes: ["eq"] },
+        { titre: "Inégalités et inéquations", parties: ["Règles de manipulation des inégalités", "Résoudre une inéquation"], themes: ["ineg", "abs"] }
+      ],
       cours: [
         { type: "section", titre: "1. Règles de calcul" },
         { type: "sous", titre: "Identités remarquables" },
@@ -501,6 +507,15 @@ window.CONTENU = {
         { id: "rec",  titre: "Récurrence",              icone: "n+1" }
       ],
 
+      lecons: [
+        { titre: "Réels et valeur absolue", parties: ["Rappels du lycée", "Valeur absolue et distance"], themes: ["ens"] },
+        { titre: "Maximum et borne supérieure", parties: ["Maximum et borne supérieure"], themes: ["ens"] },
+        { titre: "Connecteurs logiques", parties: ["Vocabulaire et connecteurs logiques"], themes: ["quant"] },
+        { titre: "Négation et implication", parties: ["Négation et implication"], themes: ["neg"] },
+        { titre: "Types de raisonnement", parties: ["Prouver une implication", "Prouver ou infirmer une proposition", "Raisonnement par équivalence"], themes: ["rais"] },
+        { titre: "La fonction partie entière", parties: ["4. La fonction partie entière"], themes: ["pe"] },
+        { titre: "Raisonnement par récurrence", parties: ["5. Rédiger rigoureusement", "Raisonnement par récurrence"], themes: ["rec"] }
+      ],
       cours: [
         { type: "section", titre: "1. Les ensembles numériques" },
         { type: "sous", titre: "Rappels du lycée" },
@@ -955,6 +970,18 @@ window.CONTENU = {
         { id: "tri",  titre: "Sommes triangulaires",              icone: "i≤j" }
       ],
 
+      lecons: [
+        { titre: "Symboles Σ et Π", parties: ["Sur des exemples", "Définition théorique"], themes: ["sym", "prod"] },
+        { titre: "Propriétés et changement d'indice", parties: ["Propriétés générales des sommes"], themes: ["lin"] },
+        { titre: "Somme des entiers", parties: ["Somme des entiers"], themes: ["ent"] },
+        { titre: "Sommes géométriques", parties: ["Somme d'une suite géométrique"], themes: ["geo"] },
+        { titre: "Sommes télescopiques", parties: ["Sommes télescopiques"], themes: ["tel"] },
+        { titre: "Formule de Bernoulli", parties: ["La formule de Bernoulli"], themes: ["bern"] },
+        { titre: "Coefficients binomiaux", parties: ["Coefficients binomiaux"], themes: ["bin"] },
+        { titre: "Binôme de Newton", parties: ["La formule du binôme de Newton"], themes: ["newt"] },
+        { titre: "Sommes doubles rectangulaires", parties: ["Sommes rectangulaires"], themes: ["rect"] },
+        { titre: "Sommes triangulaires", parties: ["Sommes triangulaires", "Découper un carré en trois morceaux"], themes: ["tri"] }
+      ],
       cours: [
         { type: "section", titre: "1. Définition des symboles Σ et Π" },
         { type: "sous", titre: "Sur des exemples" },
