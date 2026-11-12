@@ -114,7 +114,7 @@ nav button{position:relative}
 .defi-aide{margin:12px 0 0;padding:12px 14px;border-radius:12px;background:var(--nuit3);color:var(--neige);font-size:14.5px;line-height:1.5}
 .defi-aide .py-code{margin:8px 0 0}
 .btn-defis .sym{font-size:13px;letter-spacing:-.5px}
-.co-bloc{margin:14px 0 6px}.co-h{font-family:var(--d);font-size:21px;font-weight:800;margin:0 0 8px}
+.co-bloc{margin:14px 0 6px}.co-avenir{font-family:var(--t);font-size:12px;font-weight:700;color:#fff;background:var(--pente);border-radius:99px;padding:2px 9px;vertical-align:middle}.co-avenir.en-cours{background:var(--vert)}.co-h{font-family:var(--d);font-size:21px;font-weight:800;margin:0 0 8px}
 .co-demo{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:1px solid var(--trait);border-radius:16px;padding:12px 14px;margin:0 0 8px;color:inherit}
 .co-demo .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.co-demo b{font-size:15px}.co-demo small{color:var(--gris);font-size:12.5px}
 .co-demo .chev{font-size:24px;color:var(--gris)}
@@ -953,7 +953,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script>
 (function(){
 "use strict";
-const VERSION_APP="4.2";
+const VERSION_APP="4.2.1";
 const C = window.CONTENU, CHAPS = C.chapitres;
 /* informatique : un « chapitre » de plus pour la marche (QCM, fiches), sans cours de maths ni leçons */
 if (window.INFO && !CHAPS.some(c=>c.info)) CHAPS.push({id:"info", numero:"Py", titre:"Informatique (Python)", info:true, themes:window.INFO.themes, questions:window.INFO.questions, fiches:window.INFO.fiches, cours:[], lecons:[]});
@@ -2662,11 +2662,14 @@ function rendreColles(){
   $("#cours-aide").textContent = coOuvert ? "" : "Les démonstrations à savoir refaire au tableau, semaine par semaine. Ici, pas de gain d'altitude : c'est de l'entraînement pur.";
   if (coOuvert){ rendreDemo(); return; }
   const w=coSemaine(); if (!w){ v.innerHTML='<p class="petit">Aucun programme de colle pour l\'instant.</p>'; return; }
-  const ici=new Set(w.demos);
+  const ici=new Set(w.demos.concat((COL.semaines.find(s=>s.debut>auj())||{demos:[]}).demos));
   const anciennes=[...new Set(COL.semaines.filter(s=>s.debut<w.debut).flatMap(s=>s.demos))].filter(id=>!ici.has(id));
   const entretien=anciennes.filter(id=>{ const l=coDerniere(id); return !l || l.ok<l.n || ecartJours(l.d)>=10; });
   const prec=COL.semaines.filter(s=>s.debut<w.debut).reverse();
-  v.innerHTML = `<section class="co-bloc"><h2 class="co-h">${esc(w.titre)}</h2>
+  const suiv=COL.semaines.find(s=>s.debut>auj());
+  const blocSuiv = suiv ? `<section class="co-bloc"><h2 class="co-h">${esc(suiv.titre)} <span class="co-avenir">à venir</span></h2>${suiv.demos.map(coBouton).join("")}
+      <details class="co-prog"><summary>Au programme</summary>${suiv.chapitres.map(c=>`<b>${esc(c.titre)}</b><ul>${c.points.map(p=>`<li>${prep(p)}</li>`).join("")}</ul>`).join("")}</details></section>` : "";
+  v.innerHTML = blocSuiv + `<section class="co-bloc"><h2 class="co-h">${esc(w.titre)}${suiv?' <span class="co-avenir en-cours">en cours</span>':""}</h2>
       ${w.demos.map(coBouton).join("")}
       <details class="co-prog"><summary>Au programme cette semaine</summary>${w.chapitres.map(c=>`<b>${esc(c.titre)}</b><ul>${c.points.map(p=>`<li>${prep(p)}</li>`).join("")}</ul>`).join("")}</details></section>
     ${entretien.length?`<section class="co-bloc"><h2 class="co-h">À entretenir</h2><p class="petit" style="margin:-4px 0 8px">Démonstrations des semaines passées, pas récitées sans faute depuis plus de dix jours.</p>${entretien.map(coBouton).join("")}</section>`:""}
