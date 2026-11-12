@@ -114,6 +114,27 @@ nav button{position:relative}
 .defi-aide{margin:12px 0 0;padding:12px 14px;border-radius:12px;background:var(--nuit3);color:var(--neige);font-size:14.5px;line-height:1.5}
 .defi-aide .py-code{margin:8px 0 0}
 .btn-defis .sym{font-size:13px;letter-spacing:-.5px}
+.co-bloc{margin:14px 0 6px}.co-h{font-family:var(--d);font-size:21px;font-weight:800;margin:0 0 8px}
+.co-demo{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:1px solid var(--trait);border-radius:16px;padding:12px 14px;margin:0 0 8px;color:inherit}
+.co-demo .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.co-demo b{font-size:15px}.co-demo small{color:var(--gris);font-size:12.5px}
+.co-demo .chev{font-size:24px;color:var(--gris)}
+.co-st{font-size:12px;font-weight:700}.co-st.nouveau{color:var(--gris)}.co-st.sue{color:var(--vert)}.co-st.revoir{color:var(--orange)}
+.co-prog,.co-sem{margin:6px 0 8px;font-size:14px;line-height:1.5}.co-prog summary,.co-sem summary{cursor:pointer;font-weight:700;color:var(--pente);padding:6px 0}
+.co-prog ul{margin:4px 0 8px;padding-left:18px}.co-sem .co-demo{margin-top:6px}
+.co-aide{margin-top:18px}.co-aide p{font-size:14px;line-height:1.5;margin:8px 0}
+.co-titre{font-family:var(--d);font-size:24px;font-weight:800;margin:6px 0 4px;line-height:1.15}
+.co-enonce{margin:0 0 12px}
+.co-corps{margin-top:12px}
+.co-etape{display:flex;gap:10px;background:#fff;border:1px solid var(--trait);border-radius:14px;padding:12px;margin:0 0 10px;font-size:15px;line-height:1.55}
+.co-etape.ok{border-color:rgba(46,158,98,.6);background:rgba(46,158,98,.06)}.co-etape.ko{border-color:rgba(226,70,59,.5);background:rgba(226,70,59,.05)}
+.co-etape>div{flex:1;min-width:0}.co-num{flex:none;width:26px;height:26px;border-radius:50%;background:var(--nuit);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px}
+.co-t{display:block;margin-bottom:4px}.co-x .katex-display{margin:.4em 0;font-size:.92em;overflow-x:auto;overflow-y:hidden}
+.co-fait{margin:8px 0 12px;padding-left:22px;line-height:1.5;font-size:15px}.co-fait li{margin:4px 0;color:var(--vert);font-weight:600}
+.co-pioche{display:flex;flex-direction:column;gap:8px}.co-pioche button{text-align:left;background:#fff;border:1px solid var(--trait);border-radius:12px;padding:11px 14px;font-size:15px;font-weight:600;color:inherit}
+.co-pioche button.non{animation:secoue .35s;border-color:var(--orange)}@keyframes secoue{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.co-go{width:100%;margin-top:6px}.co-note{margin-top:6px}
+table.tv{border-collapse:collapse;margin:6px 0}table.tv th,table.tv td{border:1px solid var(--trait);padding:6px 10px;text-align:center}
+body.nuit .co-demo,body.nuit .co-etape,body.nuit .co-pioche button{background:var(--n-surf,#1B2742);border-color:rgba(255,255,255,.1)}body.nuit .co-demo small{color:var(--n-doux)}
 .ligne-bouton .pc{font-family:var(--d);font-weight:800;font-size:20px}
 .choix-chap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .acc{background:var(--nuit2);border-radius:16px;overflow:hidden}
@@ -734,7 +755,7 @@ body.nuit .serie-carnet{color:#FFB08A}
   <section class="vue" id="v-cours">
     <div class="entete"><h1 id="cours-titre"></h1><p class="petit" id="cours-aide" style="margin:6px 0 0"></p></div>
     <div class="pad">
-      <div class="segment matiere" id="cours-matiere"><button data-m="maths" class="on">Maths</button><button data-m="python">Python</button></div>
+      <div class="segment matiere" id="cours-matiere"><button data-m="maths" class="on">Maths</button><button data-m="python">Python</button><button data-m="colles">Colles</button></div>
       <div id="maths-vue">
       <div id="maths-liste" hidden></div>
       <div id="maths-ouvert">
@@ -749,6 +770,7 @@ body.nuit .serie-carnet{color:#FFB08A}
       </div>
       </div>
       <div id="python-vue" hidden></div>
+      <div id="colles-vue" hidden></div>
     </div>
   </section>
 
@@ -921,6 +943,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script src="katex/auto-render.min.js"></script>
 <script src="contenu.js"></script>
 <script src="info.js"></script>
+<script src="colles.js"></script>
 <script src="python.js"></script>
 <script src="justif.js"></script>
 <script src="zen.js"></script>
@@ -930,7 +953,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script>
 (function(){
 "use strict";
-const VERSION_APP="4.0.1";
+const VERSION_APP="4.1";
 const C = window.CONTENU, CHAPS = C.chapitres;
 /* informatique : un « chapitre » de plus pour la marche (QCM, fiches), sans cours de maths ni leçons */
 if (window.INFO && !CHAPS.some(c=>c.info)) CHAPS.push({id:"info", numero:"Py", titre:"Informatique (Python)", info:true, themes:window.INFO.themes, questions:window.INFO.questions, fiches:window.INFO.fiches, cours:[], lecons:[]});
@@ -1286,9 +1309,10 @@ $("#res-accueil").addEventListener("click",()=>aller("ascension"));
 
 /* ================= Cours ================= */
 function rendreCours(){
-  const py = E.matiere==="python";
-  $$("#cours-matiere button").forEach(b=>b.classList.toggle("on", (b.dataset.m==="python")===py));
-  $("#maths-vue").hidden = py; $("#python-vue").hidden = !py;
+  const py = E.matiere==="python", co = E.matiere==="colles";
+  $$("#cours-matiere button").forEach(b=>b.classList.toggle("on", b.dataset.m===(E.matiere||"maths")));
+  $("#maths-vue").hidden = py||co; $("#python-vue").hidden = !py; $("#colles-vue").hidden = !co;
+  if (co){ $("#v-cours").classList.remove("immersif"); document.body.classList.remove("cours-immersif"); if (collesPret) rendreColles(); return; }
   if (py){ $("#v-cours").classList.remove("immersif"); document.body.classList.remove("cours-immersif"); rendrePython(); return; }
   const ouvert = E.mOuvert && CHAP[E.mOuvert] && !CHAP[E.mOuvert].info ? E.mOuvert : null;
   $("#maths-liste").hidden = !!ouvert; $("#maths-ouvert").hidden = !ouvert;
@@ -1324,7 +1348,7 @@ const RESUMES_MATHS={ch0:"Fractions, puissances, racines, identités remarquable
   ch1:"Propositions, quantificateurs, raisonnements, récurrence, borne supérieure, partie entière.",
   ch2:"Symboles somme et produit, sommes usuelles, télescopage, binôme de Newton, sommes doubles.",
   ch3:"Domaines, parité, périodicité, polynômes, ln, exp, puissances, équations, dérivées."};
-$$("#cours-matiere button").forEach(b=>b.addEventListener("click",()=>{ const m=b.dataset.m; if (m===(E.matiere||"maths")){ if (m==="maths") E.mOuvert=null; else { pyOuvert=null; E.py.ouvert=null; } } E.matiere=m; sauver(); rendreCours(); window.scrollTo(0,0); }));
+$$("#cours-matiere button").forEach(b=>b.addEventListener("click",()=>{ const m=b.dataset.m; if (m===(E.matiere||"maths")){ if (m==="maths") E.mOuvert=null; else if (m==="colles") coOuvert=null; else { pyOuvert=null; E.py.ouvert=null; } } E.matiere=m; sauver(); rendreCours(); window.scrollTo(0,0); }));
 $("#maths-liste").addEventListener("click",e=>{ const b=e.target.closest("[data-mc]"); if (!b) return; E.mOuvert=b.dataset.mc; E.modeCours="lecons"; sauver(); window.scrollTo(0,0); rendreCours(); });
 $("#maths-retour").addEventListener("click",()=>{ E.mOuvert=null; sauver(); rendreCours(); window.scrollTo(0,0); });
 /* ================= Python : le manuel de l'atelier (cours) ================= */
@@ -2570,6 +2594,101 @@ $("#defi-sortie").addEventListener("py-fin",e=>{
 });
 $("#defi-verdict").addEventListener("click",e=>{ const b=e.target.closest("[data-suivant]"); if (b) ouvrirDefi(b.dataset.suivant); });
 defisPrets=true; majBoutonDefis();
+
+/* ================= Colles : les démonstrations à savoir refaire (pas de gain d'altitude) ================= */
+var collesPret=false;
+const COL = window.COLLES || {demos:{}, semaines:[]};
+E.colles = E.colles || {};
+let coOuvert=null, coMode="lire", coOrdre=null, coRecit=null;
+const coSemaine = () => { const a=auj(); let s=null; COL.semaines.forEach(w=>{ if (w.debut<=a) s=w; }); return s || COL.semaines[0]; };
+const coEtat = id => E.colles[id] || {r:[]};
+const coDerniere = id => { const r=coEtat(id).r; return r.length ? r[r.length-1] : null; };
+const jourFr = d => { const [y,m,j]=d.split("-"); return j+"/"+m; };
+const ecartJours = d => Math.round((new Date(auj())-new Date(d))/86400000);
+function coStatut(id){
+  const l=coDerniere(id), n=COL.demos[id].etapes.length;
+  if (!l) return `<span class="co-st nouveau">pas encore récitée</span>`;
+  const su=l.ok===l.n;
+  return `<span class="co-st ${su?"sue":"revoir"}">${su?"sue":"à retravailler"} · ${l.ok}/${l.n} le ${jourFr(l.d)}</span>`;
+}
+function coBouton(id){ const d=COL.demos[id]; return `<button class="co-demo" data-demo="${id}"><span class="txt"><b>${prep(d.titre)}</b><small>${d.chapitre} · ${d.etapes.length} étapes</small>${coStatut(id)}</span><span class="chev">›</span></button>`; }
+function rendreColles(){
+  const v=$("#colles-vue");
+  $("#cours-titre").textContent = coOuvert ? "Colles" : "Colles";
+  $("#cours-aide").textContent = coOuvert ? "" : "Les démonstrations à savoir refaire au tableau, semaine par semaine. Ici, pas de gain d'altitude : c'est de l'entraînement pur.";
+  if (coOuvert){ rendreDemo(); return; }
+  const w=coSemaine(); if (!w){ v.innerHTML='<p class="petit">Aucun programme de colle pour l\'instant.</p>'; return; }
+  const ici=new Set(w.demos);
+  const anciennes=[...new Set(COL.semaines.filter(s=>s.debut<w.debut).flatMap(s=>s.demos))].filter(id=>!ici.has(id));
+  const entretien=anciennes.filter(id=>{ const l=coDerniere(id); return !l || l.ok<l.n || ecartJours(l.d)>=10; });
+  const prec=COL.semaines.filter(s=>s.debut<w.debut).reverse();
+  v.innerHTML = `<section class="co-bloc"><h2 class="co-h">${esc(w.titre)}</h2>
+      ${w.demos.map(coBouton).join("")}
+      <details class="co-prog"><summary>Au programme cette semaine</summary>${w.chapitres.map(c=>`<b>${esc(c.titre)}</b><ul>${c.points.map(p=>`<li>${prep(p)}</li>`).join("")}</ul>`).join("")}</details></section>
+    ${entretien.length?`<section class="co-bloc"><h2 class="co-h">À entretenir</h2><p class="petit" style="margin:-4px 0 8px">Démonstrations des semaines passées, pas récitées sans faute depuis plus de dix jours.</p>${entretien.map(coBouton).join("")}</section>`:""}
+    ${prec.length?`<section class="co-bloc"><h2 class="co-h">Semaines précédentes</h2>${prec.map(s=>`<details class="co-sem"><summary>${esc(s.titre)}</summary>${s.demos.map(coBouton).join("")}</details>`).join("")}</section>`:""}
+    <details class="carte co-aide"><summary>Comment bien apprendre une démonstration ?</summary><p><b>Lire</b> : découvrez la preuve, en essayant de retrouver chaque passage caché avant de le toucher.</p><p><b>Remettre dans l'ordre</b> : retrouvez l'enchaînement des étapes, c'est la colonne vertébrale de la preuve.</p><p><b>Réciter</b> : rédigez la preuve de tête (sur une feuille), puis révélez les étapes une à une et notez honnêtement ce que vous aviez. Recommencez les jours suivants jusqu'au sans-faute, puis de temps en temps pour ne pas oublier.</p></details>`;
+  maths(v);
+}
+function rendreDemo(){
+  const d=COL.demos[coOuvert], v=$("#colles-vue");
+  const etapes=d.etapes;
+  let corps="";
+  if (coMode==="lire"){
+    corps = `<div class="outils"><button id="co-cacher">Tout cacher</button><button id="co-voir">Tout révéler</button></div>`+
+      etapes.map((e,i)=>`<div class="co-etape"><span class="co-num">${i+1}</span><div><b class="co-t">${prep(e.t)}</b><div class="co-x">${trous(e.x)}</div></div></div>`).join("")+
+      (d.note?`<div class="bloc remarque"><span class="etiquette">Remarque</span>${prep(d.note)}</div>`:"");
+  } else if (coMode==="ordre"){
+    if (!coOrdre || coOrdre.id!==coOuvert){ let m=melanger(etapes.map((_,i)=>i)); while (etapes.length>2 && m.every((x,i)=>x===i)) m=melanger(m); coOrdre={id:coOuvert, reste:m, fait:[], err:0}; }
+    const o=coOrdre;
+    corps = `<p class="petit">Touchez les étapes dans l'ordre de la démonstration.</p>
+      <ol class="co-fait">${o.fait.map(i=>`<li>${prep(etapes[i].t)}</li>`).join("")}</ol>
+      ${o.reste.length?`<div class="co-pioche">${o.reste.map(i=>`<button data-et="${i}">${prep(etapes[i].t)}</button>`).join("")}</div>`
+        :`<div class="defi-verdict ok">Ordre retrouvé${o.err?` avec ${o.err} erreur${o.err>1?"s":""}`:" sans erreur"}. <button class="lien" id="co-rejouer">Recommencer</button></div>`}`;
+  } else {
+    if (!coRecit || coRecit.id!==coOuvert) coRecit={id:coOuvert, i:-1, ok:[]};
+    const r=coRecit;
+    if (r.i<0) corps = `<p>Rédigez la démonstration de tête, sur une feuille ou à voix haute, comme au tableau. Ensuite, révélez les étapes une à une et dites honnêtement si vous les aviez.</p><button class="btn-rond btn-nuit co-go" id="co-commencer">J'ai rédigé, voir l'étape 1</button>`;
+    else {
+      corps = etapes.slice(0, r.i+1).map((e,k)=>`<div class="co-etape ${k<r.ok.length?(r.ok[k]?"ok":"ko"):""}"><span class="co-num">${k+1}</span><div><b class="co-t">${prep(e.t)}</b><div class="co-x">${prep(e.x.replace(/\[\[([\s\S]+?)\]\]/g,"$1"))}</div></div></div>`).join("");
+      if (r.ok.length===r.i+1 && r.i+1===etapes.length){
+        const n=r.ok.filter(Boolean).length;
+        corps += `<div class="defi-verdict ${n===etapes.length?"ok":"ko"}">${n===etapes.length?"Démonstration sue : toutes les étapes y étaient.":`${n} étape${n>1?"s":""} sur ${etapes.length}. Relisez celles qui manquaient, puis recommencez demain.`} <button class="lien" id="co-recommencer">Recommencer</button></div>`;
+      } else if (r.ok.length===r.i+1) corps += `<button class="btn-rond btn-nuit co-go" id="co-suivante">Voir l'étape ${r.i+2}</button>`;
+      else corps += `<div class="deux co-note"><button class="btn-rond btn-blanc" data-note="0">Je ne l'avais pas</button><button class="btn-rond btn-nuit" data-note="1">Je l'avais</button></div>`;
+    }
+  }
+  v.innerHTML = `<button class="py-retour" id="co-retour">‹ Toutes les démonstrations</button>
+    <h2 class="co-titre">${prep(d.titre)}</h2><p class="petit" style="margin:0 0 10px">${d.chapitre} · ${coStatut(coOuvert)}</p>
+    <div class="bloc prop co-enonce"><span class="etiquette">Énoncé</span>${prep(d.enonce)}</div>
+    <div class="segment py-mode" id="co-mode"><button data-cm="lire" class="${coMode==="lire"?"on":""}">Lire</button><button data-cm="ordre" class="${coMode==="ordre"?"on":""}">Ordre</button><button data-cm="reciter" class="${coMode==="reciter"?"on":""}">Réciter</button></div>
+    <div class="co-corps">${corps}</div>`;
+  maths(v);
+}
+const trous = x => prep(x).replace(/\[\[([\s\S]+?)\]\]/g,'<button class="trou"><span>$1</span></button>');
+$("#colles-vue").addEventListener("click",e=>{
+  const t=e.target;
+  const dm=t.closest("[data-demo]"); if (dm){ coOuvert=dm.dataset.demo; coMode="lire"; coOrdre=null; coRecit=null; rendreColles(); window.scrollTo(0,0); return; }
+  if (t.closest("#co-retour")){ coOuvert=null; rendreColles(); window.scrollTo(0,0); return; }
+  const m=t.closest("[data-cm]"); if (m){ coMode=m.dataset.cm; rendreDemo(); return; }
+  const tr=t.closest(".trou"); if (tr){ tr.classList.toggle("vu"); return; }
+  if (t.closest("#co-voir")){ $$("#colles-vue .trou").forEach(x=>x.classList.add("vu")); return; }
+  if (t.closest("#co-cacher")){ $$("#colles-vue .trou").forEach(x=>x.classList.remove("vu")); return; }
+  const et=t.closest("[data-et]");
+  if (et){ const i=+et.dataset.et, o=coOrdre;
+    if (i===o.fait.length){ o.fait.push(i); o.reste=o.reste.filter(x=>x!==i); rendreDemo(); }
+    else { o.err++; et.classList.remove("non"); void et.offsetWidth; et.classList.add("non"); }
+    return; }
+  if (t.closest("#co-rejouer")){ coOrdre=null; rendreDemo(); return; }
+  if (t.closest("#co-commencer") || t.closest("#co-suivante")){ coRecit.i++; rendreDemo(); return; }
+  const nt=t.closest("[data-note]");
+  if (nt){ coRecit.ok.push(nt.dataset.note==="1");
+    if (coRecit.ok.length===COL.demos[coOuvert].etapes.length){
+      const s=E.colles[coOuvert]=coEtat(coOuvert); s.r=(s.r||[]).concat([{d:auj(), ok:coRecit.ok.filter(Boolean).length, n:coRecit.ok.length}]).slice(-20); sauver(); }
+    rendreDemo(); return; }
+  if (t.closest("#co-recommencer")){ coRecit=null; rendreDemo(); return; }
+});
+collesPret=true; if (E.matiere==="colles" && vueCourante==="cours") rendreCours();
 
 })();
 
