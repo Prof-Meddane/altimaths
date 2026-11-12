@@ -953,7 +953,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script>
 (function(){
 "use strict";
-const VERSION_APP="4.1";
+const VERSION_APP="4.2";
 const C = window.CONTENU, CHAPS = C.chapitres;
 /* informatique : un « chapitre » de plus pour la marche (QCM, fiches), sans cours de maths ni leçons */
 if (window.INFO && !CHAPS.some(c=>c.info)) CHAPS.push({id:"info", numero:"Py", titre:"Informatique (Python)", info:true, themes:window.INFO.themes, questions:window.INFO.questions, fiches:window.INFO.fiches, cours:[], lecons:[]});
@@ -2136,40 +2136,44 @@ appliquerTheme(); rendreCours(); preparer(); aller("ascension"); chargerMeteo();
 if (!valide(E.acces)) ouvrirPorte("code");
 else if (!E.prenom) ouvrirPorte("prenom");
 else attendreCloud(4000).then(()=>{ restaurer(); envoyer(); });
-/* ================= Duels entre élèves (défi direct, 3 manches de 3 questions, classement Elo) ================= */
-const DUEL = {QPM:3, MANCHES:3, LIMITE:60000, TRANSITION:3500, DEPART:4000, PEN0:5000, PEN_MAX:120000, TTL:10*60000, K:32, ELO0:1200};
+/* ================= Duels entre élèves (défi direct, une manche de 3 questions, classement Elo) ================= */
+const DUEL = {NQ:3, LIMITE:60000, TRANSITION:3500, DEPART:4000, PEN0:5000, PEN_MAX:40000, TTL:10*60000, K:32, ELO0:1200, POLL:4000, INSTABLE:9000};
 const JUST = window.JUSTIF || {};
-const CHAPS_DUEL = CHAPS.filter(c=>JUST[c.id] && JUST[c.id].length>=DUEL.QPM*DUEL.MANCHES);
+const CHAPS_DUEL = CHAPS.filter(c=>JUST[c.id] && JUST[c.id].length>=DUEL.NQ);
 E.elo = Object.assign({elo:DUEL.ELO0, n:0, v:0, d:0, nul:0, faits:{}}, E.elo||{});
+/* remise à 1200 demandée pour le compte professeur (une seule fois par appareil) */
+if (E.acces && estProfCode(E.acces) && E.elo.raz!=="4.2"){ Object.assign(E.elo,{elo:DUEL.ELO0, n:0, v:0, d:0, nul:0, faits:{}, raz:"4.2"}); sauver(); setTimeout(()=>envoyerElo(), 4000); }
 const POOL = {};
 CHAPS_DUEL.forEach(c=>{ POOL[c.id] = JUST[c.id].map(([p,...j])=>{ const q=c.questions.find(x=>x.q.startsWith(p)); return q ? {q, just:j} : null; }).filter(Boolean); });
 
 function graine(s){ let h=2166136261; for (const ch of String(s)){ h^=ch.charCodeAt(0); h=Math.imul(h,16777619); } return ()=>{ h^=h<<13; h^=h>>>17; h^=h<<5; return ((h>>>0)%1e9)/1e9; }; }
 function questionsDuel(d){ const r=graine(d.seed), L=POOL[d.ch].slice();
   for (let i=L.length-1;i>0;i--){ const j=Math.floor(r()*(i+1)); [L[i],L[j]]=[L[j],L[i]]; }
-  return L.slice(0, DUEL.QPM*DUEL.MANCHES); }
+  return L.slice(0, DUEL.NQ); }
 
-/* ---- résolution déterministe à partir des horodatages serveur ---- */
-function gagnantQ(r){ if (!r) return null;
-  const lim = r.x || Infinity; let best=null;
-  ["a","b"].forEach(s=>{ if (r[s] && r[s] < lim && (!best || r[s] < r[best])) best=s; });
-  return best; }
-function decideQ(r){ return r ? Math.min(r.a||Infinity, r.b||Infinity, r.x||Infinity) : Infinity; }
-function bilan(d){
-  const R=d.r||{}, pts={a:0,b:0}, manches={a:0,b:0}, detail=[];
-  let fini=false, k=0;
-  for (let m=0;m<DUEL.MANCHES && !fini;m++){
-    const p={a:0,b:0}; let complete=true;
-    for (let i=0;i<DUEL.QPM;i++,k++){ const rq=R["q"+k]; if (decideQ(rq)===Infinity){ complete=false; break; }
-      const g=gagnantQ(rq); if (g){ p[g]++; pts[g]++; } detail.push(g||"-"); }
-    if (!complete) break;
-    if (p.a>p.b) manches.a++; else if (p.b>p.a) manches.b++;
-    if (manches.a>=2 || manches.b>=2 || m===DUEL.MANCHES-1) fini=true;
+/* ---- résolution déterministe, uniquement à partir des horodatages du serveur ----
+   Question k : elle commence à deb_k (départ + 4 s, puis fin de la question précédente + 3,5 s).
+   Elle se termine à la première bonne réponse complète, ou à deb_k + 60 s si personne n'a trouvé :
+   ce délai se calcule, il n'a plus besoin d'être écrit par un des joueurs. */
+function chaine(d, t){
+  const R=d.r||{}, res=[]; if (!d.depart) return {res, k:0, deb:Infinity};
+  let deb=d.depart+DUEL.DEPART;
+  for (let k=0;k<DUEL.NQ;k++){
+    const rq=R["q"+k]||{}, lim=deb+DUEL.LIMITE; let g=null, fin=Infinity;
+    ["a","b"].forEach(x=>{ if (rq[x] && rq[x]<lim && rq[x]<fin){ fin=rq[x]; g=x; } });
+    if (!g){ if (t>=lim) fin=lim; else return {res, k, deb}; }
+    res.push({g, fin}); deb=fin+DUEL.TRANSITION;
   }
-  let vainqueur=null;
-  if (d.etat==="abandon") { vainqueur = d.abandon==="a"?"b":"a"; fini=true; }
-  else if (fini) vainqueur = manches.a!==manches.b ? (manches.a>manches.b?"a":"b") : (pts.a!==pts.b ? (pts.a>pts.b?"a":"b") : "nul");
-  return {pts, manches, detail, fini, vainqueur, nbDecidees: detail.length};
+  return {res, k:DUEL.NQ, deb:Infinity};
+}
+function bilan(d, t){
+  const c=chaine(d, t===undefined?maintenant():t), pts={a:0,b:0};
+  c.res.forEach(x=>{ if (x.g) pts[x.g]++; });
+  const detail=c.res.map(x=>x.g||"-");
+  let fini=c.k>=DUEL.NQ, vainqueur=null;
+  if (d.etat==="abandon"){ vainqueur = d.abandon==="a"?"b":"a"; fini=true; }
+  else if (fini) vainqueur = pts.a!==pts.b ? (pts.a>pts.b?"a":"b") : "nul";
+  return {pts, detail, fini, vainqueur, nbDecidees: detail.length, k:c.k, deb:c.deb};
 }
 
 /* ---- Elo ---- */
@@ -2187,10 +2191,10 @@ async function envoyerElo(){ const c=cloud(); if (!c||!c.eloPush||!E.acces||estI
   try { await c.eloPush(CFG,{prenom:E.prenom||"?", h:E.acces, elo:E.elo.elo, n:E.elo.n, v:E.elo.v, d:E.elo.d, nul:E.elo.nul}); } catch(e){} }
 async function restaurerElo(){ const c=cloud(); if (!c||!c.eloListe||!E.acces) return;
   try { const L=(await c.eloListe(CFG)).filter(x=>x.h===E.acces); const m=L.reduce((a,b)=>(!a||(b.n||0)>(a.n||0))?b:a,null);
-    if (m && (m.n||0)>E.elo.n){ Object.assign(E.elo,{elo:m.elo,n:m.n,v:m.v||0,d:m.d||0,nul:m.nul||0}); sauver(); } } catch(e){} }
+    if (m && (m.n||0)>E.elo.n && !(estProfCode(E.acces) && E.elo.raz)){ Object.assign(E.elo,{elo:m.elo,n:m.n,v:m.v||0,d:m.d||0,nul:m.nul||0}); sauver(); } } catch(e){} }
 
 /* ---- état local ---- */
-let DU=null;          // {id, moi, doc, unsub, qs, k, etape, ordre, verrou, err, decalage, tic}
+let DU=null;          // {id, moi, doc, unsub, qs, k, etape, ordre, verrou, err, decalage, rtt, mesures, vu, tic}
 let INVITES=[], unsubInv=null;
 const lui = () => DU.moi==="a"?"b":"a";
 const maintenant = () => Date.now() + (DU ? DU.decalage : 0);
@@ -2212,9 +2216,9 @@ $("#duel-invit").addEventListener("click", async e=>{
   const c=cloud(); INVITES=INVITES.filter(x=>x.id!==d.id); afficherInvitation();
   if (b.classList.contains("non")){ try{ await c.duelMaj(CFG, d.id, {etat:"refuse"}); }catch(e){} return; }
   try {
-    const uid=await c.connect(CFG); const t0=Date.now();
+    const uid=await c.connect(CFG); const t1=Date.now();
     await c.duelMaj(CFG, d.id, {"b.uid":uid, "b.prenom":E.prenom||"?", "b.elo":E.elo.elo, etat:"encours", depart:c.TS});
-    ouvrirDuel(d.id, "b", t0);
+    ouvrirDuel(d.id, "b", {champ:"depart", t1, t2:Date.now()});
   } catch(err){ toast("Impossible de rejoindre ce duel"); }
 });
 
@@ -2222,7 +2226,7 @@ $("#duel-invit").addEventListener("click", async e=>{
 function choisirChapitre(h, prenom){
   if (!CHAPS_DUEL.length){ toast("Les duels arrivent bientôt"); return; }
   const m=$("#duel-choix");
-  m.innerHTML=`<div class="carte"><h2>Défier ${esc(prenom)}</h2><p class="petit">3 manches de 3 questions. Pour marquer, il faut la bonne réponse <b>et</b> la bonne justification. Chaque erreur bloque quelques secondes, de plus en plus longtemps.</p>
+  m.innerHTML=`<div class="carte"><h2>Défier ${esc(prenom)}</h2><p class="petit">3 questions. Pour marquer, il faut la bonne réponse <b>et</b> la bonne justification, avant l'autre. Une erreur bloque 5 s, puis 10 s, puis 20 s… et le compteur repart à 5 s à chaque question.</p>
     ${CHAPS_DUEL.map(c=>`<button class="btn-ch" data-ch="${c.id}">Chapitre ${c.numero} · ${esc(c.titre)}</button>`).join("")}
     <button class="btn-annuler">Annuler</button></div>`;
   m.hidden=false;
@@ -2233,55 +2237,94 @@ async function lancerDefi(h, prenom, ch){
   const c=cloud(); if (!c||!c.duelCreer){ toast("Connectez-vous à Internet pour lancer un duel"); return; }
   if (!E.prenom){ toast("Indiquez d'abord votre prénom dans le Carnet"); return; }
   try {
-    const uid=await c.connect(CFG); const t0=Date.now();
+    const uid=await c.connect(CFG); const t1=Date.now();
     const id=await c.duelCreer(CFG, {a:{h:E.acces, uid, prenom:E.prenom, elo:E.elo.elo}, b:{h, uid:null, prenom, elo:null},
       ch, seed:Math.random().toString(36).slice(2), etat:"invite", cree:c.TS, depart:null, r:{}, err:{a:0,b:0}, abandon:null});
-    ouvrirDuel(id, "a", t0);
+    ouvrirDuel(id, "a", {champ:"cree", t1, t2:Date.now()});
   } catch(e){ toast("Le duel n'a pas pu être créé"); }
 }
 
 /* ---- déroulement ---- */
-async function ouvrirDuel(id, moi, t0){
-  const c=cloud(); if (DU && DU.unsub) DU.unsub();
-  DU={id, moi, doc:null, unsub:null, qs:null, k:-1, etape:0, ordre:null, verrou:0, err:0, decalage:0, t0, calibre:false, fini:false};
-  afficherInvitation(); aller("duel"); rendreDuel();
-  DU.unsub = await c.duelEcouter(CFG, id, d=>{ if (!DU || DU.id!==id || !d) return;
-    if (!DU.calibre && !d._attente){ const ts = moi==="a" ? d.cree : d.depart; if (ts && t0){ DU.decalage = ts - (t0 + Date.now())/2; DU.calibre = true; } }
-    DU.doc=d; if (!DU.qs && POOL[d.ch]) DU.qs=questionsDuel(d); rendreDuel(); });
-  clearInterval(DU && DU.tic); DU.tic=setInterval(()=>DU && boucle(), 250);
+const RANG_ETAT={invite:0, refuse:1, annule:1, encours:2, abandon:3, fini:3};
+function avancement(d){ let n=0; const f=o=>{ for (const k in o){ const v=o[k]; if (v && typeof v==="object") f(v); else if (v!=null) n++; } };
+  f(d.r||{}); f(d.sync||{}); f(d.b||{}); return n*100 + (RANG_ETAT[d.etat]||0)*10000 + ((d.err||{}).a||0) + ((d.err||{}).b||0); }
+const valeur = (d, champ) => champ.split(".").reduce((o,k)=>o&&o[k], d);
+function recevoir(d, source){
+  if (!DU || !d || d.id!==DU.id) return;
+  if (d._attente) return;                       /* écriture locale pas encore confirmée : horodatage estimé, on l'ignore */
+  DU.vu=Date.now();
+  /* la relecture directe ne sert que si elle est plus récente que ce qu'on a ; si elle l'est deux fois de suite,
+     le flux temps réel est bloqué : on se réabonne */
+  const sc=avancement(d);
+  if (source==="flux"){ DU.scFlux=sc; DU.ecart=0; }
+  else { if (DU.doc && sc<=avancement(DU.doc)) { if (sc<=DU.scFlux) DU.ecart=0; return; }
+    if (++DU.ecart>=2){ DU.ecart=0; if (DU.unsub) DU.unsub(); DU.unsub=null; abonner(DU.id); } }
+  /* horloge : chaque écriture confirmée donne une mesure de l'écart avec le serveur ; on garde la plus précise */
+  DU.mesures=DU.mesures.filter(m=>{ const v=valeur(d, m.champ); if (typeof v!=="number") return Date.now()-m.t2<30000;
+    const rtt=m.t2-m.t1; if (rtt<DU.rtt){ DU.rtt=rtt; DU.decalage=v-(m.t1+m.t2)/2; } return false; });
+  DU.doc=d; if (!DU.qs && POOL[d.ch]) DU.qs=questionsDuel(d);
+  if (d.etat==="encours" && !DU.pings){ DU.pings=1; pingHorloge(2); }
+  rendreDuel();
 }
-function debutQ(k){ const d=DU.doc; if (!d||!d.depart) return Infinity;
-  if (k===0) return d.depart + DUEL.DEPART;
-  const prec=decideQ((d.r||{})["q"+(k-1)]); return prec===Infinity ? Infinity : prec + DUEL.TRANSITION; }
-function questionCourante(){ const b=bilan(DU.doc); if (b.fini) return -1; return b.nbDecidees; }
+async function pingHorloge(n){ /* deux allers-retours rapides pour caler l'horloge au début du duel */
+  for (let i=0;i<n && DU;i++){ try{ await ecrire({["sync."+DU.moi+i]:cloud().TS}, "sync."+DU.moi+i); }catch(e){} } }
+async function ecrire(champs, champTS){
+  const id=DU.id, t1=Date.now(); await cloud().duelMaj(CFG, id, champs);
+  if (DU && DU.id===id && champTS) DU.mesures.push({champ:champTS, t1, t2:Date.now()});
+}
+async function ouvrirDuel(id, moi, mesure){
+  const c=cloud(); if (DU && DU.unsub) DU.unsub(); if (DU) clearInterval(DU.tic), clearInterval(DU.poll);
+  DU={id, moi, doc:null, unsub:null, qs:null, k:-1, etape:0, ordre:null, verrou:0, err:0, errTot:0, decalage:0, rtt:Infinity, mesures:mesure?[mesure]:[], vu:Date.now(), fini:false, pings:0, scFlux:-1, ecart:0};
+  afficherInvitation(); aller("duel"); rendreDuel();
+  abonner(id);
+  DU.tic=setInterval(()=>DU && boucle(), 200);
+  /* filet de sécurité : relecture directe sur le serveur toutes les 4 s, au cas où le flux temps réel se bloque */
+  DU.poll=setInterval(()=>relire(), DUEL.POLL);
+}
+async function abonner(id){
+  const c=cloud();
+  try { const u=await c.duelEcouter(CFG, id, d=>{ if (d) recevoir(d, "flux"); else reabonner(id); }); if (DU && DU.id===id){ if (DU.unsub) DU.unsub(); DU.unsub=u; } else u(); }
+  catch(e){ reabonner(id); }
+}
+function reabonner(id){ setTimeout(()=>{ if (DU && DU.id===id && !DU.fini) abonner(id); }, 2000); }
+async function relire(){
+  if (!DU || DU.fini || DU.lecture) return; const c=cloud(); if (!c.duelLire) return;
+  if (document.hidden) return;
+  DU.lecture=true; const id=DU.id;
+  try { const d=await c.duelLire(CFG, id); recevoir(d, "lecture"); }
+  catch(e){} finally { if (DU) DU.lecture=false; }
+}
+document.addEventListener("visibilitychange",()=>{ if (!document.hidden && DU && !DU.fini){ relire(); } });
+function questionCourante(){ const b=bilan(DU.doc); return b.fini ? -1 : b.k; }
+function debutQ(k){ const d=DU.doc; if (!d||!d.depart) return Infinity; const b=bilan(d); return k===b.k ? b.deb : Infinity; }
 function boucle(){
   const d=DU.doc; if (!d) return;
   if (d.etat==="invite" && Date.now()-(d.cree||Date.now()) > DUEL.TTL){ fermerDuel("Le défi a expiré."); return; }
   if (d.etat!=="encours" && d.etat!=="fini" && d.etat!=="abandon") return;
-  const k=questionCourante();
-  if (k<0 || d.etat==="abandon"){ terminer(); return; }
-  const t=maintenant(), deb=debutQ(k);
-  if (k!==DU.k && t>=deb){ DU.k=k; DU.etape=0; DU.ordre=null; rendreDuel(); }
-  if (t>=deb && t-deb > DUEL.LIMITE){ const r=(d.r||{})["q"+k]||{}; if (!r.x && !DU.xEcrit){ DU.xEcrit=k; cloud().duelMaj(CFG, DU.id, {["r.q"+k+".x"]:cloud().TS}).catch(()=>{}); } }
+  const b=bilan(d);
+  if (b.fini || d.etat==="abandon"){ terminer(); return; }
+  const t=maintenant();
+  if (b.k!==DU.k && t>=b.deb){ DU.k=b.k; DU.etape=0; DU.ordre=null; DU.err=0; DU.verrou=0; rendreDuel(); }
+  else rendreDuel();
   majChrono();
 }
 function majChrono(){
   const d=DU.doc, k=DU.k, t=maintenant(), el=$("#duel-chrono"), ov=$("#duel-verrou");
   if (el && k>=0){ const deb=debutQ(k); const reste=Math.max(0, DUEL.LIMITE-(t-deb)); el.style.width=(100*reste/DUEL.LIMITE)+"%"; }
-  const c=$("#duel-compte"); if (c){ const deb=debutQ(Math.max(0,questionCourante())); const s=Math.ceil((deb-t)/1000); c.textContent = s>0 ? s : ""; c.hidden = !(s>0); }
+  const c=$("#duel-compte"); if (c){ const deb=bilan(d).deb; const s=Math.ceil((deb-t)/1000); c.textContent = s>0 ? s : ""; c.hidden = !(s>0); }
+  const ins=$("#duel-instable"); if (ins) ins.hidden = Date.now()-DU.vu < DUEL.INSTABLE;
   if (ov){ const r=DU.verrou-Date.now(); ov.hidden = r<=0; if (r>0) ov.querySelector("b").textContent=Math.ceil(r/1000)+" s"; else if (!ov.dataset.libre){ ov.dataset.libre=1; } }
 }
 function rendreDuel(force){
   const v=$("#duel-corps"); if (!DU){ v.innerHTML=""; return; }
   const d=DU.doc, moi=DU.moi;
   if (d && !force){ const bb=bilan(d), cur=questionCourante(), rq=(d.r||{})["q"+DU.k]||{};
-    const sig=[d.etat, bb.detail.join(""), DU.k, cur, DU.etape, !!rq[moi], (d.err||{})[lui()], maintenant()<debutQ(Math.max(0,DU.k))].join("|");
+    const sig=[d.etat, bb.detail.join(""), DU.k, cur, DU.etape, !!rq[moi], (d.err||{})[lui()], maintenant()<bb.deb].join("|");
     if (sig===DU.sig) return; DU.sig=sig; }
   if (!d){ v.innerHTML=`<p class="duel-attente">Connexion…</p>`; return; }
   const adv=d[lui()];
   const tete=()=>{ const b=bilan(d);
-    const pastilles=s=>Array.from({length:DUEL.MANCHES},(_,m)=>{ const pm=b.detail.slice(m*DUEL.QPM,(m+1)*DUEL.QPM); const pa=pm.filter(x=>x===s).length, po=pm.filter(x=>x===(s==="a"?"b":"a")).length;
-      const c = pm.length<DUEL.QPM ? "" : (pa>po?"g":pa<po?"p":"n"); return `<i class="${c}"></i>`; }).join("");
+    const pastilles=s=>Array.from({length:DUEL.NQ},(_,q)=>{ const g=b.detail[q]; const c = g===undefined ? "" : g===s ? "g" : g==="-" ? "n" : "p"; return `<i class="${c}"></i>`; }).join("");
     return `<div class="duel-tete"><div class="j moi"><b>${esc(d[moi].prenom)}</b><span>${b.pts[moi]}</span><div class="m">${pastilles(moi)}</div></div><div class="vs">VS</div><div class="j"><b>${esc(adv.prenom)}</b><span>${b.pts[lui()]}</span><div class="m">${pastilles(lui())}</div></div></div>`; };
   if (d.etat==="invite"){
     v.innerHTML=`<div class="duel-attente"><p>Défi envoyé à <b>${esc(d.b.prenom)}</b>.</p><p class="petit">Il apparaît dès que ${esc(d.b.prenom)} ouvre l'application. Le défi expire au bout de 10 minutes.</p><button class="btn-annuler" id="duel-annuler">Annuler le défi</button></div>`; return; }
@@ -2289,7 +2332,7 @@ function rendreDuel(force){
   const b=bilan(d);
   if (b.fini || d.etat==="abandon"){ terminer(); return; }
   const k=DU.k;
-  if (k<0 || questionCourante()!==k || maintenant()<debutQ(k)){ // entre deux questions
+  if (k<0 || b.k!==k || maintenant()<b.deb){ // entre deux questions
     const derniere = b.nbDecidees>0 ? b.nbDecidees-1 : -1;
     let info="";
     if (derniere>=0 && DU.qs){ const g=b.detail[derniere], Q=DU.qs[derniere];
@@ -2299,14 +2342,14 @@ function rendreDuel(force){
   // question en cours
   const Q=DU.qs[k], r=(d.r||{})["q"+k]||{};
   if (!DU.ordre) DU.ordre={c:melanger([0,1,2,3]), j:melanger([0,1,2,3])};
-  const m=Math.floor(k/DUEL.QPM)+1, i=k%DUEL.QPM+1;
+  const i=k+1;
   const etape = r[moi] ? 2 : DU.etape;
   let corps;
   if (etape===2) corps=`<div class="duel-ok">Bonne réponse et bonne justification ! En attente de ${esc(adv.prenom)}…</div>`;
   else if (etape===0) corps=`<div class="duel-q">${prep(Q.q.q)}</div><div class="duel-choix">${DU.ordre.c.map(j=>`<button data-c="${j}">${prep(Q.q.choix[j])}</button>`).join("")}</div>`;
   else corps=`<div class="duel-q">${prep(Q.q.q)}</div><div class="duel-rep">${prep(Q.q.choix[Q.q.bonne])}</div><p class="duel-pq">Pourquoi ?</p><div class="duel-choix just">${DU.ordre.j.map(j=>`<button data-j="${j}">${prep(Q.just[j])}</button>`).join("")}</div>`;
-  v.innerHTML = tete()+`<div class="duel-info">Manche ${m} · question ${i}/${DUEL.QPM}${(d.err||{})[lui()]?` · ${esc(adv.prenom)} : ${(d.err||{})[lui()]} erreur${(d.err||{})[lui()]>1?"s":""}`:""}</div><div class="duel-barre"><i id="duel-chrono"></i></div>${corps}
-    <div class="duel-verrou" id="duel-verrou" hidden><div>Mauvaise réponse<br><b></b><small>Prochaine erreur : ${Math.min(DUEL.PEN_MAX, DUEL.PEN0*Math.pow(2,DU.err))/1000} s</small></div></div><button class="duel-abandon" id="duel-abandon">Abandonner</button>`;
+  v.innerHTML = tete()+`<div class="duel-info">Question ${i}/${DUEL.NQ}${(d.err||{})[lui()]?` · ${esc(adv.prenom)} : ${(d.err||{})[lui()]} erreur${(d.err||{})[lui()]>1?"s":""}`:""}</div><div class="duel-barre"><i id="duel-chrono"></i></div><p class="duel-instable" id="duel-instable" hidden>Connexion instable : nouvelle tentative…</p>${corps}
+    <div class="duel-verrou" id="duel-verrou" hidden><div>Mauvaise réponse<br><b></b><small>Prochaine erreur sur cette question : ${Math.min(DUEL.PEN_MAX, DUEL.PEN0*Math.pow(2,DU.err))/1000} s</small></div></div><button class="duel-abandon" id="duel-abandon">Abandonner</button>`;
   maths(v); majChrono();
 }
 $("#duel-corps").addEventListener("click", async e=>{
@@ -2319,28 +2362,29 @@ $("#duel-corps").addEventListener("click", async e=>{
   const b=e.target.closest("button[data-c],button[data-j]"); if (!b || DU.k<0) return;
   const Q=DU.qs[DU.k];
   const juste = b.dataset.c!=null ? +b.dataset.c===Q.q.bonne : +b.dataset.j===0;
-  if (!juste){ DU.err++; DU.verrou=Date.now()+Math.min(DUEL.PEN_MAX, DUEL.PEN0*Math.pow(2,DU.err-1)); DU.etape=0; DU.ordre=null;
+  if (!juste){ DU.err++; DU.errTot++; DU.verrou=Date.now()+Math.min(DUEL.PEN_MAX, DUEL.PEN0*Math.pow(2,DU.err-1)); DU.etape=0; DU.ordre=null;
     if (navigator.vibrate) navigator.vibrate(120);
-    c.duelMaj(CFG, DU.id, {["err."+DU.moi]:DU.err}).catch(()=>{}); rendreDuel(true); return; }
+    c.duelMaj(CFG, DU.id, {["err."+DU.moi]:DU.errTot}).catch(()=>{}); rendreDuel(true); return; }
   if (b.dataset.c!=null){ DU.etape=1; rendreDuel(); return; }
   DU.etape=2; rendreDuel();
-  c.duelMaj(CFG, DU.id, {["r.q"+DU.k+"."+DU.moi]:c.TS}).catch(()=>toast("Réponse non envoyée : connexion ?"));
+  const champ="r.q"+DU.k+"."+DU.moi, envoi=()=>ecrire({[champ]:c.TS}, champ);
+  envoi().catch(()=>setTimeout(()=>{ if (DU) envoi().catch(()=>toast("Réponse non envoyée : vérifiez la connexion")); }, 1000));
 });
 let abandonDemande=0;
 function confirmerAbandon(){ if (Date.now()-abandonDemande<3000) return true; abandonDemande=Date.now(); toast("Touchez à nouveau « Abandonner » pour confirmer"); return false; }
 function terminer(){
   if (!DU || !DU.doc) return; const d=DU.doc, b=bilan(d), moi=DU.moi;
-  if (!DU.fini){ DU.fini=true; clearInterval(DU.tic);
+  if (!DU.fini){ DU.fini=true; clearInterval(DU.tic); clearInterval(DU.poll);
     if (d.etat==="encours") cloud().duelMaj(CFG, DU.id, {etat:"fini"}).catch(()=>{});
     majElo(d, moi); }
   const delta=E.elo.faits[d.id]||0, gagne=b.vainqueur===moi, nul=b.vainqueur==="nul";
   const adv=d[lui()];
   $("#duel-corps").innerHTML=`<div class="duel-fin ${gagne?"g":nul?"n":"p"}"><h2>${gagne?"Victoire !":nul?"Match nul":"Défaite"}</h2>
-    <p>${d.etat==="abandon"?(d.abandon===moi?"Vous avez abandonné.":esc(adv.prenom)+" a abandonné."):`Manches ${b.manches[moi]} – ${b.manches[lui()]} · points ${b.pts[moi]} – ${b.pts[lui()]}`}</p>
+    <p>${d.etat==="abandon"?(d.abandon===moi?"Vous avez abandonné.":esc(adv.prenom)+" a abandonné."):`${b.pts[moi]} point${b.pts[moi]>1?"s":""} à ${b.pts[lui()]}`}</p>
     <div class="elo">Classement duel : <b>${E.elo.elo}</b> <span>${delta>=0?"+":""}${delta}</span></div>
     <button class="btn-plein btn-orange" id="duel-fermer">Retour à l'expédition</button></div>`;
 }
-function fermerDuel(msg){ if (DU){ if (DU.unsub) DU.unsub(); clearInterval(DU.tic); } DU=null; if (msg) toast(msg); aller("expedition"); afficherInvitation(); }
+function fermerDuel(msg){ if (DU){ if (DU.unsub) DU.unsub(); clearInterval(DU.tic); clearInterval(DU.poll); } DU=null; if (msg) toast(msg); aller("expedition"); afficherInvitation(); }
 
 /* ---- panneau Duels dans l'Expédition ---- */
 let ELOS=null, majElos=0;
@@ -2353,7 +2397,7 @@ function rendreDuels(){
   if (E.acces && E.elo.n) parH[E.acces]={prenom:E.prenom||"Vous", h:E.acces, elo:E.elo.elo, n:E.elo.n, v:E.elo.v, d:E.elo.d};
   const top=Object.values(parH).filter(x=>x.n).sort((a,b)=>b.elo-a.elo).slice(0,10);
   el.innerHTML=`<div class="duels-carte"><div class="duels-haut"><h2>Duels</h2><span>Mon classement : <b>${E.elo.elo}</b>${E.elo.n?` · ${E.elo.v} V, ${E.elo.d} D${E.elo.nul?", "+E.elo.nul+" N":""}`:""}</span></div>
-    <p class="petit">Touchez « Défier » à côté d'un camarade pour lancer un duel : 3 manches de 3 questions, réponse puis justification, le plus rapide marque le point.</p>
+    <p class="petit">Touchez « Défier » à côté d'un camarade pour lancer un duel : 3 questions, réponse puis justification, le plus rapide marque le point.</p>
     ${top.length?`<ol class="duels-top">${top.map(x=>`<li class="${x.h===E.acces?"moi":""}"><span>${esc(x.prenom)}</span><b>${x.elo}</b></li>`).join("")}</ol>`:""}</div>`;
   if (Date.now()-majElos>120000) chargerElos();
 }
