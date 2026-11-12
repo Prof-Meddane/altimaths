@@ -88,6 +88,32 @@ nav button{position:relative}
 .ligne-bouton .sym{width:40px;height:40px;flex:none;border-radius:50%;background:var(--nuit);display:grid;place-items:center;font-family:var(--d);font-weight:800;font-size:18px;color:var(--drapeau)}
 .ligne-bouton .txt{flex:1;min-width:0}
 .ligne-bouton b{display:block;font-weight:600}
+.q-code{margin:12px 0 0}.q-code .py-src{font-size:14px}
+.choix code.cc{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13.5px;white-space:pre-wrap;word-break:break-word;background:none;padding:0;text-align:left;display:block}
+.defi-th{font-family:var(--d);font-size:18px;font-weight:800;margin:20px 0 8px}
+.defi-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--nuit3);color:var(--neige);border-radius:12px;padding:11px 14px;margin:0 0 8px}
+.defi-item .txt{flex:1;min-width:0}.defi-item b{display:block;font-weight:600}.defi-item small{display:block;font-size:12px;opacity:.7;margin-top:2px}
+.defi-item .d-ok{width:26px;height:26px;border-radius:50%;background:var(--vert);color:#fff;display:grid;place-items:center;font-weight:800}
+.defi-item .d-ess{font-size:12px;opacity:.75}.defi-item .d-new{font-size:11.5px;font-weight:700;color:var(--drapeau)}
+.defi-titre{font-family:var(--d);font-size:26px;font-weight:800;margin:4px 0 8px;line-height:1.15}
+.defi-enonce{font-size:15.5px;line-height:1.55}
+.defi-enonce code,.defi-tests code,.defi-verdict code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.92em;background:rgba(127,150,190,.18);padding:1px 5px;border-radius:5px}
+.defi-tests{margin:10px 0;font-size:13.5px}.defi-tests summary{cursor:pointer;font-weight:600;color:var(--pente)}.defi-tests ul{margin:8px 0 0;padding-left:18px;line-height:1.7}
+.defi-code{margin-top:12px}
+.defi-clavier{display:flex;gap:6px;overflow-x:auto;padding:10px 10px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.defi-clavier::-webkit-scrollbar{display:none}
+.defi-clavier button{flex:none;min-width:36px;height:34px;padding:0 10px;border-radius:9px;background:rgba(255,255,255,.12);color:#E6EEF8;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:14px;font-weight:600}
+#defi-ed{font-size:14.5px;min-height:150px;overflow-y:hidden}
+.py-barre button:disabled{opacity:.4}
+.t-ok{color:#8BE0A0}.t-ko{color:#FF9A8F}
+.defi-verdict{margin:12px 0 0;font-size:15px;line-height:1.5}.defi-verdict:empty{display:none}
+.defi-verdict.ok,.defi-verdict.ko{padding:12px 14px;border-radius:12px}
+.defi-verdict.ok{background:rgba(46,158,98,.16);border:1px solid rgba(46,158,98,.5)}
+.defi-verdict.ko{background:rgba(226,70,59,.1);border:1px solid rgba(226,70,59,.4)}
+.defi-verdict .lien{display:block;margin-top:8px;background:none;color:var(--pente);font-weight:700;text-decoration:underline;padding:0;text-align:left}
+.defi-aide{margin:12px 0 0;padding:12px 14px;border-radius:12px;background:var(--nuit3);color:var(--neige);font-size:14.5px;line-height:1.5}
+.defi-aide .py-code{margin:8px 0 0}
+.btn-defis .sym{font-size:13px;letter-spacing:-.5px}
 .ligne-bouton .pc{font-family:var(--d);font-weight:800;font-size:20px}
 .choix-chap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .acc{background:var(--nuit2);border-radius:16px;overflow:hidden}
@@ -635,6 +661,7 @@ body.nuit .serie-carnet{color:#FFB08A}
         <div class="jauge"><i id="obj-jauge" style="width:0"></i></div>
       </div>
       <button class="ligne-bouton" data-mode="erreurs"><span class="sym">↺</span><span class="txt"><b>Revoir mes erreurs</b><span class="petit" id="nb-err"></span></span></button>
+      <button class="ligne-bouton btn-defis" id="btn-defis" hidden><span class="sym" aria-hidden="true">&lt;/&gt;</span><span class="txt"><b>Défis code Python</b><span class="petit" id="nb-defis"></span></span><span class="pc" id="pc-defis"></span></button>
       <button class="carte-zen" id="carte-zen" aria-label="Ouvrir la Zone Zen"></button>
       <p class="sous-titre">S'entraîner par thème</p>
       <p class="petit" style="margin:-8px 0 2px">Chaque bonne réponse fait avancer deux fois moins qu'en marche normale.</p>
@@ -643,6 +670,33 @@ body.nuit .serie-carnet{color:#FFB08A}
   </section>
 
   <!-- ===== QUIZ ===== -->
+  <section class="vue" id="v-defi">
+    <div class="tete-quiz">
+      <button class="rond" id="defi-quitter" aria-label="Revenir à l'ascension"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div style="flex:1;min-width:0"><p class="d" style="margin:0;font-size:22px;font-weight:800">Défis code</p><p class="petit" id="defi-prog" style="margin:2px 0 0"></p></div>
+    </div>
+    <div class="pad" style="padding-top:12px;padding-bottom:40px">
+      <div id="defi-liste">
+        <p class="petit">Écrivez une petite fonction Python, puis lancez les tests. Premier succès : gain d'une piste noire (×4), météo ignorée. Python se charge au premier test (environ 10 Mo), ensuite c'est rapide.</p>
+        <div id="defi-groupes"></div>
+      </div>
+      <div id="defi-ouvert" hidden>
+        <button class="py-retour" id="defi-retour">‹ Tous les défis</button>
+        <p class="petit" id="defi-theme" style="margin:10px 0 0;font-weight:600;color:var(--pente)"></p>
+        <h2 class="defi-titre" id="defi-titre"></h2>
+        <div class="defi-enonce" id="defi-enonce"></div>
+        <details class="defi-tests"><summary>Les tests qui seront lancés</summary><ul id="defi-tests"></ul></details>
+        <div class="py-code defi-code">
+          <div class="defi-clavier" id="defi-clavier" aria-label="Symboles"><button type="button" data-t="⇥">⇥ tab</button><button type="button" data-t=":">:</button><button type="button" data-t="(">(</button><button type="button" data-t=")">)</button><button type="button" data-t="[">[</button><button type="button" data-t="]">]</button><button type="button" data-t="=">=</button><button type="button" data-t="==">==</button><button type="button" data-t="!=">!=</button><button type="button" data-t="&lt;">&lt;</button><button type="button" data-t="&gt;">&gt;</button><button type="button" data-t="+">+</button><button type="button" data-t="-">-</button><button type="button" data-t="*">*</button><button type="button" data-t="**">**</button><button type="button" data-t="/">/</button><button type="button" data-t="//">//</button><button type="button" data-t="%">%</button><button type="button" data-t=",">,</button><button type="button" data-t="&quot;">&quot;</button><button type="button" data-t="_">_</button><button type="button" data-t="#">#</button><button type="button" data-t="return␣">return</button><button type="button" data-t="for␣">for</button><button type="button" data-t="in␣range(">inrange(</button><button type="button" data-t="if␣">if</button><button type="button" data-t="else:">else:</button><button type="button" data-t="while␣">while</button><button type="button" data-t="print(">print(</button></div>
+          <textarea class="py-ed" id="defi-ed" rows="8" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Votre code Python"></textarea>
+          <div class="py-barre" style="padding-top:10px"><button class="py-run" id="defi-tester" data-lab="Tester">Tester</button><button id="defi-indice">Indice</button><button id="defi-solution">Solution</button><button id="defi-reset">Repartir du modèle</button></div>
+          <div class="py-sortie" id="defi-sortie" hidden></div>
+        </div>
+        <div class="defi-verdict" id="defi-verdict" role="status"></div>
+        <div class="defi-aide" id="defi-aide" hidden></div>
+      </div>
+    </div>
+  </section>
   <section class="vue" id="v-quiz">
     <div class="tete-quiz">
       <button class="rond" id="quiz-quitter" aria-label="Quitter la série"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
@@ -866,6 +920,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="contenu.js"></script>
+<script src="info.js"></script>
 <script src="python.js"></script>
 <script src="justif.js"></script>
 <script src="zen.js"></script>
@@ -875,8 +930,12 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script>
 (function(){
 "use strict";
-const VERSION_APP="3.9";
+const VERSION_APP="4.0";
 const C = window.CONTENU, CHAPS = C.chapitres;
+/* informatique : un « chapitre » de plus pour la marche (QCM, fiches), sans cours de maths ni leçons */
+if (window.INFO && !CHAPS.some(c=>c.info)) CHAPS.push({id:"info", numero:"Py", titre:"Informatique (Python)", info:true, themes:window.INFO.themes, questions:window.INFO.questions, fiches:window.INFO.fiches, cours:[], lecons:[]});
+const CHAPS_M = CHAPS.filter(c=>!c.info);
+const chapCourt = c => c.info ? "Python" : "Ch. "+c.numero;
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 
 /* ================= Parcours (altitudes et distances réelles, règle de Naismith) ================= */
@@ -1019,7 +1078,7 @@ function aller(v){
   vueCourante=v;
   $$(".vue").forEach(s=>s.classList.toggle("active", s.id==="v-"+v));
   $$("nav.bas button").forEach(b=>b.classList.toggle("actif", b.dataset.vue===v));
-  document.body.classList.toggle("en-quiz", v==="quiz"||v==="lecon"||v==="duel");
+  document.body.classList.toggle("en-quiz", v==="quiz"||v==="lecon"||v==="duel"||v==="defi");
   document.body.classList.toggle("sombre", SOMBRES.includes(v));
   document.body.classList.toggle("cours-immersif", v==="cours" && $("#v-cours").classList.contains("immersif"));
   window.scrollTo(0,0);
@@ -1067,14 +1126,15 @@ function rendreAscension(){
   const obj=10; $("#obj-txt").textContent = Math.min(E.jourJustes,obj)+" / "+obj+" bonnes réponses";
   $("#obj-jauge").style.width = Math.min(100,100*E.jourJustes/obj)+"%";
   const ne=erreurs().length; $("#nb-err").textContent = ne ? ne+" question"+(ne>1?"s":"")+" à revoir" : "Aucune erreur en attente";
-  $("#chap-choix").innerHTML = [["tous","Tous"]].concat(CHAPS.map(ch=>[ch.id,"Ch. "+ch.numero])).map(([id,l])=>`<button data-chap="${id}" class="${(E.chap||"tous")===id?"on":""}">${l}</button>`).join("");
-  const seul = E.chap && E.chap!=="tous", dernier = CHAPS[CHAPS.length-1].id;
+  if (defisPrets) majBoutonDefis();
+  $("#chap-choix").innerHTML = [["tous","Tous"]].concat(CHAPS.map(ch=>[ch.id,chapCourt(ch)])).map(([id,l])=>`<button data-chap="${id}" class="${(E.chap||"tous")===id?"on":""}">${l}</button>`).join("");
+  const seul = E.chap && E.chap!=="tous", dernier = CHAPS_M[CHAPS_M.length-1].id;
   E.ouverts = E.ouverts || {};
   $("#themes").innerHTML = CHAPS.filter(ch=>!seul||E.chap===ch.id).map(ch=>{
     const qs=QUESTIONS.filter(q=>q.ch===ch.id), cartes=ch.themes.map(carteTheme).join("");
     if (!cartes) return "";
     const ouvert = seul || (ch.id in E.ouverts ? E.ouverts[ch.id] : ch.id===dernier);
-    return `<details class="acc" data-acc="${ch.id}"${ouvert?" open":""}><summary><span class="num" aria-hidden="true">${ch.numero}</span><span class="txt"><b>Chapitre ${ch.numero} : ${esc(ch.titre)}</b><span class="petit">${ch.themes.length} sous-parties, ${qs.length} questions</span></span><span class="pc">${maitrise(qs)} %</span><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="corps">${cartes}</div></details>`;
+    return `<details class="acc" data-acc="${ch.id}"${ouvert?" open":""}><summary><span class="num" aria-hidden="true">${ch.numero}</span><span class="txt"><b>${ch.info?esc(ch.titre):"Chapitre "+ch.numero+" : "+esc(ch.titre)}</b><span class="petit">${ch.themes.length} sous-parties, ${qs.length} questions</span></span><span class="pc">${maitrise(qs)} %</span><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="corps">${cartes}</div></details>`;
   }).join("");
 }
 $("#themes").addEventListener("toggle", e=>{
@@ -1127,6 +1187,7 @@ function afficherQuestion(){
   $("#quiz-alti").innerHTML = nf(position(E.minutes).a)+'<span style="font-size:15px;font-weight:600"> m</span>';
   $("#quiz-theme").innerHTML = esc(THEMES[q.theme].titre) + " " + badgePiste(q.niveau);
   html($("#quiz-question"), q.q);
+  if (q.code) $("#quiz-question").insertAdjacentHTML("beforeend", `<div class="py-code q-code"><pre class="py-src">${colorPy(q.code)}</pre></div>`);
   const z=$("#quiz-choix"); z.classList.remove("repondu");
   z.innerHTML = melanger(q.choix.map((c,k)=>k)).map((k,j)=>`<button data-k="${k}"><span class="lettre">${"ABCD"[j]}</span><span class="cont">${prep(q.choix[k])}</span></button>`).join("");
   maths(z);
@@ -1189,13 +1250,13 @@ function rendreCours(){
   $$("#cours-matiere button").forEach(b=>b.classList.toggle("on", (b.dataset.m==="python")===py));
   $("#maths-vue").hidden = py; $("#python-vue").hidden = !py;
   if (py){ $("#v-cours").classList.remove("immersif"); document.body.classList.remove("cours-immersif"); rendrePython(); return; }
-  const ouvert = E.mOuvert && CHAP[E.mOuvert] ? E.mOuvert : null;
+  const ouvert = E.mOuvert && CHAP[E.mOuvert] && !CHAP[E.mOuvert].info ? E.mOuvert : null;
   $("#maths-liste").hidden = !!ouvert; $("#maths-ouvert").hidden = !ouvert;
   if (!ouvert){
     $("#v-cours").classList.remove("immersif"); document.body.classList.remove("cours-immersif");
     $("#cours-titre").textContent="Maths";
     $("#cours-aide").textContent="Choisissez un chapitre : les leçons vous attendent au pied du sentier, et le cours complet reste disponible.";
-    $("#maths-liste").innerHTML = CHAPS.map(c=>{ const ls=LECONS[c.id]||[], f=ls.filter(leconFaite).length;
+    $("#maths-liste").innerHTML = CHAPS_M.map(c=>{ const ls=LECONS[c.id]||[], f=ls.filter(leconFaite).length;
       return `<button class="py-chap${ls.length&&f===ls.length?" lu":""}" data-mc="${c.id}"><span class="num">${c.numero}</span><span class="txt"><b>${esc(c.titre)}</b><small>${RESUMES_MATHS[c.id]||""}</small>${ls.length?`<em class="py-prog">${f}/${ls.length} leçon${ls.length>1?"s":""}</em>`:""}</span>${ls.length&&f===ls.length?'<span class="ok" aria-label="Terminé">✓</span>':""}</button>`; }).join("");
     return; }
   chapCours = ouvert;
@@ -1368,7 +1429,7 @@ function pyWorker(){
 function pyStop(msg){ if (pyW){ pyW.terminate(); pyW=null; pyPret=false; } if (pyEnCours){ const j=pyEnCours; pyEnCours=null; j.fin(msg); } }
 function pyLancer(code, mode, chap, entrees, sortie, bouton, prec){
   if (pyEnCours) pyStop("Exécution précédente interrompue.");
-  const id=++pyN; let delai=null;
+  const id=++pyN; let delai=null; const lab=bouton.dataset.lab||bouton.textContent;
   sortie.hidden=false; sortie.innerHTML=`<div class="py-etat">${pyPret?"Exécution…":"Démarrage de Python (environ 10 Mo au premier lancement, ensuite c'est rapide)…"}</div><pre class="py-flux"></pre>`;
   const flux=sortie.querySelector(".py-flux"), etat=sortie.querySelector(".py-etat");
   bouton.textContent="Arrêter"; bouton.classList.add("stop");
@@ -1385,7 +1446,8 @@ function pyLancer(code, mode, chap, entrees, sortie, bouton, prec){
         this.fin(d.echec ? "Python n'a pas pu démarrer : vérifiez votre connexion Internet (nécessaire au premier lancement)." : ""); }
     },
     fin(msg){ clearTimeout(delai); if (pyEnCours && pyEnCours.id===id) pyEnCours=null;
-      bouton.textContent="Exécuter"; bouton.classList.remove("stop");
+      bouton.textContent=lab; bouton.classList.remove("stop");
+      sortie.dispatchEvent(new CustomEvent("py-fin",{detail:{texte:flux.textContent, msg:msg||""}}));
       if (msg) etat.textContent=msg; else if (!flux.textContent && !sortie.querySelector("img")) etat.textContent="Exécuté, sans affichage."; else etat.remove(); }
   };
   pyWorker().postMessage({id, code, mode, chap, entrees, prec:prec||[]});
@@ -1701,9 +1763,9 @@ setInterval(appliquerTheme, 60000);
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden) appliquerTheme(); });
 appliquerTheme();
 /* ================= Fiches ================= */
-let chapCours = CHAPS[CHAPS.length-1].id, chapFiches="tous";
+let chapCours = CHAPS_M[CHAPS_M.length-1].id, chapFiches="tous";
 function segChap(el, val, avecTous, fn){
-  el.innerHTML = (avecTous?[["tous","Tous"]]:[]).concat(CHAPS.map(ch=>[ch.id,"Ch. "+ch.numero+" : "+ch.titre])).map(([id,l])=>`<button data-c="${id}" class="${val===id?"on":""}">${esc(l)}</button>`).join("");
+  el.innerHTML = (avecTous?[["tous","Tous"]]:[]).concat(CHAPS.map(ch=>[ch.id,ch.info?"Python":"Ch. "+ch.numero+" : "+ch.titre])).map(([id,l])=>`<button data-c="${id}" class="${val===id?"on":""}">${esc(l)}</button>`).join("");
   el.querySelectorAll("button").forEach(b=>b.onclick=()=>fn(b.dataset.c));
 }
 /* ---- Répétition espacée : FSRS-5 (paramètres par défaut publiés), deux notes : 1 = À revoir, 3 = Je savais ---- */
@@ -1880,7 +1942,7 @@ function anneau(t, n, couleur, titre){
 }
 function rendreGraphiques(){
   const taux=qs=>{ let ok=0, ko=0; qs.forEach(q=>{ const s=E.q[q.id]; if (s){ ok+=s.ok||0; ko+=s.ko||0; } }); const n=ok+ko; return {t:n?Math.round(100*ok/n):null, n}; };
-  const parCh=CHAPS.map(c=>{ const r=taux(QUESTIONS.filter(q=>q.ch===c.id)); return anneau(r.t, r.n, "#E8541C", "Chapitre "+c.numero); }).join("");
+  const parCh=CHAPS.map(c=>{ const r=taux(QUESTIONS.filter(q=>q.ch===c.id)); return anneau(r.t, r.n, c.info?"#3B6FC4":"#E8541C", c.info?"Python":"Chapitre "+c.numero); }).join("");
   const parPiste=PISTES.map((p,i)=>{ const r=taux(QUESTIONS.filter(q=>(q.niveau||0)===i)); return anneau(r.t, r.n, p.c, p.nom.replace("Piste ","")); }).join("");
   const col=n=>`style="grid-template-columns:repeat(${Math.min(4,n)},1fr)"`;
   const sa=serieActuelle();
@@ -1893,8 +1955,8 @@ function rendreGraphiques(){
 }
 let chapBous=null;
 function rendreBoussole(){
-  if (!chapBous || !CHAP[chapBous]) chapBous = CHAPS[CHAPS.length-1].id;
-  $("#bous-chap").innerHTML = CHAPS.map(c=>`<button class="${c.id===chapBous?"on":""}" data-bc="${c.id}">Ch. ${c.numero}</button>`).join("");
+  if (!chapBous || !CHAP[chapBous]) chapBous = CHAPS_M[CHAPS_M.length-1].id;
+  $("#bous-chap").innerHTML = CHAPS.map(c=>`<button class="${c.id===chapBous?"on":""}" data-bc="${c.id}">${chapCourt(c)}</button>`).join("");
   const th=CHAP[chapBous].themes.map(t=>{ let ok=0,ko=0; QUESTIONS.forEach(q=>{ if (q.theme===t.id && E.q[q.id]){ ok+=E.q[q.id].ok||0; ko+=E.q[q.id].ko||0; } }); return {titre:t.titre, n:ok+ko, t: ok+ko ? ok/(ok+ko) : null}; });
   const n=th.length, R=92, cx=150, cy=118, ang=i=>-Math.PI/2+2*Math.PI*i/n, P=(i,r)=>[cx+r*Math.cos(ang(i)), cy+r*Math.sin(ang(i))];
   const anneauPoly=f=>th.map((_,i)=>P(i,R*f).map(v=>v.toFixed(1)).join(",")).join(" ");
@@ -2342,6 +2404,132 @@ $("#zen-go").addEventListener("click", lancerSouffle);
 $$("#zen-rythme button").forEach(b=>b.addEventListener("click",()=>{ rythme=b.dataset.r; $$("#zen-rythme button").forEach(x=>x.classList.toggle("on",x===b)); if (souffle){ arreterSouffle(); majSouffle("Prêt ?",0.55); } }));
 $("#zen-retour").addEventListener("click",()=>{ arreterSouffle(); aller("ascension"); });
 rendreCarteZen();
+
+/* ================= Défis code : petites fonctions Python vérifiées par des tests ================= */
+var defisPrets=false;
+const DEFIS = (window.INFO && window.INFO.defis) || [];
+const DEFI = Object.fromEntries(DEFIS.map(d=>[d.id,d]));
+const GAIN_DEFI = GAIN_SERIE.technique;           // comme une piste noire réussie
+E.defis = E.defis || {};
+let defiOuvert=null;
+const etatDefi = id => (E.defis[id] = E.defis[id] || {essais:0});
+const defisReussis = () => DEFIS.filter(d=>E.defis[d.id] && E.defis[d.id].ok).length;
+
+function majBoutonDefis(){
+  const b=$("#btn-defis"); if (!b) return;
+  b.hidden = !DEFIS.length;
+  const n=defisReussis();
+  $("#nb-defis").textContent = n+" sur "+DEFIS.length+" réussis · gain ×4, ouverts même par tempête";
+  $("#pc-defis").textContent = n ? Math.round(100*n/DEFIS.length)+" %" : "";
+}
+function rendreDefis(){
+  $("#defi-liste").hidden = !!defiOuvert; $("#defi-ouvert").hidden = !defiOuvert;
+  if (defiOuvert){ rendreDefiOuvert(); return; }
+  const n=defisReussis();
+  $("#defi-prog").innerHTML = `<b>${n}</b> défi${n>1?"s":""} réussi${n>1?"s":""} sur ${DEFIS.length}`;
+  $("#defi-groupes").innerHTML = window.INFO.themes.map(t=>{
+    const ds=DEFIS.filter(d=>d.theme===t.id); if (!ds.length) return "";
+    return `<h2 class="defi-th">${esc(t.titre)}</h2>`+ds.map(d=>{ const s=E.defis[d.id]||{};
+      const etat = s.ok ? '<span class="d-ok" aria-label="Réussi">✓</span>' : s.essais ? `<span class="d-ess">${s.essais} essai${s.essais>1?"s":""}</span>` : '<span class="d-new">nouveau</span>';
+      return `<button class="defi-item${s.ok?" fait":""}" data-defi="${d.id}"><span class="txt"><b>${prep(d.titre)}</b>${d.source?`<small>d'après ${esc(d.source)}</small>`:""}</span>${etat}</button>`; }).join("");
+  }).join("");
+  maths($("#defi-groupes"));
+}
+function ouvrirDefi(id){ defiOuvert=id; rendreDefis(); window.scrollTo(0,0); }
+function rendreDefiOuvert(){
+  const d=DEFI[defiOuvert], s=etatDefi(d.id);
+  $("#defi-theme").textContent = (window.INFO.themes.find(t=>t.id===d.theme)||{}).titre || "";
+  html($("#defi-titre"), d.titre);
+  html($("#defi-enonce"), d.enonce + (d.source?`<p class="petit" style="margin:8px 0 0">D'après ${esc(d.source)}.</p>`:""));
+  $("#defi-tests").innerHTML = d.tests.map(t=>`<li><code>${esc(t.e)}</code> ${t.s?"affiche":"doit valoir"} <code>${esc(t.a)}</code></li>`).join("");
+  const ed=$("#defi-ed"); ed.value = s.code!=null ? s.code : d.depart; ajusterEd();
+  $("#defi-sortie").hidden=true; $("#defi-sortie").innerHTML="";
+  $("#defi-aide").hidden=true; $("#defi-aide").innerHTML="";
+  $("#defi-verdict").className="defi-verdict"; $("#defi-verdict").innerHTML = s.ok ? "Défi déjà réussi. Vous pouvez vous entraîner encore, sans nouveau gain." : "";
+  majBoutonSolution();
+}
+function majBoutonSolution(){
+  const s=etatDefi(defiOuvert), b=$("#defi-solution");
+  b.disabled = !(s.ok || s.vu || s.essais>=2);
+  b.textContent = "Solution"; b.dataset.arme="";
+  b.title = b.disabled ? "Disponible après deux essais" : "";
+}
+function ajusterEd(){ const ed=$("#defi-ed"); ed.rows=Math.max(6, ed.value.split("\n").length+1); }
+function sauverBrouillon(){ if (!defiOuvert) return; etatDefi(defiOuvert).code=$("#defi-ed").value; sauver(); }
+
+/* éditeur : indentation automatique, tabulation, retour arrière sur l'indentation */
+function inserer(txt){
+  const ed=$("#defi-ed"), a=ed.selectionStart, b=ed.selectionEnd;
+  ed.setRangeText(txt, a, b, "end"); ajusterEd(); sauverBrouillon();
+}
+$("#defi-ed").addEventListener("keydown",e=>{
+  const ed=e.target, a=ed.selectionStart, v=ed.value;
+  if (e.key==="Tab"){ e.preventDefault(); inserer("    "); return; }
+  if (e.key==="Enter" && !e.shiftKey && a===ed.selectionEnd){
+    const debut=v.lastIndexOf("\n", a-1)+1, ligne=v.slice(debut, a), ind=(ligne.match(/^ */)||[""])[0];
+    e.preventDefault(); inserer("\n"+ind+(/:\s*(#.*)?$/.test(ligne)?"    ":"")); return; }
+  if (e.key==="Backspace" && a===ed.selectionEnd && a>0){
+    const debut=v.lastIndexOf("\n", a-1)+1, avant=v.slice(debut, a);
+    if (avant.length && /^ +$/.test(avant) && avant.length%4===0){ e.preventDefault(); ed.setRangeText("", a-4, a, "end"); ajusterEd(); sauverBrouillon(); }
+  }
+});
+$("#defi-ed").addEventListener("input",()=>{ ajusterEd(); sauverBrouillon(); });
+/* barre de symboles, pratique sur téléphone : on garde le clavier ouvert */
+$("#defi-clavier").addEventListener("pointerdown",e=>{ if (e.target.closest("button")) e.preventDefault(); });
+$("#defi-clavier").addEventListener("click",e=>{ const b=e.target.closest("button"); if (!b) return;
+  const t=b.dataset.t.replace(/␣/g," ").replace("⇥","    "); $("#defi-ed").focus(); inserer(t); });
+
+$("#defi-groupes").addEventListener("click",e=>{ const b=e.target.closest("[data-defi]"); if (b) ouvrirDefi(b.dataset.defi); });
+$("#defi-retour").addEventListener("click",()=>{ if (pyEnCours) pyStop(); defiOuvert=null; rendreDefis(); window.scrollTo(0,0); });
+$("#defi-quitter").addEventListener("click",()=>{ if (pyEnCours) pyStop(); defiOuvert=null; aller("ascension"); });
+$("#btn-defis").addEventListener("click",()=>{ defiOuvert=null; aller("defi"); rendreDefis(); });
+$("#defi-reset").addEventListener("click",()=>{ const d=DEFI[defiOuvert]; $("#defi-ed").value=d.depart; ajusterEd(); sauverBrouillon(); });
+$("#defi-indice").addEventListener("click",()=>{ const z=$("#defi-aide"); z.hidden=false; html(z, `<b>Indice.</b> ${DEFI[defiOuvert].indice}`); });
+$("#defi-solution").addEventListener("click",()=>{
+  const b=$("#defi-solution"), s=etatDefi(defiOuvert);
+  if (!s.ok && !s.vu && !b.dataset.arme){ b.dataset.arme="1"; b.textContent="Confirmer : ce défi ne rapportera plus de mètres"; return; }
+  s.vu=true; sauver(); majBoutonSolution();
+  const z=$("#defi-aide"); z.hidden=false;
+  z.innerHTML = `<b>Une solution possible</b><div class="py-code"><pre class="py-src">${colorPy(DEFI[defiOuvert].solution.trimEnd())}</pre></div><p class="petit" style="margin:6px 0 0">Il existe souvent d'autres solutions justes : les tests font foi.</p>`;
+});
+$("#defi-tester").addEventListener("click",()=>{
+  const b=$("#defi-tester");
+  if (b.classList.contains("stop")){ pyStop("Exécution arrêtée."); return; }
+  const d=DEFI[defiOuvert], s=etatDefi(d.id), code=$("#defi-ed").value;
+  s.code=code; s.essais=(s.essais||0)+1; sauver();
+  $("#defi-verdict").className="defi-verdict"; $("#defi-verdict").textContent="";
+  pyLancer(code.replace(/\s+$/,"")+"\n\n"+d.verif, "script", "defi-"+d.id+"-"+s.essais+"-"+Date.now(), [], $("#defi-sortie"), b);
+});
+$("#defi-sortie").addEventListener("py-fin",e=>{
+  if (!defiOuvert) return;
+  const d=DEFI[defiOuvert], s=etatDefi(d.id), t=e.detail.texte||"";
+  const fl=$("#defi-sortie .py-flux");
+  if (fl) fl.childNodes.forEach(n=>{ if (n.nodeType===3 && n.textContent.includes("§BILAN§")) n.textContent=n.textContent.replace(/§BILAN§[^\n]*\n?/g,""); });
+  if (fl) fl.innerHTML = fl.innerHTML.replace(/^(✔.*)$/gm,'<span class="t-ok">$1</span>').replace(/^(✘.*)$/gm,'<span class="t-ko">$1</span>');
+  const m=t.match(/§BILAN§ (\d+)\/(\d+)/), v=$("#defi-verdict");
+  if (!m){ v.className="defi-verdict ko"; v.textContent = e.detail.msg && /arrêtée/.test(e.detail.msg) ? "Exécution arrêtée." : e.detail.msg && /secondes/.test(e.detail.msg) ? "Le programme ne s'est pas arrêté : une boucle while ne se termine pas ?" : e.detail.msg && /connexion/.test(e.detail.msg) ? e.detail.msg : "Le programme s'est arrêté avant les tests : corrigez l'erreur indiquée ci-dessus."; majBoutonSolution(); return; }
+  const k=+m[1], n=+m[2];
+  if (k<n){ v.className="defi-verdict ko"; v.textContent = k+" test"+(k>1?"s":"")+" réussi"+(k>1?"s":"")+" sur "+n+". Lisez les lignes marquées ✘, corrigez, puis testez à nouveau."; majBoutonSolution(); return; }
+  /* tous les tests passent */
+  majJour(); activite();
+  let txt="Tous les tests passent : défi réussi !";
+  if (!s.ok){
+    s.ok=auj();
+    if (!s.vu){
+      const kmAvant=position(E.minutes).km;
+      E.minutes=Math.min(TOTAL, E.minutes+GAIN_DEFI); E.justes++; E.jourJustes++; noterEtapes();
+      const dm=Math.round((position(E.minutes).km-kmAvant)*1000);
+      txt += ` +${nf(dm)} m (comme une piste noire, à l'abri sous la tente : la météo ne compte pas). Altitude : ${nf(position(E.minutes).a)} m.`;
+    } else txt += " La solution avait été consultée : pas de gain d'altitude.";
+  } else txt += " (déjà réussi : pas de nouveau gain)";
+  sauver(); envoyer(); majBoutonSolution();
+  v.className="defi-verdict ok"; v.textContent=txt;
+  const suiv=DEFIS.find(x=>!(E.defis[x.id]&&E.defis[x.id].ok));
+  if (suiv) v.insertAdjacentHTML("beforeend", ` <button class="lien" data-suivant="${suiv.id}">Défi suivant : ${prep(suiv.titre)}</button>`);
+  maths(v);
+});
+$("#defi-verdict").addEventListener("click",e=>{ const b=e.target.closest("[data-suivant]"); if (b) ouvrirDefi(b.dataset.suivant); });
+defisPrets=true; majBoutonDefis();
 
 })();
 
