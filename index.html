@@ -265,7 +265,7 @@ body.en-quiz nav.bas{display:none}
 .toast{position:fixed;left:50%;top:calc(var(--haut) + 12px);transform:translate(-50%,-200%);visibility:hidden;z-index:60;background:var(--nuit);color:#fff;border-radius:999px;padding:10px 18px;font-weight:600;font-size:14px;transition:transform .3s;max-width:92vw;display:flex;gap:10px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 .toast.visible{transform:translate(-50%,0);visibility:visible}
 .toast button{background:var(--orange);color:#fff;padding:6px 12px;border-radius:999px;font-weight:700}
-.katex{font-size:1.05em}
+.katex{font-size:1.05em}.kgrp{white-space:nowrap}
 .katex-display{margin:.5em 0;overflow-x:auto;overflow-y:hidden}
 .bloc .katex-display{font-size:.88em}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -930,7 +930,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script>
 (function(){
 "use strict";
-const VERSION_APP="4.0";
+const VERSION_APP="4.0.1";
 const C = window.CONTENU, CHAPS = C.chapitres;
 /* informatique : un « chapitre » de plus pour la marche (QCM, fiches), sans cours de maths ni leçons */
 if (window.INFO && !CHAPS.some(c=>c.info)) CHAPS.push({id:"info", numero:"Py", titre:"Informatique (Python)", info:true, themes:window.INFO.themes, questions:window.INFO.questions, fiches:window.INFO.fiches, cours:[], lecons:[]});
@@ -1066,7 +1066,47 @@ const ICO_METEO = {
 
 /* ================= Rendu des maths ================= */
 function prep(t){ return String(t).replace(/\$\$[\s\S]+?\$\$|\$[^$]+?\$/g, m=>m.replace(/</g,"&lt;").replace(/>/g,"&gt;")); }
-function maths(el){ if (window.renderMathInElement){ try{ renderMathInElement(el,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false}); }catch(e){} } }
+function maths(el){ if (window.renderMathInElement){ try{ renderMathInElement(el,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false}); grouperMaths(el); }catch(e){} } }
+/* Une formule en ligne ne se coupe jamais après un + ou un × : seulement après une virgule (quantificateurs)
+   ou, dans une chaîne d'au moins deux relations, après un =, ⩽, ⟺… Une formule courte reste d'un seul tenant. */
+window.__maths=maths;
+function grouperMaths(el){
+  el.querySelectorAll(".katex-html").forEach(h=>{
+    if (h.closest(".katex-display") || h.dataset.g) return; h.dataset.g="1";
+    /* KaTeX ne coupe jamais après une virgule : on sépare la « base » juste après chaque virgule suivie d'une espace */
+    [...h.children].filter(c=>c.classList.contains("base")).forEach(b=>{
+      let cur=b;
+      [...b.children].forEach((c,j,arr)=>{
+        if (c.parentNode!==cur || !c.classList.contains("mpunct")) return;
+        const suite=[]; let n=c.nextSibling; while (n && n.classList && n.classList.contains("mspace")){ n=n.nextSibling; }
+        if (!n || n===c.nextSibling) return;              /* pas d'espace après la virgule : on ne coupe pas (couples, intervalles) */
+        const nb=cur.cloneNode(false), st=cur.querySelector(".strut"); if (st) nb.appendChild(st.cloneNode(true));
+        while (n){ const x=n.nextSibling; nb.appendChild(n); n=x; }
+        cur.after(nb); cur.dataset.p="1"; cur=nb;
+      });
+    });
+    const bases=[...h.children].filter(c=>c.classList.contains("base")); if (bases.length<2) return;
+    const fin=b=>{ if (b.dataset.p) return "p"; const l=[...b.children].reverse().find(c=>!c.classList.contains("mspace")&&!c.classList.contains("strut")); return l && l.classList.contains("mrel") ? "r" : ""; };
+    const f=bases.map(fin), np=f.filter(x=>x==="p").length, nr=f.filter(x=>x==="r").length;
+/* largeur disponible : si un morceau ne tient pas sur une ligne, on accepte une coupure après un + ou un × */
+    let box=h.closest(".katex").parentElement; while (box && box.clientWidth===0) box=box.parentElement;
+    const L=(box?box.clientWidth:300)*0.92, larg=x=>x.getBoundingClientRect().width||x.textContent.length*8;
+    const total=bases.reduce((t,x)=>t+larg(x),0);
+    const coupe = np ? "p" : (nr>=2 && total>L*0.6) ? "r" : null;
+    const estBin=b=>{ const l=[...b.children].reverse().find(c=>!c.classList.contains("mspace")&&!c.classList.contains("strut")); return !!l && l.classList.contains("mbin"); };
+    let g=null, w=0, dernierBin=-1, membres=[];
+    const nouveau=b=>{ g=document.createElement("span"); g.className="kgrp"; h.insertBefore(g,b); w=0; dernierBin=-1; membres=[]; };
+    bases.forEach((b,i)=>{
+      if (!g) nouveau(b);
+      const wb=larg(b);
+      if (w+wb>L && dernierBin>=0){ /* on coupe après le dernier + rencontré dans ce morceau */
+        const reste=membres.slice(dernierBin+1); const g2=document.createElement("span"); g2.className="kgrp"; g.after(g2); reste.forEach(x=>g2.appendChild(x));
+        g=g2; membres=reste; w=reste.reduce((t,x)=>t+larg(x),0); dernierBin=-1; membres.forEach((x,j)=>{ if (estBin(x)) dernierBin=j; }); }
+      g.appendChild(b); membres.push(b); w+=wb; if (estBin(b)) dernierBin=membres.length-1;
+      if (coupe && f[i]===coupe && i<bases.length-1) g=null;
+    });
+  });
+}
 function html(el,c){ el.innerHTML=prep(c); maths(el); }
 function melanger(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }

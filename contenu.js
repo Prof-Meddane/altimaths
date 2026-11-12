@@ -57,7 +57,7 @@ window.CONTENU = {
           <div class="ligne">$(a-b)^2 =$ [[$a^2-2ab+b^2$]]</div>
           <div class="ligne">$(a-b)(a+b) =$ [[$a^2-b^2$]]</div>` },
         { type: "exemple", texte: R`
-          $$\begin{aligned}(3+x)^2 &= 3^2 + 2\times 3x + x^2 = 9+6x+x^2\\(3-x)^2 &= 3^2 - 2\times 3x + x^2 = 9-6x+x^2\\(3-x)(3+x) &= 3^2-x^2 = 9-x^2\end{aligned}$$` },
+          $$\begin{aligned}(3+x)^2 &= 3^2 + 2\times 3x + x^2\\ &= 9+6x+x^2\\(3-x)^2 &= 3^2 - 2\times 3x + x^2\\ &= 9-6x+x^2\\(3-x)(3+x) &= 3^2-x^2 = 9-x^2\end{aligned}$$` },
 
         { type: "sous", titre: "Fractions" },
         { type: "prop", titre: "Propriétés (Opérations sur les fractions)", texte: R`
@@ -126,7 +126,7 @@ window.CONTENU = {
           <li><strong>1er degré :</strong> pour résoudre $2x+1\leq 0$, on isole $x$ : $2x\leq -1$ puis $x\leq -\frac12$. L'ensemble des solutions est
           $$\left]-\infty,-\tfrac12\right] = \left\{x\in\mathbb R,\ x\leq -\tfrac12\right\}.$$</li>
           <li><strong>Produits et quotients :</strong> $(x-a)(x-b)\geq 0$ (ou $\frac{x-a}{x-b}\geq 0$) si et seulement si $x-a$ et $x-b$ sont [[de même signe]]. Autrement dit
-          $$(x-a)(x-b)\geq 0 \iff \big(x-a\geq 0 \text{ et } x-b\geq 0\big) \text{ ou } \big(x-a\leq 0 \text{ et } x-b\leq 0\big).$$
+          $$\begin{aligned}&(x-a)(x-b)\geq 0\\ \iff{}&\big(x-a\geq 0 \text{ et } x-b\geq 0\big)\\ &\text{ou }\big(x-a\leq 0 \text{ et } x-b\leq 0\big).\end{aligned}$$
           En pratique, on dresse un <strong>tableau de signes</strong>.</li>
           </ol>` },
         { type: "attention", texte: R`On raisonne toujours <strong>par équivalence</strong>. Le résultat se présente sous la forme d'un intervalle ou d'une union d'intervalles. Ne jamais multiplier les deux membres par une quantité dont on ne connaît pas le signe : on passe tout du même côté et on étudie le signe.` }
@@ -153,7 +153,6 @@ window.CONTENU = {
         { recto: R`Quantité conjuguée de $\sqrt a+\sqrt b$`, verso: R`$\sqrt a-\sqrt b$, car $(\sqrt a+\sqrt b)(\sqrt a-\sqrt b)=a-b$` },
         { recto: R`$\ln(ab)$, $\ \ln\left(\frac ab\right)$, $\ \ln(a^n)$`, verso: R`$\ln a+\ln b$, $\ \ln a-\ln b$, $\ n\ln a$ $\quad(a,b>0)$` },
         { recto: R`$e^{a+b}$, $\ e^{-a}$, $\ (e^a)^n$`, verso: R`$e^ae^b$, $\ \dfrac{1}{e^a}$, $\ e^{na}$` },
-        { recto: R`$|x-a|\leq r$ équivaut à…`, verso: R`$a-r\leq x\leq a+r$` },
         { recto: R`$\sqrt{a^2}$ pour $a\in\mathbb R$`, verso: R`$|a|$ (et non $a$ !)` }
       ],
 
@@ -653,7 +652,6 @@ window.CONTENU = {
 
       fiches: [
         { recto: R`$\mathbb Q$ (définition)`, verso: R`$\left\{\dfrac pq,\ p\in\mathbb Z,\ q\in\mathbb N^*\right\}$` },
-        { recto: R`$\sqrt{x^2}$`, verso: R`$|x|$` },
         { recto: R`Inégalités triangulaires`, verso: R`$|a|-|b|\leq|a+b|\leq|a|+|b|$` },
         { recto: R`$|x-a|\leq r$ équivaut à…`, verso: R`$a-r\leq x\leq a+r$, soit $x\in[a-r\,;\,a+r]$` },
         { recto: R`Borne supérieure de $E$`, verso: R`Le plus petit des majorants de $E$` },
@@ -667,9 +665,7 @@ window.CONTENU = {
         { recto: R`Raisonnement par l'absurde`, verso: R`Supposer $\text{non}\,\mathcal P$ et aboutir à une contradiction` },
         { recto: R`Les trois étapes d'une récurrence`, verso: R`Initialisation, hérédité, conclusion` },
         { recto: R`Initialisation d'une récurrence double`, verso: R`Vérifier $\mathcal P(n_0)$ et $\mathcal P(n_0+1)$` },
-        { recto: R`Caractérisation de $\lfloor x\rfloor$`, verso: R`$\lfloor x\rfloor\leq x<\lfloor x\rfloor+1$` },
-        { recto: R`$1+2+\dots+n$`, verso: R`$\dfrac{n(n+1)}{2}$` },
-        { recto: R`$1+q+\dots+q^n$ ($q\neq1$)`, verso: R`$\dfrac{1-q^{n+1}}{1-q}$` }
+        { recto: R`Caractérisation de $\lfloor x\rfloor$`, verso: R`$\lfloor x\rfloor\leq x<\lfloor x\rfloor+1$` }
       ],
 
       questions: [
@@ -1004,7 +1000,7 @@ window.CONTENU = {
         { type: "prop", titre: "Indice muet", texte: R`L'indice de sommation est <strong>muet</strong> : on peut le remplacer par [[n'importe quelle autre lettre non déjà utilisée]]
           $$\sum_{i=1}^{6}x_i=\sum_{k=1}^{6}x_k=\sum_{j=1}^{6}x_j.$$` },
         { type: "prop", titre: "Le symbole produit", texte: R`
-          $$\prod_{i=1}^{6}x_i=x_1\times x_2\times x_3\times x_4\times x_5\times x_6,\qquad \prod_{i=2}^{6}x_i=x_2x_3x_4x_5x_6.$$` },
+          $$\prod_{i=1}^{6}x_i=x_1\times x_2\times x_3\times x_4\times x_5\times x_6,$$ $$\prod_{i=2}^{6}x_i=x_2x_3x_4x_5x_6.$$` },
         { type: "sous", titre: "Définition théorique" },
         { type: "prop", titre: "Définition (Symbole somme)", texte: R`Soit $(u_k)$ une suite réelle et $n_0\in\mathbb N$. On définit par récurrence $S_{n_0}=u_{n_0}$ et, pour $n\geq n_0$, [[$S_{n+1}=S_n+u_{n+1}$]]. Pour $a\leq b$, on note $\displaystyle\sum_{k=a}^{b}u_k=S_b$ (avec $n_0=a$).
           <div class="ligne">$\displaystyle\sum_{k=a}^{a}u_k=u_a,\qquad \sum_{k=a}^{b+1}u_k=$ [[$\displaystyle\sum_{k=a}^{b}u_k+u_{b+1}$]]</div>` },
@@ -1110,7 +1106,7 @@ window.CONTENU = {
           $$\sum_{1\leq i,j\leq n}x_{i,j}=\sum_{1\leq i<j\leq n}x_{i,j}+\sum_{i=1}^{n}x_{i,i}+\sum_{1\leq j<i\leq n}x_{i,j}.$$
           Si $x_{i,j}=x_{j,i}$ pour tous $i,j$ (famille symétrique) :
           <div class="ligne">$\displaystyle\sum_{1\leq i,j\leq n}x_{i,j}=$ [[$\displaystyle2\sum_{1\leq i<j\leq n}x_{i,j}+\sum_{i=1}^{n}x_{i,i}$]]</div>` },
-        { type: "exemple", texte: R`$\displaystyle\sum_{1\leq i<j\leq n}ij=\frac12\left[\left(\frac{n(n+1)}{2}\right)^2-\frac{n(n+1)(2n+1)}{6}\right]$. Pour $n=3$ : $36=2\times11+14$.` },
+        { type: "exemple", texte: R`$\displaystyle\sum_{1\leq i<j\leq n}ij=\frac12\Big[\Big(\frac{n(n+1)}{2}\Big)^2-\frac{n(n+1)(2n+1)}{6}\Big]$. Pour $n=3$ : $36=2\times11+14$.` },
         { type: "prop", titre: "Le développement d'un carré", texte: R`
           <div class="ligne">$\displaystyle\Big(\sum_{i=1}^{n}a_i\Big)^2=$ [[$\displaystyle\sum_{i=1}^{n}a_i^2+2\sum_{1\leq i<j\leq n}a_ia_j$]]</div>
           Pour $n=2$ : $(a+b)^2=a^2+b^2+2ab$.` },
@@ -1129,7 +1125,6 @@ window.CONTENU = {
         { recto: R`$\displaystyle\sum_{k=a}^{b}(u_{k+1}-u_k)$`, verso: R`$u_{b+1}-u_a$` },
         { recto: R`$\dfrac{1}{k(k+1)}$`, verso: R`$\dfrac1k-\dfrac1{k+1}$` },
         { recto: R`Formule de Bernoulli`, verso: R`$\displaystyle a^n-b^n=(a-b)\sum_{k=0}^{n-1}a^kb^{n-1-k}$` },
-        { recto: R`$a^3-b^3$`, verso: R`$(a-b)(a^2+ab+b^2)$` },
         { recto: R`$\dbinom nk$`, verso: R`$\dfrac{n!}{k!\,(n-k)!}$` },
         { recto: R`$\dbinom n2$`, verso: R`$\dfrac{n(n-1)}{2}$` },
         { recto: R`Formule de Pascal`, verso: R`$\dbinom nk+\dbinom n{k+1}=\dbinom{n+1}{k+1}$` },
@@ -1231,7 +1226,7 @@ window.CONTENU = {
           expl: R`Chasles : $\sum_{k=0}^{2n}x_k-\sum_{k=0}^{n}x_k=2n(2n+2)-n(n+2)=3n^2+2n$.` },
         { theme: "lin", niveau: 2, q: R`Pour $n\geq2$, que vaut $\displaystyle\sum_{k=2}^{n}5(k^2+k)$ ?`,
           choix: [R`$\dfrac{5n(n+1)(n+2)}{3}-10$`, R`$\dfrac{5n(n+1)(n+2)}{3}$`, R`$\dfrac{5n(n+1)(n+2)}{3}-5$`, R`$\dfrac{5n(n+1)(2n+1)}{6}-10$`], bonne: 0,
-          expl: R`$5\left(\frac{n(n+1)(2n+1)}{6}-1+\frac{n(n+1)}{2}-1\right)=5\left(\frac{n(n+1)(n+2)}{3}-2\right)$ : on retire deux fois le terme $k=1$.` },
+          expl: R`On retire le terme $k=1$ de chacune des deux sommes usuelles : $5\Big(\frac{n(n+1)(2n+1)}{6}-1+\frac{n(n+1)}{2}-1\Big)$, ce qui vaut $5\Big(\frac{n(n+1)(n+2)}{3}-2\Big)$.` },
         { theme: "lin", niveau: 2, q: R`Que vaut $\displaystyle\sum_{\ell=0}^{3n}2(\ell-1)$ ?`,
           choix: [R`$(3n+1)(3n-2)$`, R`$3n(3n-2)$`, R`$(3n+1)(3n-1)$`, R`$9n^2-2$`], bonne: 0,
           expl: R`$2\sum_{\ell=0}^{3n}\ell-2(3n+1)=3n(3n+1)-2(3n+1)$ : il y a $3n+1$ termes.` },
@@ -1677,10 +1672,10 @@ window.CONTENU = {
           choix: [R`$2^{n+1}-1$`, R`$2^n$`, R`$2^{n+1}$`, R`$(n+1)2^n$`], bonne: 0,
           expl: R`La somme intérieure vaut $2^j$, puis $\sum_{j=0}^{n}2^j=2^{n+1}-1$.` },
         { theme: "tri", niveau: 2, q: R`Que vaut $\displaystyle\sum_{1\leq i<j\leq n}ij$ ?`,
-          choix: [R`$\dfrac12\left[\left(\dfrac{n(n+1)}{2}\right)^2-\dfrac{n(n+1)(2n+1)}{6}\right]$`, R`$\dfrac12\left[\left(\dfrac{n(n+1)}{2}\right)^2+\dfrac{n(n+1)(2n+1)}{6}\right]$`, R`$\left(\dfrac{n(n+1)}{2}\right)^2-\dfrac{n(n+1)(2n+1)}{6}$`, R`$\dfrac12\left(\dfrac{n(n+1)}{2}\right)^2$`], bonne: 0,
+          choix: [R`$\dfrac12\Big[\Big(\dfrac{n(n+1)}{2}\Big)^2-\dfrac{n(n+1)(2n+1)}{6}\Big]$`, R`$\dfrac12\Big[\Big(\dfrac{n(n+1)}{2}\Big)^2+\dfrac{n(n+1)(2n+1)}{6}\Big]$`, R`$\left(\dfrac{n(n+1)}{2}\right)^2-\dfrac{n(n+1)(2n+1)}{6}$`, R`$\dfrac12\left(\dfrac{n(n+1)}{2}\right)^2$`], bonne: 0,
           expl: R`Carré symétrique : $\left(\sum i\right)^2=2\sum_{i<j}ij+\sum i^2$.` },
         { theme: "tri", niveau: 2, q: R`Que vaut $\displaystyle\sum_{1\leq i\leq j\leq n}ij$ ?`,
-          choix: [R`$\dfrac12\left[\left(\dfrac{n(n+1)}{2}\right)^2+\dfrac{n(n+1)(2n+1)}{6}\right]$`, R`$\dfrac12\left[\left(\dfrac{n(n+1)}{2}\right)^2-\dfrac{n(n+1)(2n+1)}{6}\right]$`, R`$\left(\dfrac{n(n+1)}{2}\right)^2$`, R`$\dfrac12\left(\dfrac{n(n+1)}{2}\right)^2+\dfrac{n(n+1)(2n+1)}{6}$`], bonne: 0,
+          choix: [R`$\dfrac12\Big[\Big(\dfrac{n(n+1)}{2}\Big)^2+\dfrac{n(n+1)(2n+1)}{6}\Big]$`, R`$\dfrac12\Big[\Big(\dfrac{n(n+1)}{2}\Big)^2-\dfrac{n(n+1)(2n+1)}{6}\Big]$`, R`$\left(\dfrac{n(n+1)}{2}\right)^2$`, R`$\dfrac12\left(\dfrac{n(n+1)}{2}\right)^2+\dfrac{n(n+1)(2n+1)}{6}$`], bonne: 0,
           expl: R`Triangle large = triangle strict + diagonale : on ajoute $\sum i^2$ au résultat de $\sum_{i<j}ij$. Vérification pour $n=2$ : $1+2+4=7$.` },
         { theme: "tri", niveau: 2, q: R`Que vaut $\displaystyle\sum_{1\leq i\leq j\leq n}(i+j)$ ?`,
           choix: [R`$\dfrac{n(n+1)^2}{2}$`, R`$n^2(n+1)$`, R`$\dfrac{n(n+1)(2n+1)}{4}$`, R`$\dfrac{n^2(n+1)}{2}$`], bonne: 0,
@@ -1727,12 +1722,12 @@ window.CONTENU = {
         { titre: "Ensemble de définition", parties: ["Ensemble de définition et courbe représentative"], themes: ["dom"], quiz: [[2, [R`Pour qu'une expression $\ln\big(u(x)\big)$ ait un sens, il faut :`, R`Quel est l'ensemble de définition de $x\mapsto\ln(1-x)$ ?`]], [4, [R`Quel est l'ensemble de définition de $x\mapsto\sqrt{x+10}$ ?`, R`Quel est l'ensemble de définition de $x\mapsto\dfrac{1}{\sqrt x}$ ?`, R`Quel est l'ensemble de définition de $x\mapsto\dfrac{1}{1+x+x^2}$ ?`]]], bonus: R`Quel est l'ensemble de définition de $x\mapsto\ln(\ln x)$ ?` },
         { titre: "Opérations et composition", parties: ["Opérations sur les fonctions"], themes: ["ops"], quiz: [[2, [R`Le quotient $\dfrac fg$ est défini sur $I$ à condition que :`]], [3, [R`Dans l'écriture $f\circ g$, quelle fonction s'applique en premier ?`, R`Avec $f=\ln$ et $g(x)=x^2+1$, que vaut $(f\circ g)(x)$ ?`]], [5, [R`Avec $f=\ln$ et $g(x)=x^2+1$, que vaut $(g\circ f)(x)$ ?`]]], bonus: R`$x\mapsto(3x+1)^5$ s'écrit $f\circ g$ avec :` },
         { titre: "Parité", parties: ["Parité"], themes: ["par"], quiz: [[2, [R`Une fonction $f$ définie sur $\mathbb R$ est paire si :`]], [3, [R`La courbe d'une fonction impaire est :`, R`La fonction $x\mapsto x^3-x$ est :`, R`La fonction $x\mapsto e^{-x^2}$ est :`]], [5, [R`Si $f$ est impaire et définie en $0$, alors :`]]], bonus: R`La fonction $\ln$ est :` },
-        { titre: "Monotonie, périodicité, bornes", parties: ["Monotonie", "Périodicité", "Fonctions bornées"], themes: ["mono", "per"], quiz: [[3, [R`$f$ est croissante sur $I$ si :`, R`Les fonctions à la fois croissantes et décroissantes sur un intervalle sont :`]], [5, [R`Quelle est la période de $\cos$ ?`, R`Quelle est la période de $x\mapsto\cos(2x)$ ?`, R`Quelle est la période de $x\mapsto x-\lfloor x\rfloor$ ?`]], [8, [R`$f$ est majorée sur $I$ si :`]]], bonus: R`Pourquoi $x\mapsto x^2$ n'est-elle pas périodique ?` },
+        { titre: "Monotonie, périodicité, bornes", parties: ["Monotonie", "Périodicité", "Fonctions bornées"], themes: ["mono", "per"], quiz: [[3, [R`$f$ est croissante sur $I$ si :`, R`Les fonctions à la fois croissantes et décroissantes sur un intervalle sont :`]], [5, [R`Quelle est la période de $x\mapsto x-\lfloor x\rfloor$ ?`, R`Quelle est la période de $x\mapsto(-1)^{\lfloor x\rfloor}$ ?`, R`Quelle est la période de $x\mapsto 2x-\lfloor 2x\rfloor$ ?`]], [8, [R`$f$ est majorée sur $I$ si :`]]], bonus: R`Pourquoi $x\mapsto x^2$ n'est-elle pas périodique ?` },
         { titre: "Polynômes : définition", parties: ["Définition"], themes: ["poly"], quiz: [[2, [R`Que vaut $P(1)$ pour $P=X^4-2X^2+1$ ?`]], [3, [R`Le coefficient de $X^j$ dans un polynôme $P$ vaut :`]], [5, [R`On cherche $a,b,c$ tels que $X^3-X^2-3X+2=(X-2)(aX^2+bX+c)$. On trouve :`]]], bonus: R`Les réels $a,b$ tels que $\dfrac1{x^2-1}=\dfrac a{x-1}+\dfrac b{x+1}$ pour $x\neq\pm1$ sont :` },
         { titre: "Degré d'un polynôme", parties: ["Degré"], themes: ["poly"], quiz: [[2, [R`Quel est le degré de $P=3-X+5X^4$ ?`, R`Par convention, le degré du polynôme nul vaut :`]], [4, [R`Si $P$ et $Q$ sont non nuls, $\deg(PQ)=$`, R`Quel est le degré de $(X+1)^2-X^2$ ?`]]], bonus: R`Quel est le degré de $(2X-1)^3(X^2+1)$ et son coefficient dominant ?` },
         { titre: "Polynôme dérivé et Taylor", parties: ["Polynôme dérivé", "Formule de Taylor pour les polynômes"], themes: ["tay"], quiz: [[1, [R`Quel est le polynôme dérivé de $P=3X^3+2X^2-1$ ?`, R`Si $\deg P=5$, quel est le degré de $P'$ ?`]], [3, [R`Si $P$ est de degré $n$ et de coefficient dominant $a_n$, alors $P^{(n)}$ est :`]], [4, [R`La formule de Taylor pour un polynôme $P$ de degré $n$ en $a$ s'écrit :`]]], bonus: R`Le développement de $X^3$ selon les puissances de $(X-1)$ est :` },
         { titre: "Racines d'un polynôme", parties: ["Racines d'un polynôme"], themes: ["racp"], quiz: [[1, [R`$a$ est une racine de $P$ si et seulement si :`, R`Si $a$ est racine de $P$ de degré $n\geq1$, alors :`]], [3, [R`$X^3-1$ se factorise en :`]], [4, [R`Si $X^2+bX+c$ a deux racines $x_1,x_2$, alors :`]]], bonus: R`Deux réels ont pour somme $5$ et pour produit $6$. Ce sont :` },
-        { titre: "Inverse, valeur absolue, partie entière", parties: ["Fonction inverse", "Valeur absolue et partie entière"], themes: ["inv"], quiz: [[2, [R`La fonction inverse est-elle décroissante sur $\mathbb R^*$ ?`]], [4, [R`La fonction valeur absolue est :`, R`L'inégalité triangulaire s'écrit :`]], [6, [R`Que vaut $\lfloor-2{,}7\rfloor$ ?`, R`La partie entière vérifie, pour tout réel $x$ :`]]], bonus: R`Les solutions de $|x+2|=2$ sont :` },
+        { titre: "Inverse, valeur absolue, partie entière", parties: ["Fonction inverse", "Valeur absolue et partie entière"], themes: ["inv"], quiz: [[2, [R`La fonction inverse est-elle décroissante sur $\mathbb R^*$ ?`]], [4, [R`La fonction valeur absolue est :`]], [6, [R`Lequel de ces points appartient à la courbe de $x\mapsto\lfloor x\rfloor$ ?`, R`La partie entière vérifie, pour tout réel $x$ :`]]], bonus: R`Les solutions de $|x+2|=2$ sont :` },
         { titre: "Logarithme", parties: ["Fonction logarithme"], themes: ["lnf", "etu"], quiz: [[1, [R`L'équation de la tangente à la courbe de $f$ au point d'abscisse $a$ est :`]], [2, [R`La fonction $\ln$ est définie comme l'unique fonction dérivable sur $]0,+\infty[$ telle que :`]], [3, [R`Pour $a,b>0$, $\ln(ab)=$`, R`Simplifier $\ln(2e^2)$ :`, R`Simplifier $\ln(\sqrt e)$ :`]]], bonus: R`Simplifier $\ln\left(\dfrac{e^{x+1}}{e^{x-1}}\right)$ :` },
         { titre: "Exponentielle et puissances", parties: ["Fonction exponentielle", "Fonctions puissance"], themes: ["exp"], quiz: [[1, [R`Les courbes de $\exp$ et $\ln$ sont symétriques par rapport :`]], [3, [R`Pour tous réels $a,b$, $e^{a+b}=$`, R`Simplifier $\exp(\ln2+\ln3)$ :`]], [4, [R`Pour $x>0$ et $\alpha\in\mathbb R$, $x^\alpha$ est défini par :`]]], bonus: R`Pour $x\in]0,1[$, on a :` },
         { titre: "Équations avec les fonctions usuelles", parties: ["Équations avec les fonctions usuelles"], themes: ["eqf"], quiz: [[1, [R`Résoudre $e^{3x-1}=2$ :`, R`Résoudre $e^{x^2}=e$ :`]], [2, [R`Avant de résoudre une équation avec $\ln$ ou $\sqrt{\ }$, il faut d'abord :`, R`Résoudre $\ln(2x+1)=0$ :`]], [3, [R`Résoudre $\exp(x^2-3x+2)=1$ :`]]], bonus: R`Résoudre $e^{2x}-3e^x+2=0$ :` },
@@ -1770,8 +1765,8 @@ Le quotient $\dfrac fg:x\mapsto\dfrac{f(x)}{g(x)}$ n'est défini que si [[$g$ ne
 <li>$f$ est <strong>impaire</strong> si $\forall x\in I$, [[$f(-x)=-f(x)$]].</li></ul>` },
         { type: "prop", titre: "Interprétation graphique", texte: R`$f$ est paire si et seulement si sa courbe est [[symétrique par rapport à l'axe des ordonnées]] ; $f$ est impaire si et seulement si sa courbe est [[symétrique par rapport à l'origine $O$]].
 <div class="graphes"><svg class="graphe" viewBox="0 0 150 130" role="img" aria-label="Courbe"><path class="gr" d="M21.4,122.0V8.0 M48.2,122.0V8.0 M101.8,122.0V8.0 M128.6,122.0V8.0 M8.0,122.0H142.0 M8.0,78.2H142.0 M8.0,56.2H142.0 M8.0,34.3H142.0 M8.0,12.4H142.0"/><path class="ax" d="M8.0,100.1H142.0M75.0,122.0V8.0"/><path class="c1" d="M21.4,12.4 L28.1,32.9 L34.8,50.8 L41.5,65.8 L48.2,78.2 L54.9,87.7 L61.6,94.6 L68.3,98.7 L75.0,100.1 L81.7,98.7 L88.4,94.6 L95.1,87.7 L101.8,78.2 L108.5,65.8 L115.2,50.8 L121.9,32.9 L128.6,12.4"/><circle class="c2 pl" cx="34.8" cy="50.8" r="3"/><circle class="c2 pl" cx="115.2" cy="50.8" r="3"/><path class="c2 tir" d="M34.8,50.8H115.2"/><text class="lb" x="10.7" y="16.8">paire</text></svg><svg class="graphe" viewBox="0 0 150 130" role="img" aria-label="Courbe"><path class="gr" d="M21.4,122.0V8.0 M48.2,122.0V8.0 M101.8,122.0V8.0 M128.6,122.0V8.0 M8.0,122.0H142.0 M8.0,103.0H142.0 M8.0,84.0H142.0 M8.0,46.0H142.0 M8.0,27.0H142.0 M8.0,8.0H142.0"/><path class="ax" d="M8.0,65.0H142.0M75.0,122.0V8.0"/><path class="c1" d="M26.8,141.0 L32.8,109.3 L38.4,87.4 L44.4,71.5 L47.7,65.8 L50.9,61.8 L53.7,59.4 L56.5,58.1 L59.7,57.7 L62.9,58.2 L69.0,60.9 L83.0,70.2 L86.7,71.7 L90.3,72.3 L93.5,71.9 L96.7,70.3 L99.9,67.4 L102.7,63.6 L108.0,53.0 L113.2,37.1 L118.0,16.9 L123.2,-11.0"/><circle class="c2 pl" cx="34.8" cy="100.6" r="3"/><circle class="c2 pl" cx="115.2" cy="29.4" r="3"/><path class="c2 tir" d="M34.8,100.6L115.2,29.4"/><text class="lb" x="10.7" y="15.6">impaire</text></svg></div>` },
-        { type: "exemple", texte: R`<ul><li>Paires : $x\mapsto x^{2n}$, $|\cdot|$, $x\mapsto\dfrac1{x^2+1}$, $x\mapsto\ln|x|$ sur $\mathbb R^*$, $\cos$.</li>
-<li>Impaires : $x\mapsto x^{2n+1}$, $x\mapsto\dfrac1x$ sur $\mathbb R^*$, $x\mapsto x^3-x$, $\sin$.</li>
+        { type: "exemple", texte: R`<ul><li>Paires : $x\mapsto x^{2n}$, $|\cdot|$, $x\mapsto\dfrac1{x^2+1}$, $x\mapsto\ln|x|$ sur $\mathbb R^*$, $\mathrm{ch}$ (voir plus bas).</li>
+<li>Impaires : $x\mapsto x^{2n+1}$, $x\mapsto\dfrac1x$ sur $\mathbb R^*$, $x\mapsto x^3-x$, $\mathrm{sh}$.</li>
 <li>Ni l'un ni l'autre : $x\mapsto x+1$, car [[$f(-1)=0$ alors que $f(1)=2$]] (un contre-exemple suffit). Pour $\ln$, la question n'a pas de sens : [[$]0,+\infty[$ n'est pas symétrique]].</li></ul>` },
         { type: "prop", titre: "Proposition (Décomposition paire + impaire)", texte: R`Toute fonction $f$ définie sur un ensemble symétrique s'écrit de façon unique $f=g+h$ avec $g$ paire et $h$ impaire :
 <div class="ligne">$g(x)=$ [[$\dfrac{f(x)+f(-x)}{2}$]] $\quad h(x)=$ [[$\dfrac{f(x)-f(-x)}{2}$]]</div>
@@ -1788,19 +1783,20 @@ Pour $f=\exp$ : $\exp=\mathrm{ch}+\mathrm{sh}$ avec $\mathrm{ch}(x)=\dfrac{e^x+e
         { type: "prop", titre: "Proposition", texte: R`Les seules fonctions à la fois croissantes et décroissantes sont [[les fonctions constantes]].` },
         { type: "sous", titre: "Périodicité" },
         { type: "prop", titre: "Définition (Fonction périodique)", texte: R`La période de $f:\mathbb R\to\mathbb R$ est le plus petit réel $T>0$ tel que, pour tout $x\in\mathbb R$, [[$f(x+T)=f(x)$]]. S'il existe, $f$ est dite périodique de période $T$, et alors $f(x+kT)=f(x)$ pour tout $k\in\mathbb Z$ : il suffit de tracer la courbe sur [[un intervalle de longueur $T$]], puis de la recopier par translation.` },
-        { type: "exemple", texte: R`<ul><li>$\cos$ et $\sin$ sont périodiques de période [[$2\pi$]]. Pour $\omega>0$, $x\mapsto\cos(\omega x)$ est de période [[$\dfrac{2\pi}{\omega}$]] ; par exemple $x\mapsto\cos(2x)$ est de période $\pi$.</li>
-<li>La partie fractionnaire $x\mapsto x-\lfloor x\rfloor$ est de période [[$1$]] : $\lfloor x+1\rfloor=\lfloor x\rfloor+1$, et pour $T\in]0,1[$, $f(T)=T\neq f(0)$.</li></ul>
+        { type: "exemple", texte: R`<ul><li>La partie fractionnaire $x\mapsto x-\lfloor x\rfloor$ est de période [[$1$]] : $\lfloor x+1\rfloor=\lfloor x\rfloor+1$, et pour $T\in]0,1[$, $f(T)=T\neq f(0)$.</li>
+<li>$x\mapsto(-1)^{\lfloor x\rfloor}$ vaut $1$ sur $[0,1[$ et $-1$ sur $[1,2[$ : elle est de période [[$2$]].</li>
+<li>Si $f$ est de période $T$ et $\omega>0$, alors $x\mapsto f(\omega x)$ est de période [[$\dfrac{T}{\omega}$]] ; par exemple $x\mapsto 2x-\lfloor2x\rfloor$ est de période $\frac12$.</li></ul>
 <svg class="graphe" viewBox="0 0 300 110" role="img" aria-label="Courbe"><path class="gr" d="M31.7,102.0V8.0 M79.0,102.0V8.0 M173.7,102.0V8.0 M221.0,102.0V8.0 M268.3,102.0V8.0 M8.0,30.1H292.0"/><path class="ax" d="M8.0,85.4H292.0M126.3,102.0V8.0"/><path class="c1" d="M31.7,85.4 L79.0,30.1"/><path class="c1" d="M79.2,85.1 L126.3,30.1"/><path class="c1" d="M126.6,85.2 L173.6,30.2"/><path class="c1" d="M173.9,85.2 L221.0,30.2"/><path class="c1" d="M221.2,85.2 L268.3,30.2"/><circle class="c1 pl" cx="31.7" cy="85.4" r="3"/><circle class="c1 pl" cx="79.0" cy="85.4" r="3"/><circle class="c1 pl" cx="126.3" cy="85.4" r="3"/><circle class="c1 pl" cx="173.7" cy="85.4" r="3"/><circle class="c1 pl" cx="221.0" cy="85.4" r="3"/><circle class="c1 cr" cx="79.0" cy="30.1" r="3"/><circle class="c1 cr" cx="126.3" cy="30.1" r="3"/><circle class="c1 cr" cx="173.7" cy="30.1" r="3"/><circle class="c1 cr" cx="221.0" cy="30.1" r="3"/><circle class="c1 cr" cx="268.3" cy="30.1" r="3"/></svg>` },
         { type: "remarque", texte: R`<ul><li>$x\mapsto x^2$ n'est pas périodique : en $x=0$, $T^2=0$ donnerait $T=0$.</li>
 <li>Une fonction strictement monotone sur $\mathbb R$ [[n'est jamais périodique]] : $x<x+T$ entraîne $f(x)<f(x+T)$ (cas croissant).</li>
 <li>Une fonction constante vérifie $f(x+T)=f(x)$ pour tout $T>0$, mais il n'y a pas de plus petit tel $T$ : on ne lui attribue pas de période.</li></ul>` },
         { type: "sous", titre: "Fonctions bornées" },
         { type: "prop", titre: "Définition (Majorant, minorant)", texte: R`$f:I\to\mathbb R$ est <strong>majorée</strong> s'il existe un réel $M$ tel que [[$\forall x\in I,\ f(x)\leq M$]] ; un tel $M$ est un majorant. Elle est <strong>minorée</strong> s'il existe $m$ tel que $\forall x\in I,\ f(x)\geq m$. Elle est <strong>bornée</strong> si elle est [[majorée et minorée]], ce qui revient à dire que $|f|$ est majorée.` },
-        { type: "exemple", texte: R`$\cos$ est bornée : $-1\leq\cos x\leq1$. La fonction $x\mapsto\dfrac1{1+x^2}$ est bornée : ses valeurs sont dans [[$]0,1]$]]. La fonction $\exp$ est minorée par $0$ mais [[pas majorée]].` },
+        { type: "exemple", texte: R`La partie fractionnaire est bornée : ses valeurs sont dans $[0,1[$. La fonction $x\mapsto\dfrac1{1+x^2}$ est bornée : ses valeurs sont dans [[$]0,1]$]]. La fonction $\exp$ est minorée par $0$ mais [[pas majorée]].` },
         { type: "section", titre: "2. Fonctions polynomiales" },
         { type: "sous", titre: "Définition" },
         { type: "prop", titre: "Définition (Polynôme)", texte: R`On note $X^k$ la fonction $x\mapsto x^k$ (avec $X^0=1$) : ce sont les monômes. Un <strong>polynôme</strong> est une fonction de la forme
-$$P=\sum_{k=0}^{n}a_kX^k=a_nX^n+\dots+a_1X+a_0,\qquad a_0,\dots,a_n\in\mathbb R.$$
+$$P=\sum_{k=0}^{n}a_kX^k=a_nX^n+\dots+a_1X+a_0,$$ où $a_0,\dots,a_n$ sont des réels.
 Les $a_k$ sont les coefficients, $a_0$ est [[le coefficient constant]]. Évaluer $P$ en $x$, c'est calculer le nombre [[$P(x)=\sum_{k=0}^{n}a_kx^k$]]. On note $\mathbb R[X]$ l'ensemble des polynômes.` },
         { type: "attention", texte: R`La grande lettre $X$ désigne une fonction, la petite lettre $x$ un réel : $P$ (ou $P(X)$) est [[une fonction]], alors que $P(x)$ est [[un nombre réel]]. La fonction inverse n'est pas un polynôme : elle n'est même pas définie en $0$.` },
         { type: "prop", titre: "Lemme (Coefficients et dérivées en 0)", texte: R`Si $P=\sum_{k=0}^{n}a_kX^k$, alors pour tout $j\in\{0,\dots,n\}$ : $P^{(j)}(0)=$ [[$j!\,a_j$]], c'est-à-dire $a_j=\dfrac{P^{(j)}(0)}{j!}$.` },
@@ -1939,26 +1935,23 @@ Cas affine : la dérivée de $x\mapsto g(ax+b)$ est [[$x\mapsto a\,g'(ax+b)$]].`
         { recto: R`$f$ impaire`, verso: R`$\forall x,\ f(-x)=-f(x)$ : symétrie par rapport à l'origine` },
         { recto: R`Décomposition paire + impaire de $f$`, verso: R`$\dfrac{f(x)+f(-x)}2+\dfrac{f(x)-f(-x)}2$` },
         { recto: R`$\mathrm{ch}(x)$ et $\mathrm{sh}(x)$`, verso: R`$\dfrac{e^x+e^{-x}}2$ (paire) et $\dfrac{e^x-e^{-x}}2$ (impaire)` },
-        { recto: R`Période de $x\mapsto\cos(\omega x)$`, verso: R`$\dfrac{2\pi}{\omega}$` },
+        { recto: R`Période de $x\mapsto f(\omega x)$ si $f$ est de période $T$ ($\omega>0$)`, verso: R`$\dfrac{T}{\omega}$` },
         { recto: R`Période de $x\mapsto x-\lfloor x\rfloor$`, verso: R`$1$` },
-        { recto: R`$\deg(PQ)$ et $\deg(P+Q)$`, verso: R`$\deg P+\deg Q$ ; $\leq\max(\deg P,\deg Q)$` },
+        { recto: R`Degré d'un produit, d'une somme`, verso: R`$\deg(PQ)=\deg P+\deg Q$ et $\deg(P+Q)\leq\max(\deg P,\deg Q)$` },
         { recto: R`$\deg(P\circ Q)$`, verso: R`$\deg P\times\deg Q$` },
         { recto: R`$\deg(0)$`, verso: R`$-\infty$` },
-        { recto: R`Coefficient $a_j$ de $P$`, verso: R`$\dfrac{P^{(j)}(0)}{j!}$` },
+        { recto: R`Coefficient $a_j$ de $P$ à l'aide des dérivées`, verso: R`$a_j=\dfrac{P^{(j)}(0)}{j!}$` },
         { recto: R`Polynôme dérivé de $\sum a_kX^k$`, verso: R`$\sum_{k\geq1}k\,a_kX^{k-1}$` },
         { recto: R`Formule de Taylor pour un polynôme`, verso: R`$\displaystyle P=\sum_{k=0}^{n}\frac{P^{(k)}(a)}{k!}(X-a)^k$` },
-        { recto: R`$a$ racine de $P$`, verso: R`$P(a)=0\iff P=(X-a)Q$` },
+        { recto: R`$a$ est racine de $P$ (de degré $n\geq1$) si et seulement si…`, verso: R`$P(a)=0$, ce qui équivaut à $P=(X-a)Q$ avec $\deg Q=n-1$` },
         { recto: R`Somme et produit des racines de $X^2+bX+c$`, verso: R`$-b$ et $c$` },
-        { recto: R`Encadrement de $\lfloor x\rfloor$`, verso: R`$\lfloor x\rfloor\leq x<\lfloor x\rfloor+1$, soit $x-1<\lfloor x\rfloor\leq x$` },
-        { recto: R`Inégalité triangulaire`, verso: R`$|x+y|\leq|x|+|y|$` },
         { recto: R`Définition de $\ln$`, verso: R`$\ln(1)=0$ et $\ln'(x)=\dfrac1x$ sur $]0,+\infty[$` },
-        { recto: R`$\ln(ab)$, $\ln\frac ab$, $\ln(a^b)$`, verso: R`$\ln a+\ln b$, $\ln a-\ln b$, $b\ln a$` },
-        { recto: R`$\ln x$ et $x-1$`, verso: R`$\ln x\leq x-1$ pour $x>0$` },
-        { recto: R`$e^x$ et $1+x$`, verso: R`$e^x\geq1+x$ pour tout réel $x$` },
-        { recto: R`$x^\alpha$ pour $x>0$`, verso: R`$e^{\alpha\ln x}$` },
-        { recto: R`$|a|=|b|$`, verso: R`$a=b$ ou $a=-b$` },
-        { recto: R`$\sqrt A=B$`, verso: R`$B\geq0$ et $A=B^2$` },
-        { recto: R`Tangente en $a$`, verso: R`$y=f(a)+f'(a)(x-a)$` },
+        { recto: R`Inégalité entre $\ln x$ et $x-1$ (pour $x>0$)`, verso: R`$\ln x\leq x-1$ : la courbe de $\ln$ est sous sa tangente en $1$` },
+        { recto: R`Inégalité entre $e^x$ et $1+x$ (pour $x$ réel)`, verso: R`$e^x\geq1+x$ : la courbe de $\exp$ est au-dessus de sa tangente en $0$` },
+        { recto: R`Définition de $x^\alpha$ pour $x>0$`, verso: R`$x^\alpha=e^{\alpha\ln x}$` },
+        { recto: R`Résoudre $|a|=|b|$`, verso: R`$a=b$ ou $a=-b$` },
+        { recto: R`Résoudre $\sqrt A=B$ (avec $A\geq0$)`, verso: R`$B\geq0$ et $A=B^2$` },
+        { recto: R`Équation de la tangente en $a$`, verso: R`$y=f(a)+f'(a)(x-a)$` },
         { recto: R`$(\sqrt x)'$`, verso: R`$\dfrac1{2\sqrt x}$ sur $]0,+\infty[$` },
         { recto: R`$\left(\dfrac1{x^n}\right)'$`, verso: R`$-\dfrac{n}{x^{n+1}}$` },
         { recto: R`$(x^\alpha)'$`, verso: R`$\alpha x^{\alpha-1}$` },
@@ -2133,36 +2126,36 @@ Cas affine : la dérivée de $x\mapsto g(ax+b)$ est [[$x\mapsto a\,g'(ax+b)$]].`
           choix: [R`Non : pour $x\geq0$, $f(-x)\leq f(0)\leq f(x)=f(-x)$`, R`Oui, $x\mapsto x^2$`, R`Oui, $x\mapsto|x|$`, R`Oui, $\cos$`], bonne: 0,
           expl: R`On obtient $f(x)=f(0)$ pour tout $x$ : $f$ est constante.` },
         /* ---------- Périodicité ---------- */
-        { theme: "per", niveau: 0, q: R`Quelle est la période de $\cos$ ?`,
-          choix: [R`$2\pi$`, R`$\pi$`, R`$\dfrac\pi2$`, R`$1$`], bonne: 0,
-          expl: R`$\cos(x+2\pi)=\cos x$ et aucun $T\in]0,2\pi[$ ne convient.` },
-        { theme: "per", niveau: 0, q: R`Quelle est la période de $x\mapsto\cos(2x)$ ?`,
-          choix: [R`$\pi$`, R`$2\pi$`, R`$4\pi$`, R`$\dfrac\pi2$`], bonne: 0,
-          expl: R`Période $\frac{2\pi}\omega$ avec $\omega=2$.` },
+        { theme: "per", niveau: 0, q: R`Quelle est la période de $x\mapsto(-1)^{\lfloor x\rfloor}$ ?`,
+          choix: [R`$2$`, R`$1$`, R`$\dfrac12$`, R`Elle n'est pas périodique`], bonne: 0,
+          expl: R`$\lfloor x+2\rfloor=\lfloor x\rfloor+2$, donc $f(x+2)=f(x)$. La fonction vaut $1$ sur $[0,1[$ et $-1$ sur $[1,2[$ : le motif se répète tous les $2$, pas avant.` },
+        { theme: "per", niveau: 0, q: R`Quelle est la période de $x\mapsto 2x-\lfloor 2x\rfloor$ ?`,
+          choix: [R`$\dfrac12$`, R`$1$`, R`$2$`, R`Elle n'est pas périodique`], bonne: 0,
+          expl: R`C'est la partie fractionnaire de $2x$ : quand $x$ augmente de $\frac12$, $2x$ augmente de $1$.` },
         { theme: "per", niveau: 0, q: R`Quelle est la période de $x\mapsto x-\lfloor x\rfloor$ ?`,
           choix: [R`$1$`, R`$2$`, R`$\dfrac12$`, R`Elle n'est pas périodique`], bonne: 0,
           expl: R`$\lfloor x+1\rfloor=\lfloor x\rfloor+1$, et pour $T\in]0,1[$, $f(T)=T\neq f(0)$.` },
         { theme: "per", niveau: 0, q: R`Si $f$ est périodique de période $T$, alors pour tout $k\in\mathbb Z$ :`,
           choix: [R`$f(x+kT)=f(x)$`, R`$f(x+kT)=kf(x)$`, R`$f(kx)=f(x)$`, R`$f(x+T)=f(x)+T$`], bonne: 0,
           expl: R`Récurrence immédiate dans les deux sens.` },
-        { theme: "per", niveau: 1, q: R`Quelle est la période de $x\mapsto\sin(3x)$ ?`,
-          choix: [R`$\dfrac{2\pi}{3}$`, R`$6\pi$`, R`$3\pi$`, R`$\dfrac{\pi}{3}$`], bonne: 0,
-          expl: R`$\sin(3(x+T))=\sin(3x+3T)$ : il faut $3T=2\pi$.` },
+        { theme: "per", niveau: 1, q: R`Si $f$ est périodique de période $T$, la fonction $x\mapsto f(3x)$ est périodique de période :`,
+          choix: [R`$\dfrac T3$`, R`$3T$`, R`$T$`, R`$T+3$`], bonne: 0,
+          expl: R`$f\big(3(x+\frac T3)\big)=f(3x+T)=f(3x)$ ; une période plus petite pour $x\mapsto f(3x)$ en donnerait une plus petite pour $f$.` },
         { theme: "per", niveau: 1, q: R`Pourquoi $x\mapsto x^2$ n'est-elle pas périodique ?`,
           choix: [R`En $x=0$, $f(T)=f(0)$ donnerait $T^2=0$`, R`Car elle est paire`, R`Car elle n'est pas bornée sur $[0,1]$`, R`Elle est périodique de période $1$`], bonne: 0,
           expl: R`Aucun $T>0$ ne convient.` },
         { theme: "per", niveau: 1, q: R`Une fonction strictement croissante sur $\mathbb R$ :`,
           choix: [R`n'est jamais périodique`, R`est toujours périodique`, R`est périodique si elle est bornée`, R`a pour période $1$`], bonne: 0,
           expl: R`Pour $T>0$, $x<x+T$ donne $f(x)<f(x+T)$.` },
-        { theme: "per", niveau: 2, q: R`La fonction $g:x\mapsto\lfloor x\rfloor+\lfloor -x\rfloor$ vaut :`,
-          choix: [R`$0$ si $x\in\mathbb Z$ et $-1$ sinon`, R`$0$ pour tout $x$`, R`$-1$ pour tout $x$`, R`$1$ si $x\in\mathbb Z$ et $0$ sinon`], bonne: 0,
-          expl: R`Si $n<x<n+1$, alors $-n-1<-x<-n$, donc $g(x)=n+(-n-1)=-1$.` },
+        { theme: "per", niveau: 2, q: R`La fonction $\mathrm{ch}:x\mapsto\dfrac{e^x+e^{-x}}2$ est-elle périodique ?`,
+          choix: [R`Non : elle est strictement croissante sur $[0,+\infty[$`, R`Oui, de période $2$`, R`Oui, de période $1$`, R`Oui, car elle est paire`], bonne: 0,
+          expl: R`Si $T>0$ était une période, on aurait $\mathrm{ch}(T)=\mathrm{ch}(0)$, alors que $\mathrm{ch}(T)>\mathrm{ch}(0)$ ($\mathrm{ch}'=\mathrm{sh}>0$ sur $]0,+\infty[$).` },
         { theme: "per", niveau: 2, q: R`Une fonction constante sur $\mathbb R$ :`,
           choix: [R`vérifie $f(x+T)=f(x)$ pour tout $T>0$ mais n'a pas de plus petite période`, R`a pour période $1$`, R`a pour période $0$`, R`n'est invariante par aucune translation`], bonne: 0,
           expl: R`$]0,+\infty[$ n'a pas de plus petit élément.` },
-        { theme: "per", niveau: 3, q: R`Quelle est la période de $x\mapsto\cos(2x)+\sin(3x)$ ?`,
-          choix: [R`$2\pi$`, R`$\pi$`, R`$6\pi$`, R`$\dfrac{2\pi}{3}$`], bonne: 0,
-          expl: R`$2\pi$ est multiple commun des périodes $\pi$ et $\frac{2\pi}3$. Aucun $T\in]0,2\pi[$ ne convient : il faudrait $T\in\pi\mathbb Z$ pour le cosinus et $T\in\frac{2\pi}3\mathbb Z$ pour le sinus (en dérivant deux fois, on sépare les termes).` },
+        { theme: "per", niveau: 3, q: R`Quelle est la période de $x\mapsto(x-\lfloor x\rfloor)+(2x-\lfloor2x\rfloor)$ ?`,
+          choix: [R`$1$`, R`$\dfrac12$`, R`$2$`, R`$\dfrac32$`], bonne: 0,
+          expl: R`$1$ convient pour les deux termes. La fonction est positive et ne s'annule qu'aux entiers ; si $T\in]0,1[$ était une période, elle s'annulerait en $T$, qui n'est pas entier.` },
         /* ---------- Polynômes et degré ---------- */
         { theme: "poly", niveau: 0, q: R`Quel est le degré de $P=3-X+5X^4$ ?`,
           choix: [R`$4$`, R`$5$`, R`$3$`, R`$1$`], bonne: 0,
@@ -2272,15 +2265,12 @@ Cas affine : la dérivée de $x\mapsto g(ax+b)$ est [[$x\mapsto a\,g'(ax+b)$]].`
           choix: [R`$(2,3)$ et $(3,2)$`, R`$(2,3)$ seulement`, R`$(1,4)$ et $(4,1)$`, R`$(2,3)$, $(3,2)$ et $(-1,6)$`], bonne: 0,
           expl: R`Avec $x,y>0$ : $xy=6$ et $x+y=5$, donc $x,y$ sont les racines de $t^2-5t+6$.` },
         /* ---------- Inverse, |x| et partie entière ---------- */
-        { theme: "inv", niveau: 0, q: R`Que vaut $\lfloor-2{,}7\rfloor$ ?`,
-          choix: [R`$-3$`, R`$-2$`, R`$2$`, R`$-2{,}7$`], bonne: 0,
-          expl: R`$-3\leq-2{,}7<-2$.` },
+        { theme: "inv", niveau: 0, q: R`Lequel de ces points appartient à la courbe de $x\mapsto\lfloor x\rfloor$ ?`,
+          choix: [R`$(1,1)$`, R`$(1,0)$`, R`$(0,1)$`, R`$(1{,}5\,;\,2)$`], bonne: 0,
+          expl: R`$\lfloor1\rfloor=1$ : sur le graphe en escalier, le point $(1,1)$ est plein et le point $(1,0)$ est creux.` },
         { theme: "inv", niveau: 0, q: R`La partie entière vérifie, pour tout réel $x$ :`,
           choix: [R`$x-1<\lfloor x\rfloor\leq x$`, R`$x\leq\lfloor x\rfloor<x+1$`, R`$x-1\leq\lfloor x\rfloor<x$`, R`$\lfloor x\rfloor=x$`], bonne: 0,
           expl: R`Conséquence de $n\leq x<n+1$.` },
-        { theme: "inv", niveau: 0, q: R`L'inégalité triangulaire s'écrit :`,
-          choix: [R`$|x+y|\leq|x|+|y|$`, R`$|x+y|=|x|+|y|$`, R`$|x+y|\geq|x|+|y|$`, R`$|x+y|\leq|x|\,|y|$`], bonne: 0,
-          expl: R`Égalité si et seulement si $x$ et $y$ sont de même signe.` },
         { theme: "inv", niveau: 0, q: R`La fonction valeur absolue est :`,
           choix: [R`paire`, R`impaire`, R`ni paire ni impaire`, R`croissante sur $\mathbb R$`], bonne: 0,
           expl: R`$|-x|=|x|$.` },
@@ -2566,9 +2556,6 @@ Cas affine : la dérivée de $x\mapsto g(ax+b)$ est [[$x\mapsto a\,g'(ax+b)$]].`
         { theme: "etu", niveau: 2, q: R`L'équation $2^x=x^2$ a combien de solutions strictement positives ?`,
           choix: [R`$2$ : $x=2$ et $x=4$`, R`$1$ : $x=2$`, R`$0$`, R`$3$`], bonne: 0,
           expl: R`Elle équivaut à $\frac{\ln x}x=\frac{\ln2}2$ ; $g:x\mapsto\frac{\ln x}x$ croît puis décroît, et $\frac{\ln4}4=\frac{\ln2}2$.` },
-        { theme: "etu", niveau: 2, q: R`Les points de la courbe de $f(x)=\dfrac{x^2-4}{2x-5}$ à tangente horizontale ont pour abscisses :`,
-          choix: [R`$1$ et $4$`, R`$2$ et $-2$`, R`$\dfrac52$`, R`$0$ et $5$`], bonne: 0,
-          expl: R`$f'(x)=\frac{2(x-1)(x-4)}{(2x-5)^2}$.` },
         { theme: "etu", niveau: 3, q: R`Le point de la courbe de $\ln$ dont la tangente passe par l'origine a pour abscisse :`,
           choix: [R`$e$`, R`$1$`, R`$\dfrac1e$`, R`Il n'en existe pas`], bonne: 0,
           expl: R`La tangente en $a$ passe par $O$ si $0=\ln a+\frac1a(0-a)$, soit $\ln a=1$.` },
