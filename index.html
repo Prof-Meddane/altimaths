@@ -88,6 +88,10 @@ nav button{position:relative}
 .ligne-bouton .sym{width:40px;height:40px;flex:none;border-radius:50%;background:var(--nuit);display:grid;place-items:center;font-family:var(--d);font-weight:800;font-size:18px;color:var(--drapeau)}
 .ligne-bouton .txt{flex:1;min-width:0}
 .ligne-bouton b{display:block;font-weight:600}
+.btn-indice{display:inline-flex;align-items:center;gap:7px;margin:14px 0 0;padding:8px 14px;border-radius:99px;border:1.5px dashed var(--pente);background:none;color:var(--pente);font-weight:700;font-size:14px}
+.btn-indice small{font-weight:600;opacity:.75;font-size:12px}.btn-indice:disabled{border-style:solid;opacity:.75}
+.indice-txt{margin:10px 0 0;padding:10px 13px;border-radius:12px;background:rgba(232,181,58,.16);border-left:3px solid #E8B53A;font-size:15px;line-height:1.5;font-weight:500}
+body.nuit .btn-indice{color:#9DB8E8;border-color:#9DB8E8}
 .q-code{margin:12px 0 0}.q-code .py-src{font-size:14px}
 .choix code.cc{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13.5px;white-space:pre-wrap;word-break:break-word;background:none;padding:0;text-align:left;display:block}
 .defi-th{font-family:var(--d);font-size:18px;font-weight:800;margin:20px 0 8px}
@@ -698,7 +702,7 @@ body.nuit .serie-carnet{color:#FFB08A}
     </div>
     <div class="pad" style="padding-top:12px;padding-bottom:40px">
       <div id="defi-liste">
-        <p class="petit">Écrivez une petite fonction Python, puis lancez les tests. Premier succès : gain d'une piste noire (×4), météo ignorée. Python se charge au premier test (environ 10 Mo), ensuite c'est rapide.</p>
+        <p class="petit">Écrivez une petite fonction Python, puis lancez les tests. Premier succès : gain d'une piste noire (×4, ou ×2 avec l'indice), météo ignorée. Python se charge au premier test (environ 10 Mo), ensuite c'est rapide.</p>
         <div id="defi-groupes"></div>
       </div>
       <div id="defi-ouvert" hidden>
@@ -902,6 +906,7 @@ body.nuit .serie-carnet{color:#FFB08A}
         <p style="margin:0 0 8px">Marche normale : 10 questions, pistes vertes et bleues, 1 minute de marche par bonne réponse. Comme dans Anki, les thèmes qui vous posent problème reviennent plus souvent.</p>
         <p style="margin:0 0 8px">Passage technique : 5 questions, pistes rouges et noires, 4 minutes par bonne réponse, mais chaque erreur fait reculer d'une minute. Répondre au hasard ne paie pas.</p>
         <p style="margin:0 0 8px">Entraînement par thème et révision des erreurs : une demi-minute par bonne réponse.</p>
+        <p style="margin:0 0 8px">Indications : sur les pistes rouges et noires (et les défis code), un bouton « Indication » oriente sans donner la réponse. Une bonne réponse avec indication rapporte la moitié du gain.</p>
         <p style="margin:0">Une erreur sur une piste verte fait reculer de 20 secondes de marche.</p>
       </div>
       <h2 class="d" style="font-size:28px;margin:18px 0 6px">Installer l'application</h2>
@@ -944,6 +949,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script src="contenu.js"></script>
 <script src="info.js"></script>
 <script src="colles.js"></script>
+<script src="indices.js"></script>
 <script src="python.js"></script>
 <script src="justif.js"></script>
 <script src="zen.js"></script>
@@ -953,7 +959,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script>
 (function(){
 "use strict";
-const VERSION_APP="4.2.1";
+const VERSION_APP="4.3";
 const C = window.CONTENU, CHAPS = C.chapitres;
 /* informatique : un « chapitre » de plus pour la marche (QCM, fiches), sans cours de maths ni leçons */
 if (window.INFO && !CHAPS.some(c=>c.info)) CHAPS.push({id:"info", numero:"Py", titre:"Informatique (Python)", info:true, themes:window.INFO.themes, questions:window.INFO.questions, fiches:window.INFO.fiches, cours:[], lecons:[]});
@@ -1221,7 +1227,10 @@ function maitriseTheme(t){
   if (!E.th) E.th={};
   if (E.th[t]==null){ let ok=0,ko=0; QUESTIONS.forEach(q=>{ if (q.theme===t && E.q[q.id]){ ok+=E.q[q.id].ok||0; ko+=E.q[q.id].ko||0; } }); E.th[t] = ok+ko ? (ok+1)/(ok+ko+2) : 0.5; }
   return E.th[t]; }
-function noterTheme(t, ok){ const m=maitriseTheme(t); E.th[t]=Math.round((0.7*m+0.3*(ok?1:0))*1000)/1000; }
+function noterTheme(t, ok){ const m=maitriseTheme(t), v=ok===true?1:ok===false?0:ok; E.th[t]=Math.round((0.7*m+0.3*v)*1000)/1000; }
+/* indications des pistes rouges et noires : utiliser l'indication divise le gain par deux */
+const INDICES = Object.assign({}, ...Object.values(window.INDICES||{}));
+const indiceDe = q => q.niveau>=2 ? INDICES[q.q+(q.code?"\u0000"+q.code:"")] : null;
 /* marche normale « façon Anki » : les thèmes fragiles reviennent plus souvent ; un tiers des questions reste tiré sans tenir compte du thème */
 function choisirAnki(qs,n){
   const nTh=Math.round(n*2/3);
@@ -1251,25 +1260,34 @@ function afficherQuestion(){
   $("#quiz-theme").innerHTML = esc(THEMES[q.theme].titre) + " " + badgePiste(q.niveau);
   html($("#quiz-question"), q.q);
   if (q.code) $("#quiz-question").insertAdjacentHTML("beforeend", `<div class="py-code q-code"><pre class="py-src">${colorPy(q.code)}</pre></div>`);
+  Z.indice=false;
+  if (indiceDe(q)) $("#quiz-question").insertAdjacentHTML("beforeend", `<button class="btn-indice" id="quiz-indice" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>Indication <small>gain divisé par 2</small></button><div class="indice-txt" id="quiz-indice-txt" hidden></div>`);
   const z=$("#quiz-choix"); z.classList.remove("repondu");
   z.innerHTML = melanger(q.choix.map((c,k)=>k)).map((k,j)=>`<button data-k="${k}"><span class="lettre">${"ABCD"[j]}</span><span class="cont">${prep(q.choix[k])}</span></button>`).join("");
   maths(z);
   z.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>repondre(+b.dataset.k,b)));
 }
+function voirIndice(){
+  const q=Z.liste[Z.i], h=indiceDe(q), b=$("#quiz-indice"), t=$("#quiz-indice-txt"); if (!h || !b || $("#quiz-choix").classList.contains("repondu")) return;
+  Z.indice=true; b.disabled=true; b.innerHTML="Indication utilisée : gain divisé par 2"; t.hidden=false; html(t, h);
+}
+$("#quiz-question").addEventListener("click",e=>{ if (e.target.closest("#quiz-indice")) voirIndice(); });
 function repondre(k, bouton){
   const q=Z.liste[Z.i], z=$("#quiz-choix"); z.classList.add("repondu");
+  const ib=$("#quiz-indice"); if (ib) ib.disabled=true;
   const ok = k===q.bonne; majJour(); activite();
   maitriseTheme(q.theme);
   const s=E.q[q.id]||{b:0,ok:0,ko:0}; E.total++;
   const avant=E.minutes, kmAvant=position(avant).km;
   let note="";
   if (ok){
-    s.ok++; s.b=Math.min(3,s.b+1); s.d=1; Z.justes++; E.justes++; E.jourJustes++;
-    const fac=FACTEUR[METEO.cat]; const g=GAIN_SERIE[Z.mode]*fac;
+    s.ok++; if (!Z.indice) s.b=Math.min(3,s.b+1); s.d=1; Z.justes++; E.justes++; E.jourJustes++;
+    const fac=FACTEUR[METEO.cat]; const g=GAIN_SERIE[Z.mode]*fac*(Z.indice?0.5:1);
     E.minutes=Math.min(TOTAL,E.minutes+g);
     if (fac<1) note = METEO.cat==="tempete" ? "Gain divisé par quatre à cause de la tempête." : "Gain divisé par deux à cause de la météo.";
     if (Z.mode==="technique") note = "Passage technique réussi : gain quadruplé. "+note;
     else if (Z.mode==="theme"||Z.mode==="erreurs") note = (Z.mode==="theme"?"Entraînement par thème":"Révision des erreurs")+" : demi-gain. "+note;
+    if (Z.indice) note = "Avec indication : gain divisé par deux. "+note;
     bouton.classList.add("juste");
   } else {
     s.ko++; s.b=0; s.d=0;
@@ -1279,7 +1297,7 @@ function repondre(k, bouton){
     else if (Z.mode==="technique"){ E.minutes=Math.max(0,E.minutes-PENALITE_TECH); note="Passage technique raté : vous reculez d'une minute de marche."; }
     else note = piste(q.niveau).nom+" : pas de recul.";
   }
-  E.q[q.id]=s; noterTheme(q.theme, ok); noterEtapes(); sauver();
+  E.q[q.id]=s; noterTheme(q.theme, ok ? (Z.indice?0.5:1) : 0); noterEtapes(); sauver();
   const dm=Math.round((position(E.minutes).km-kmAvant)*1000);
   $("#retour").className="retour visible "+(ok?"ok":"ko");
   $("#r-verdict").textContent = ok ? "Juste" : "Raté";
@@ -2527,7 +2545,7 @@ function majBoutonDefis(){
   const b=$("#btn-defis"); if (!b) return;
   b.hidden = !DEFIS.length;
   const n=defisReussis();
-  $("#nb-defis").textContent = n+" sur "+DEFIS.length+" réussis · gain ×4, ouverts même par tempête";
+  $("#nb-defis").textContent = n+" sur "+DEFIS.length+" réussis · gain ×4 (×2 avec indice), ouverts même par tempête";
   $("#pc-defis").textContent = n ? Math.round(100*n/DEFIS.length)+" %" : "";
 }
 function rendreDefis(){
@@ -2554,8 +2572,10 @@ function rendreDefiOuvert(){
   $("#defi-sortie").hidden=true; $("#defi-sortie").innerHTML="";
   $("#defi-aide").hidden=true; $("#defi-aide").innerHTML="";
   $("#defi-verdict").className="defi-verdict"; $("#defi-verdict").innerHTML = s.ok ? "Défi déjà réussi. Vous pouvez vous entraîner encore, sans nouveau gain." : "";
-  majBoutonSolution();
+  majBoutonSolution(); majBoutonIndice();
 }
+function majBoutonIndice(){ const s=etatDefi(defiOuvert), b=$("#defi-indice");
+  b.innerHTML = s.ok||s.vu ? "Indice" : s.ind ? "Indice (gain divisé par 2)" : "Indice <small>gain ÷ 2</small>"; }
 function majBoutonSolution(){
   const s=etatDefi(defiOuvert), b=$("#defi-solution");
   b.disabled = !(s.ok || s.vu || s.essais>=2);
@@ -2592,7 +2612,8 @@ $("#defi-retour").addEventListener("click",()=>{ if (pyEnCours) pyStop(); defiOu
 $("#defi-quitter").addEventListener("click",()=>{ if (pyEnCours) pyStop(); defiOuvert=null; aller("ascension"); });
 $("#btn-defis").addEventListener("click",()=>{ defiOuvert=null; aller("defi"); rendreDefis(); });
 $("#defi-reset").addEventListener("click",()=>{ const d=DEFI[defiOuvert]; $("#defi-ed").value=d.depart; ajusterEd(); sauverBrouillon(); });
-$("#defi-indice").addEventListener("click",()=>{ const z=$("#defi-aide"); z.hidden=false; html(z, `<b>Indice.</b> ${DEFI[defiOuvert].indice}`); });
+$("#defi-indice").addEventListener("click",()=>{ const s=etatDefi(defiOuvert); if (!s.ok) { s.ind=true; sauver(); } majBoutonIndice();
+  const z=$("#defi-aide"); z.hidden=false; html(z, `<b>Indice.</b> ${DEFI[defiOuvert].indice}${s.ok||s.vu?"":` <span class="petit">Ce défi rapportera la moitié du gain.</span>`}`); });
 $("#defi-solution").addEventListener("click",()=>{
   const b=$("#defi-solution"), s=etatDefi(defiOuvert);
   if (!s.ok && !s.vu && !b.dataset.arme){ b.dataset.arme="1"; b.textContent="Confirmer : ce défi ne rapportera plus de mètres"; return; }
@@ -2625,9 +2646,9 @@ $("#defi-sortie").addEventListener("py-fin",e=>{
     s.ok=auj();
     if (!s.vu){
       const kmAvant=position(E.minutes).km;
-      E.minutes=Math.min(TOTAL, E.minutes+GAIN_DEFI); E.justes++; E.jourJustes++; noterEtapes();
+      E.minutes=Math.min(TOTAL, E.minutes+GAIN_DEFI*(s.ind?0.5:1)); E.justes++; E.jourJustes++; noterEtapes();
       const dm=Math.round((position(E.minutes).km-kmAvant)*1000);
-      txt += ` +${nf(dm)} m (comme une piste noire, à l'abri sous la tente : la météo ne compte pas). Altitude : ${nf(position(E.minutes).a)} m.`;
+      txt += ` +${nf(dm)} m (${s.ind?"avec indice : la moitié d'une piste noire":"comme une piste noire"}, à l'abri sous la tente : la météo ne compte pas). Altitude : ${nf(position(E.minutes).a)} m.`;
     } else txt += " La solution avait été consultée : pas de gain d'altitude.";
   } else txt += " (déjà réussi : pas de nouveau gain)";
   sauver(); envoyer(); majBoutonSolution();
