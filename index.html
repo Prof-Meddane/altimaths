@@ -239,9 +239,12 @@ table.verite th{background:#EAF1F6}
 .zone-fiche{perspective:1200px;margin:14px 0}
 .fiche{position:relative;height:250px;transition:transform .5s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d;cursor:pointer}
 .fiche.retournee{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;text-align:center;font-size:21px;overflow:auto}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;justify-content:safe center;padding:22px;text-align:center;font-size:21px;overflow:auto}
 .face.recto{background:#fff;border:1px solid var(--trait)}
 .face.verso{background:var(--nuit);color:var(--neige);transform:rotateY(180deg)}
+.face .fiche-plus{font-size:15px;line-height:1.5;margin:14px 0 0;opacity:.88;max-width:34em}
+.face .fiche-plus code{font-size:14px;white-space:nowrap}
+.face.verso{padding-top:38px}
 .face .indice{position:absolute;top:14px;font-size:12.5px;opacity:.6}
 .btn-rond{min-height:52px;border-radius:999px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .btn-blanc{background:#fff;border:1.5px solid var(--trait)}
@@ -485,6 +488,21 @@ body.nuit .bloc.texte{background:transparent!important;border:0!important}
 body.nuit .bloc.methode{background:#1E3A33}
 body.nuit .bloc.culture{background:#2A2650}
 
+.brouillon{margin-top:22px;border-top:1px solid var(--trait);padding-top:6px}
+.br-ouvrir{display:flex;align-items:center;gap:8px;width:100%;font-weight:700;font-size:15.5px;padding:10px 2px;color:var(--nuit);background:none;border:0;text-align:left}
+.br-ouvrir small{font-weight:400;color:var(--gris);font-size:12.5px;margin-left:auto}
+.br-outils{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px;align-items:center}
+.br-outils button,.br-l-bas button{min-width:40px;height:40px;border-radius:12px;border:1px solid var(--trait);background:#fff;display:inline-flex;align-items:center;justify-content:center;gap:5px;font-weight:700;font-size:14px;color:var(--nuit);padding:0 9px}
+.br-outils button.on{background:var(--nuit);color:#fff;border-color:var(--nuit)}
+.br-outils .br-zoom{min-width:62px;font-variant-numeric:tabular-nums;font-size:13px}
+.br-sep{flex-basis:100%;height:0}.br-espace{flex:1}
+#br-feuille,#br-bande{display:block;width:100%;touch-action:none;border:1px solid var(--trait);border-radius:14px;background:#fff;cursor:crosshair}
+#br-feuille{height:260px}#br-bande{height:120px;margin-top:8px}
+.br-l-bas{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12.5px;color:var(--gris)}.br-l-bas span{flex:1}
+.br-aide{font-size:12.5px;color:var(--gris);margin:6px 2px 0}
+body.nuit .br-outils button,body.nuit .br-l-bas button,body.nuit #br-feuille,body.nuit #br-bande{background:var(--n-surf);border-color:var(--n-bord);color:var(--n-texte)}
+body.nuit .br-outils button.on{background:var(--n-texte);color:var(--n-surf)}
+body.nuit .br-ouvrir{color:var(--n-texte)}
 /* ===== Duels ===== */
 .rang{grid-template-columns:38px 1fr auto auto}
 .rang .defi{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;background:var(--nuit);color:#fff;min-height:30px}
@@ -738,6 +756,32 @@ body.nuit .serie-carnet{color:#FFB08A}
       <p class="petit" id="quiz-theme" style="margin:0;font-weight:600;color:var(--pente)"></p>
       <div class="question" id="quiz-question"></div>
       <div class="choix" id="quiz-choix"></div>
+      <div class="brouillon" id="brouillon">
+        <button class="br-ouvrir" id="br-ouvrir" type="button" aria-expanded="false" aria-controls="br-corps"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>Brouillon<small>ne compte pas dans les gains</small></button>
+        <div class="br-corps" id="br-corps" hidden>
+          <div class="br-outils" id="br-outils">
+            <button type="button" data-a="crayon" class="on" aria-label="Crayon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button>
+            <button type="button" data-a="gomme" aria-label="Gomme"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 20H8.5l-4.2-4.2a1.5 1.5 0 0 1 0-2.1L14 4l6 6-6.5 6.5"/><path d="M9 9l6 6"/></svg></button>
+            <button type="button" data-a="main" aria-label="Déplacer la feuille"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12"/><path d="M11 11.5v-2a1.5 1.5 0 0 1 3 0V12"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0V12"/><path d="M17 11.5a1.5 1.5 0 0 1 3 0V16a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-2.7L4.3 15.6a1.6 1.6 0 0 1 2.6-1.9L8 15"/></svg></button>
+            <button type="button" data-a="loupe" aria-label="Loupe d'écriture"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M20 20l-5.5-5.5"/><path d="M10 7.5v5M7.5 10h5"/></svg>Loupe</button>
+            <button type="button" data-a="frac" aria-label="Barre de fraction">a/b</button>
+            <button type="button" data-a="rac" aria-label="Racine carrée">√</button>
+            <span class="br-sep"></span>
+            <button type="button" data-a="moins" aria-label="Dézoomer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+            <button type="button" data-a="reel" id="br-zoom" class="br-zoom" aria-label="Taille réelle">100 %</button>
+            <button type="button" data-a="plus" aria-label="Zoomer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+            <span class="br-espace"></span>
+            <button type="button" data-a="annuler" aria-label="Annuler le dernier trait"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+            <button type="button" data-a="effacer" aria-label="Tout effacer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button>
+          </div>
+          <canvas id="br-feuille" aria-label="Feuille de brouillon"></canvas>
+          <div class="br-loupe" id="br-loupe" hidden>
+            <canvas id="br-bande" aria-label="Bande d'écriture en grand"></canvas>
+            <div class="br-l-bas"><span>Écrivez en grand ici : ça se pose en petit au curseur orange.</span><button type="button" id="br-ligne"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6v6a3 3 0 0 1-3 3H6"/><path d="M10 11l-4 4 4 4"/></svg>Ligne</button></div>
+          </div>
+          <p class="br-aide" id="br-aide"></p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -953,6 +997,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script src="info.js"></script>
 <script src="colles.js"></script>
 <script src="indices.js"></script>
+<script src="fiches-plus.js"></script>
 <script src="python.js"></script>
 <script src="justif.js"></script>
 <script src="zen.js"></script>
@@ -962,7 +1007,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script>
 (function(){
 "use strict";
-const VERSION_APP="4.4";
+const VERSION_APP="4.5";
 const C = window.CONTENU, CHAPS = C.chapitres;
 /* informatique : un « chapitre » de plus pour la marche (QCM, fiches), sans cours de maths ni leçons */
 if (window.INFO && !CHAPS.some(c=>c.info)) CHAPS.push({id:"info", numero:"Py", titre:"Informatique (Python)", info:true, themes:window.INFO.themes, questions:window.INFO.questions, fiches:window.INFO.fiches, cours:[], lecons:[]});
@@ -980,6 +1025,7 @@ const ETAPES = []; { let km=0, min=0;
 const TOTAL = ETAPES[ETAPES.length-1].min;
 /* part de l'ascension parcourue (chemin, pas altitude : augmente à chaque bonne réponse) ; 100 % seulement au sommet */
 const pctAsc = m => m>=TOTAL-1e-6 ? 100 : Math.floor(100*Math.max(0,m)/TOTAL);
+const pctAsc1 = m => m>=TOTAL-1e-6 ? "100" : (Math.floor(1000*Math.max(0,m)/TOTAL)/10).toFixed(1).replace(".",",");
 const NOM_COURT = {"Namche Bazaar":"Namche","Camp 4":"Camp 4, col Sud"};
 function position(m){
   m = Math.max(0, Math.min(TOTAL, m));
@@ -1187,7 +1233,7 @@ function rendreAscension(){
   const L=surLigne(HERO_PTS,f);
   $("#hero-route").innerHTML = `<path d="${chemin(L.apres)}" fill="none" stroke="#F8FAFB" stroke-width="2" stroke-dasharray="3 6" stroke-linecap="round" opacity=".85"/><path d="${chemin(L.avant)}" fill="none" stroke="#E8541C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
   const moi=$("#hero-moi"); moi.style.left=(100*L.p[0]/390)+"%"; moi.style.top=(100*L.p[1]/430)+"%";
-  $("#alti").innerHTML = nf(P.a)+"<small>m</small><small class=\"pct-asc\">"+pctAsc(E.minutes)+" %</small>";
+  $("#alti").innerHTML = nf(P.a)+"<small>m</small><small class=\"pct-asc\">"+pctAsc1(E.minutes)+" %</small>";
   rendreSerie();
   $("#lieu").textContent = lieuTexte(E.minutes);
   $("#prochaine").textContent = P.vers ? `Prochaine étape : ${P.vers.n}, ${nf(P.vers.a)} m, à ${kmTxt(P.vers.km-P.km)}` : `Sommet atteint le ${new Date(E.etapes["Sommet"]||Date.now()).toLocaleDateString("fr-FR")}. Bravo !`;
@@ -1271,6 +1317,7 @@ function afficherQuestion(){
   z.innerHTML = melanger(q.choix.map((c,k)=>k)).map((k,j)=>`<button data-k="${k}"><span class="lettre">${"ABCD"[j]}</span><span class="cont">${prep(q.choix[k])}</span></button>`).join("");
   maths(z);
   z.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>repondre(+b.dataset.k,b)));
+  brNouvelleQuestion();
 }
 function voirIndice(){
   const q=Z.liste[Z.i], h=indiceDe(q), b=$("#quiz-indice"), t=$("#quiz-indice-txt"); if (!h || !b || $("#quiz-choix").classList.contains("repondu")) return;
@@ -1915,8 +1962,14 @@ function rendreFiche(){
     $("#sous-revoir").textContent = delaiTexte(simuler(E.fs[f.id],1).due);
     $("#sous-sue").textContent = delaiTexte(simuler(E.fs[f.id],3).due);
   } else $("#fiche-compteur").textContent = "Fiche "+(iF+1)+" sur "+pile.length;
-  html($("#fiche-recto"),f.recto); setTimeout(()=>html($("#fiche-verso"),f.verso),150);
+  html($("#fiche-recto"),f.recto);
+  const plus=(window.FICHES_PLUS||{})[f.recto];
+  $("#fiche").style.height="";
+  setTimeout(()=>{ html($("#fiche-verso"), f.verso+(plus?'<p class="fiche-plus">'+plus+'</p>':"")); ajusterFiche(); },150);
 }
+window.__fiche=()=>({FICHES, html, ajusterFiche});
+/* la carte s'agrandit si la réponse détaillée dépasse la hauteur standard */
+function ajusterFiche(){ const c=$("#fiche"); c.style.height=""; const h=Math.max(...$$("#fiche .face").map(x=>x.scrollHeight)); if (h>c.clientHeight+2) c.style.height=Math.min(h,520)+"px"; }
 $("#fiche").addEventListener("click",()=>$("#fiche").classList.toggle("retournee"));
 $("#fiche").addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); $("#fiche").classList.toggle("retournee"); } });
 /* faible gain d'altitude : un quart de bonne réponse par fiche sue, une fois par fiche et par jour, plafonné, ralenti par la météo */
@@ -2190,7 +2243,9 @@ function chaine(d, t){
   return {res, k:DUEL.NQ, deb:Infinity};
 }
 function bilan(d, t){
-  const c=chaine(d, t===undefined?maintenant():t), pts={a:0,b:0};
+  if (t===undefined) t=maintenant();
+  if (d.etat==="abandon" && d.abandonT) t=Math.min(t, d.abandonT);  /* score figé au moment de l'abandon */
+  const c=chaine(d, t), pts={a:0,b:0};
   c.res.forEach(x=>{ if (x.g) pts[x.g]++; });
   const detail=c.res.map(x=>x.g||"-");
   let fini=c.k>=DUEL.NQ, vainqueur=null;
@@ -2379,7 +2434,7 @@ $("#duel-corps").addEventListener("click", async e=>{
   if (!DU) return; const c=cloud();
   if (e.target.closest("#duel-annuler")){ try{ await c.duelMaj(CFG, DU.id, {etat:"annule"}); }catch(x){} fermerDuel(); return; }
   if (e.target.closest("#duel-retour")||e.target.closest("#duel-fermer")){ fermerDuel(); return; }
-  if (e.target.closest("#duel-abandon")){ if (!confirmerAbandon()) return; try{ await c.duelMaj(CFG, DU.id, {etat:"abandon", abandon:DU.moi}); }catch(x){} return; }
+  if (e.target.closest("#duel-abandon")){ if (!confirmerAbandon()) return; try{ await c.duelMaj(CFG, DU.id, {etat:"abandon", abandon:DU.moi, abandonT:c.TS}); }catch(x){} return; }
   if (Date.now()<DU.verrou) return;
   activite();
   const b=e.target.closest("button[data-c],button[data-j]"); if (!b || DU.k<0) return;
@@ -2403,7 +2458,7 @@ function terminer(){
   const delta=E.elo.faits[d.id]||0, gagne=b.vainqueur===moi, nul=b.vainqueur==="nul";
   const adv=d[lui()];
   $("#duel-corps").innerHTML=`<div class="duel-fin ${gagne?"g":nul?"n":"p"}"><h2>${gagne?"Victoire !":nul?"Match nul":"Défaite"}</h2>
-    <p>${d.etat==="abandon"?(d.abandon===moi?"Vous avez abandonné.":esc(adv.prenom)+" a abandonné."):`${b.pts[moi]} point${b.pts[moi]>1?"s":""} à ${b.pts[lui()]}`}</p>
+    <p>${b.pts[moi]} point${b.pts[moi]>1?"s":""} à ${b.pts[lui()]}${d.etat==="abandon"?(d.abandon===moi?", vous avez abandonné.":", "+esc(adv.prenom)+" a abandonné."):""}</p>
     <div class="elo">Classement duel : <b>${E.elo.elo}</b> <span>${delta>=0?"+":""}${delta}</span></div>
     <button class="btn-plein btn-orange" id="duel-fermer">Retour à l'expédition</button></div>`;
 }
@@ -2762,6 +2817,150 @@ $("#colles-vue").addEventListener("click",e=>{
   if (t.closest("#co-recommencer")){ coRecit=null; rendreDemo(); return; }
 });
 collesPret=true; if (E.matiere==="colles" && vueCourante==="cours") rendreCours();
+
+/* ================= Brouillon des quiz =================
+   Feuille où l'on écrit au doigt (ou à la souris), avec gomme, annuler, effacer.
+   Zoom : deux doigts (pincer / écarter), boutons − / + / taille réelle, Ctrl + molette.
+   Déplacement : deux doigts, outil main, molette.
+   Loupe : on écrit en grand dans une bande, l'écriture se pose en petit au curseur orange.
+   Modèles : barre de fraction et symbole racine posés au curseur.
+   Le brouillon ne compte ni dans les gains ni dans les statistiques ; il s'efface à chaque question. */
+var BR = null;
+function brInit(){
+  if (BR) return BR;
+  const f=$("#br-feuille"), b=$("#br-bande");
+  BR = { f, b, D:window.devicePixelRatio||1, W:0, H:0, SW:0, SH:0, LW:0, LH:0,
+    groupes:[], buf:[], cur:{x:12,y:36}, v:{s:1,tx:0,ty:0}, outil:"crayon", loupe:false,
+    ptrs:new Map(), geste:null, lptr:null, tmr:null };
+  brEvenements(); return BR;
+}
+function brTailles(){
+  const B=BR, r=B.f.getBoundingClientRect(); if (!r.width) return false;
+  const anc=B.W; B.W=r.width; B.H=r.height; B.f.width=Math.round(B.W*B.D); B.f.height=Math.round(B.H*B.D);
+  B.SW=B.W; B.SH=B.H*3;
+  if (anc && anc!==B.W){ const k=B.W/anc; B.groupes.forEach(g=>g.forEach(t=>{ t.p=t.p.map(q=>[q[0]*k,q[1]*k]); t.w*=k; })); B.cur={x:B.cur.x*k,y:B.cur.y*k}; }
+  const rb=B.b.getBoundingClientRect(); if (rb.width){ B.LW=rb.width; B.LH=rb.height; B.b.width=Math.round(B.LW*B.D); B.b.height=Math.round(B.LH*B.D); }
+  brBorner(); return true;
+}
+function brCouleurs(){ const c=getComputedStyle(document.body).color||"#141B2B"; return {encre:c, grille:c}; }
+function brTrait(ctx,p,w,col){
+  ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=w; ctx.lineCap="round"; ctx.lineJoin="round";
+  if (p.length===1){ ctx.beginPath(); ctx.arc(p[0][0],p[0][1],w/2,0,7); ctx.fill(); return; }
+  ctx.beginPath(); ctx.moveTo(p[0][0],p[0][1]);
+  for (let i=1;i<p.length-1;i++){ const mx=(p[i][0]+p[i+1][0])/2, my=(p[i][1]+p[i+1][1])/2; ctx.quadraticCurveTo(p[i][0],p[i][1],mx,my); }
+  ctx.lineTo(p[p.length-1][0],p[p.length-1][1]); ctx.stroke();
+}
+function brDessiner(){
+  const B=BR; if (!B||!B.W) return; const c=B.f.getContext("2d"), {encre}=brCouleurs(), v=B.v;
+  c.setTransform(B.D,0,0,B.D,0,0); c.clearRect(0,0,B.W,B.H);
+  c.setTransform(B.D*v.s,0,0,B.D*v.s,B.D*v.tx,B.D*v.ty);
+  c.globalAlpha=.10; c.strokeStyle=encre; c.lineWidth=1/v.s; c.beginPath();
+  for (let x=14;x<B.SW;x+=14){ c.moveTo(x,0); c.lineTo(x,B.SH); }
+  for (let y=14;y<B.SH;y+=14){ c.moveTo(0,y); c.lineTo(B.SW,y); }
+  c.stroke(); c.globalAlpha=1;
+  B.groupes.forEach(g=>g.forEach(t=>brTrait(c,t.p,t.w,encre)));
+  if (B.loupe){ c.strokeStyle="#E8541C"; c.lineWidth=2/v.s; c.beginPath(); c.moveTo(B.cur.x,B.cur.y-17); c.lineTo(B.cur.x,B.cur.y+6); c.stroke(); }
+  /* repère de position quand la feuille dépasse la zone visible */
+  c.setTransform(B.D,0,0,B.D,0,0);
+  const visH=B.H/(B.SH*v.s), haut=-v.ty/(B.SH*v.s);
+  if (visH<0.999){ c.globalAlpha=.35; c.fillStyle=encre; const y=4+haut*(B.H-8), h=Math.max(16,visH*(B.H-8)); c.beginPath(); c.roundRect ? c.roundRect(B.W-6,y,3,h,2) : c.rect(B.W-6,y,3,h); c.fill(); c.globalAlpha=1; }
+  $("#br-zoom").textContent = Math.round(v.s*100)+" %";
+}
+function brDessinerBande(){
+  const B=BR; if (!B||!B.LW) return; const c=B.b.getContext("2d"), {encre}=brCouleurs();
+  c.setTransform(B.D,0,0,B.D,0,0); c.clearRect(0,0,B.LW,B.LH);
+  c.globalAlpha=.4; c.strokeStyle="#E8541C"; c.lineWidth=1; c.setLineDash([5,5]); c.beginPath(); c.moveTo(10,B.LH*.68); c.lineTo(B.LW-10,B.LH*.68); c.stroke(); c.setLineDash([]); c.globalAlpha=1;
+  B.buf.forEach(t=>brTrait(c,t.p,5,encre));
+}
+function brBorner(){ const B=BR, v=B.v; v.s=Math.max(1,Math.min(4,v.s)); v.tx=Math.min(0,Math.max(B.W-B.SW*v.s,v.tx)); v.ty=Math.min(0,Math.max(B.H-B.SH*v.s,v.ty)); }
+const brVersFeuille = (p)=>[(p[0]-BR.v.tx)/BR.v.s,(p[1]-BR.v.ty)/BR.v.s];
+function brPos(e,el){ const r=el.getBoundingClientRect(); return [e.clientX-r.left,e.clientY-r.top]; }
+function brZoomer(fac, cx, cy){ const B=BR, v=B.v; if (cx===undefined){ cx=B.W/2; cy=B.H/2; }
+  const p=brVersFeuille([cx,cy]); v.s=Math.max(1,Math.min(4,v.s*fac)); v.tx=cx-p[0]*v.s; v.ty=cy-p[1]*v.s; brBorner(); brDessiner(); }
+function brVoirCurseur(){ const B=BR, v=B.v, x=B.cur.x*v.s+v.tx, y=B.cur.y*v.s+v.ty, m=30;
+  if (x<m) v.tx+=m-x; if (x>B.W-m) v.tx-=x-(B.W-m); if (y<m) v.ty+=m-y; if (y>B.H-m) v.ty-=y-(B.H-m); brBorner(); }
+function brEffacerA(p){ const B=BR, r=12/B.v.s; let ch=false;
+  B.groupes=B.groupes.map(g=>{ const h=g.filter(t=>!t.p.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<r)); if (h.length!==g.length) ch=true; return h; }).filter(g=>g.length);
+  if (ch) brDessiner(); }
+function brAide(t){ $("#br-aide").textContent=t; }
+function brAideDefaut(){ brAide(BR.loupe ? "Touchez la feuille pour placer le curseur orange, puis écrivez en grand dans la bande." : "Écrivez au doigt. Deux doigts pour zoomer ou vous déplacer."); }
+
+function brEvenements(){
+  const B=BR, f=B.f, b=B.b;
+  f.addEventListener("pointerdown",e=>{
+    try{ f.setPointerCapture(e.pointerId); }catch(x){} const p=brPos(e,f); B.ptrs.set(e.pointerId,p);
+    if (B.ptrs.size===2){
+      if (B.geste && B.geste.trait){ const g=B.groupes[B.groupes.length-1]; if (g && g[0]===B.geste.trait) B.groupes.pop(); }
+      const [a,c]=[...B.ptrs.values()];
+      B.geste={pince:true, d0:Math.hypot(a[0]-c[0],a[1]-c[1])||1, m0:[(a[0]+c[0])/2,(a[1]+c[1])/2], s0:B.v.s, t0:[B.v.tx,B.v.ty]}; brDessiner(); return;
+    }
+    if (B.ptrs.size>2 || (B.geste && B.geste.pince)) return;
+    const g={depart:p, bouge:false};
+    if (B.outil==="crayon"){ g.trait={p:[brVersFeuille(p)], w:2.2}; B.groupes.push([g.trait]); }
+    else if (B.outil==="gomme") brEffacerA(brVersFeuille(p));
+    else if (B.outil==="main") g.t0=[B.v.tx,B.v.ty];
+    B.geste=g; brDessiner();
+  });
+  f.addEventListener("pointermove",e=>{
+    if (!B.ptrs.has(e.pointerId)) return; const p=brPos(e,f); B.ptrs.set(e.pointerId,p); const g=B.geste; if (!g) return;
+    if (g.pince){ if (B.ptrs.size<2) return; const [a,c]=[...B.ptrs.values()], d=Math.hypot(a[0]-c[0],a[1]-c[1]), m=[(a[0]+c[0])/2,(a[1]+c[1])/2];
+      const q=[(g.m0[0]-g.t0[0])/g.s0,(g.m0[1]-g.t0[1])/g.s0]; B.v.s=Math.max(1,Math.min(4,g.s0*d/g.d0)); B.v.tx=m[0]-q[0]*B.v.s; B.v.ty=m[1]-q[1]*B.v.s; brBorner(); brDessiner(); return; }
+    if (Math.hypot(p[0]-g.depart[0],p[1]-g.depart[1])>6) g.bouge=true;
+    if (g.trait){ const q=brVersFeuille(p), l=g.trait.p[g.trait.p.length-1]; if (Math.hypot(q[0]-l[0],q[1]-l[1])>0.6/B.v.s){ g.trait.p.push(q); brDessiner(); } }
+    else if (B.outil==="gomme") brEffacerA(brVersFeuille(p));
+    else if (g.t0){ B.v.tx=g.t0[0]+p[0]-g.depart[0]; B.v.ty=g.t0[1]+p[1]-g.depart[1]; brBorner(); brDessiner(); }
+  });
+  const fin=e=>{
+    if (!B.ptrs.has(e.pointerId)) return; B.ptrs.delete(e.pointerId); const g=B.geste;
+    if (g && !g.pince && B.ptrs.size===0){
+      if (!g.bouge && B.outil!=="gomme"){            /* simple toucher : place le curseur */
+        B.cur={x:brVersFeuille(g.depart)[0], y:brVersFeuille(g.depart)[1]};
+        if (g.trait && B.loupe){ const h=B.groupes[B.groupes.length-1]; if (h && h[0]===g.trait) B.groupes.pop(); }
+      }
+      B.geste=null; brDessiner();
+    }
+    if (B.ptrs.size===0) B.geste=null;
+  };
+  f.addEventListener("pointerup",fin); f.addEventListener("pointercancel",fin);
+  f.addEventListener("wheel",e=>{ e.preventDefault(); if (e.ctrlKey){ const p=brPos(e,f); brZoomer(Math.exp(-e.deltaY*0.01),p[0],p[1]); } else { B.v.tx-=e.deltaX; B.v.ty-=e.deltaY; brBorner(); brDessiner(); } },{passive:false});
+  /* bande de la loupe */
+  b.addEventListener("pointerdown",e=>{ try{ b.setPointerCapture(e.pointerId); }catch(x){} if (B.lptr!==null) return; B.lptr=e.pointerId; clearTimeout(B.tmr); B.lt={p:[brPos(e,b)]}; B.buf.push(B.lt); brDessinerBande(); });
+  b.addEventListener("pointermove",e=>{ if (e.pointerId!==B.lptr) return; B.lt.p.push(brPos(e,b)); brDessinerBande(); });
+  const finB=e=>{ if (e.pointerId!==B.lptr) return; B.lptr=null; clearTimeout(B.tmr); B.tmr=setTimeout(brPoser,700); };
+  b.addEventListener("pointerup",finB); b.addEventListener("pointercancel",finB);
+  /* outils */
+  $("#br-outils").addEventListener("click",e=>{ const x=e.target.closest("button"); if (!x) return; const a=x.dataset.a;
+    if (a==="crayon"||a==="gomme"||a==="main"){ B.outil=a; $$("#br-outils [data-a]").forEach(y=>y.classList.toggle("on", y.dataset.a===a || (y.dataset.a==="loupe" && B.loupe))); }
+    else if (a==="loupe"){ brPoser(); B.loupe=!B.loupe; x.classList.toggle("on",B.loupe); $("#br-loupe").hidden=!B.loupe; if (B.loupe && B.outil==="main"){ B.outil="crayon"; $$("#br-outils [data-a]").forEach(y=>y.classList.toggle("on", y.dataset.a==="crayon"||y.dataset.a==="loupe")); } brTailles(); brDessinerBande(); brVoirCurseur(); brDessiner(); brAideDefaut(); }
+    else if (a==="frac"){ brPoser(); const {x:cx,y:cy}=B.cur; B.groupes.push([{w:2,p:[[cx,cy-5],[cx+64,cy-5]]}]); B.cur={x:cx+4,y:cy-13}; brVoirCurseur(); brDessiner(); brAide(B.loupe?"Écrivez le numérateur dans la bande, puis touchez sous la barre pour le dénominateur.":"Barre de fraction posée. Activez la loupe pour la remplir en grand, ou écrivez directement."); }
+    else if (a==="rac"){ brPoser(); const {x:cx,y:cy}=B.cur; B.groupes.push([{w:2,p:[[cx,cy-7],[cx+4,cy-9],[cx+9,cy+3],[cx+15,cy-21],[cx+78,cy-21]]}]); B.cur={x:cx+19,y:cy}; brVoirCurseur(); brDessiner(); }
+    else if (a==="moins") brZoomer(1/1.5);
+    else if (a==="plus") brZoomer(1.5);
+    else if (a==="reel"){ const haut=-B.v.ty/B.v.s; B.v={s:1,tx:0,ty:-haut}; brBorner(); brDessiner(); }
+    else if (a==="annuler"){ if (B.buf.length){ B.buf.pop(); brDessinerBande(); } else { B.groupes.pop(); brDessiner(); } }
+    else if (a==="effacer"){ brVider(); }
+  });
+  $("#br-ligne").addEventListener("click",()=>{ brPoser(); B.cur={x:12,y:B.cur.y+34}; brVoirCurseur(); brDessiner(); });
+  window.addEventListener("resize",()=>{ if (E.brouillon && BR && brTailles()) { brDessiner(); brDessinerBande(); } });
+}
+/* pose l'écriture de la bande, réduite, au curseur */
+function brPoser(){
+  const B=BR; clearTimeout(B.tmr); if (!B.buf.length) return;
+  const k=0.3; let mx=1e9, Mx=-1e9; B.buf.forEach(t=>t.p.forEach(q=>{ mx=Math.min(mx,q[0]); Mx=Math.max(Mx,q[0]); }));
+  const bw=(Mx-mx)*k; if (B.cur.x+bw>B.SW-8 && B.cur.x>20){ B.cur={x:12,y:B.cur.y+34}; }
+  const base=B.LH*.68, {x:cx,y:cy}=B.cur;
+  B.groupes.push(B.buf.map(t=>({w:1.7,p:t.p.map(q=>[cx+(q[0]-mx)*k, cy+(q[1]-base)*k])})));
+  B.cur={x:cx+bw+6,y:cy}; B.buf=[]; brVoirCurseur(); brDessinerBande(); brDessiner();
+}
+function brVider(){ const B=BR; if (!B) return; clearTimeout(B.tmr); B.groupes=[]; B.buf=[]; B.cur={x:12,y:36}; B.v={s:1,tx:0,ty:0}; B.geste=null; B.ptrs.clear(); B.lptr=null; brDessiner(); brDessinerBande(); }
+function brAfficher(){
+  const ouvert=!!E.brouillon; $("#br-corps").hidden=!ouvert; $("#br-ouvrir").setAttribute("aria-expanded",ouvert);
+  if (!ouvert) return; brInit(); brTailles(); brDessiner(); brDessinerBande(); brAideDefaut();
+}
+/* appelé à chaque nouvelle question */
+function brNouvelleQuestion(){ if (BR) brVider(); brAfficher(); }
+$("#br-ouvrir").addEventListener("click",()=>{ E.brouillon=!E.brouillon; sauver(); brAfficher(); if (E.brouillon) setTimeout(()=>$("#br-ouvrir").scrollIntoView({behavior:"smooth",block:"start"}),60); });
+if (window.__MOCK || location.search.includes("test")) window.__BR=()=>BR;
 
 })();
 
