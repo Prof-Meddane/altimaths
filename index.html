@@ -950,7 +950,7 @@ body.nuit .serie-carnet{color:#FFB08A}
         <p style="margin:0 0 8px">Fiches du jour : l'appli vous redonne chaque fiche juste avant que vous risquiez de l'oublier (méthode de répétition espacée, comme Anki). « Je savais » espace la prochaine révision, « À revoir » la fait revenir dans la séance. Soyez honnête : c'est la seule façon pour que le planning soit utile. Dix nouvelles fiches au plus par jour. Chaque fiche sue fait un peu monter (un quart de bonne réponse), dans la limite de 5 minutes de marche par jour.</p>
         <p style="margin:0 0 8px">Météo de Noisy-le-Sec (prévision Météo-France, de 8 h à 20 h) : par temps de pluie ou de vent, le gain est divisé par deux ; par fortes pluies (au moins 10 mm) ou grosses rafales (au moins 60 km/h), il est divisé par deux et les pistes noires sont fermées ; par tempête (orages durables, rafales d'au moins 70 km/h ou neige), il est divisé par quatre et les pistes rouges et noires sont fermées.</p>
         <p style="margin:0 0 8px">Les questions sont classées comme les pistes de ski : <span class="piste" style="--pc:#2C7A57;margin:0"><i></i>verte</span> <span class="piste" style="--pc:#2361B8;margin:0"><i></i>bleue</span> <span class="piste" style="--pc:#C8202F;margin:0"><i></i>rouge</span> <span class="piste" style="--pc:#141B2B;margin:0"><i></i>noire</span>. À partir de la piste rouge, il faut souvent écrire un peu au brouillon.</p>
-        <p style="margin:0 0 8px">Marche normale : 10 questions, pistes vertes et bleues, 1 minute de marche par bonne réponse. Comme dans Anki, les thèmes qui vous posent problème reviennent plus souvent.</p>
+        <p style="margin:0 0 8px">Marche normale : 10 questions, pistes vertes et bleues, 1 minute de marche par bonne réponse. Comme les fiches, les questions suivent la répétition espacée d'Anki : une question réussie ne revient qu'au bout de quelques jours, puis de plus en plus tard ; une question ratée revient dans la journée. Parmi les nouvelles questions, celles des thèmes qui vous posent problème passent en premier.</p>
         <p style="margin:0 0 8px">Passage technique : 5 questions, pistes rouges et noires, 4 minutes par bonne réponse, mais chaque erreur fait reculer d'une minute. Répondre au hasard ne paie pas.</p>
         <p style="margin:0 0 8px">Entraînement par thème et révision des erreurs : une demi-minute par bonne réponse.</p>
         <p style="margin:0 0 8px">Indications : sur les pistes rouges et noires (et les défis code), un bouton « Indication » oriente sans donner la réponse. Une bonne réponse avec indication rapporte la moitié du gain.</p>
@@ -1007,7 +1007,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script>
 (function(){
 "use strict";
-const VERSION_APP="4.5";
+const VERSION_APP="4.6";
 const C = window.CONTENU, CHAPS = C.chapitres;
 /* informatique : un « chapitre » de plus pour la marche (QCM, fiches), sans cours de maths ni leçons */
 if (window.INFO && !CHAPS.some(c=>c.info)) CHAPS.push({id:"info", numero:"Py", titre:"Informatique (Python)", info:true, themes:window.INFO.themes, questions:window.INFO.questions, fiches:window.INFO.fiches, cours:[], lecons:[]});
@@ -1282,15 +1282,48 @@ function noterTheme(t, ok){ const m=maitriseTheme(t), v=ok===true?1:ok===false?0
 /* indications des pistes rouges et noires : utiliser l'indication divise le gain par deux */
 const INDICES = Object.assign({}, ...Object.values(window.INDICES||{}));
 const indiceDe = q => q.niveau>=2 ? INDICES[q.q+(q.code?"\u0000"+q.code:"")] : null;
-/* marche normale « façon Anki » : les thèmes fragiles reviennent plus souvent ; un tiers des questions reste tiré sans tenir compte du thème */
-function choisirAnki(qs,n){
-  const nTh=Math.round(n*2/3);
-  const poids=q=>Math.random()*(4-Math.min(boite(q.id),3))*(0.4+2*(1-maitriseTheme(q.theme)));
-  const a=qs.map(q=>({q,p:poids(q)})).sort((x,y)=>y.p-x.p).slice(0,nTh).map(x=>x.q);
-  const reste=qs.filter(q=>!a.includes(q));
-  return melanger(a.concat(choisir(reste,n-a.length)));
+/* ===== Répétition espacée des questions : FSRS, comme les fiches et comme Anki =====
+   Chaque question a un état {s: stabilité, d: difficulté, last, due}. Note : faux = 1, juste avec indication = 2, juste = 3.
+   Une question réussie ne revient qu'à sa date d'échéance (quelques jours, puis de plus en plus loin) ;
+   une question ratée revient plus tard dans la journée. */
+const RECENT_MS = 20*60000;             /* une question vue il y a moins de 20 min ne revient pas, sauf s'il n'y a rien d'autre */
+const NOUVELLES_MIN = 3;                /* même avec beaucoup de révisions, chaque série propose quelques questions nouvelles */
+function etatQ(id){
+  const s=E.q[id]; if (!s) return null;
+  if (!s.r && !((s.ok||0)+(s.ko||0))) return null;   /* jamais répondue : question nouvelle */
+  if (!s.r){                            /* ancienne progression (boîtes 0 à 3) : conversion douce, échéances étalées */
+    const t=auj();
+    if (!s.b || s.d===0) s.r={s:W[0], d:d0(1), last:t, due:t, reps:(s.ok||0)+(s.ko||0), lapses:s.ko||0};
+    else { const S=[0,3,7,15][Math.min(3,s.b)], n=Math.max(1,Math.round(S*(0.5+Math.random())));
+      s.r={s:S, d:d0(3), last:t, due:plusJours(n), reps:(s.ok||0)+(s.ko||0), lapses:s.ko||0}; }
+  }
+  return s.r;
 }
-function choisir(qs,n){ return qs.map(q=>({q,p:Math.random()*(4-Math.min(boite(q.id),3))})).sort((a,b)=>b.p-a.p).slice(0,n).map(x=>x.q); }
+function noterQuestion(s, g){ s.r=simuler(etatQ0(s), g); s.t=Date.now(); }
+const etatQ0 = s => s.r || null;
+/* priorité d'une question déjà vue : plus elle est en retard (ou fragile), plus elle passe tôt */
+function retard(r){ const t=auj(), j=joursEntre(r.due,t); return j + (1-retenir(Math.max(0,joursEntre(r.last,t)), r.s)); }
+function planifier(qs, n){
+  const t=auj(), now=Date.now(), fragile=q=>1-maitriseTheme(q.theme);
+  const recent=q=>E.q[q.id] && E.q[q.id].t && now-E.q[q.id].t<RECENT_MS;
+  const dues=[], nouvelles=[], autres=[];
+  qs.forEach(q=>{ const r=etatQ(q.id); if (!r) nouvelles.push(q); else if (r.due<=t) dues.push(q); else autres.push(q); });
+  const parRetard=(l)=>l.map(q=>({q,k:retard(E.q[q.id].r)+Math.random()*0.3})).sort((a,b)=>b.k-a.k).map(x=>x.q);
+  const nouvTri = nouvelles.map(q=>({q,k:Math.random()*(0.4+2*fragile(q))})).sort((a,b)=>b.k-a.k).map(x=>x.q);
+  const duesOk = parRetard(dues.filter(q=>!recent(q))), duesRec = parRetard(dues.filter(recent));
+  /* révisions dues d'abord, en gardant une petite place aux nouvelles */
+  const nNouv = Math.min(nouvTri.length, Math.max(n-duesOk.length, NOUVELLES_MIN));
+  let liste = duesOk.slice(0, n-nNouv).concat(nouvTri.slice(0,nNouv));
+  /* pas assez ? on complète avec les questions dont l'échéance est la plus proche, jamais vues il y a moins de 20 min si possible */
+  if (liste.length<n){
+    const reste = autres.map(q=>({q,k:-joursEntre(t,E.q[q.id].r.due)+Math.random()*0.5+(recent(q)?-1000:0)})).sort((a,b)=>b.k-a.k).map(x=>x.q);
+    liste = liste.concat(reste.filter(q=>!recent(q)), duesRec, reste.filter(recent)).slice(0,n);
+    if (liste.length<n) liste = liste.concat(nouvTri.slice(nNouv), duesOk.slice(n-nNouv)).slice(0,n);
+  }
+  return melanger(liste.slice(0,n));
+}
+function choisir(qs,n){ return planifier(qs,n); }
+if (location.search.includes("test")) window.__plan=()=>({planifier, etatQ, E, QUESTIONS, Z, lancer, ouverte});
 function lancer(mode, theme){
   const POOL = QUESTIONS.filter(q=>(!E.chap||E.chap==="tous"||q.ch===E.chap) && ouverte(q));
   let qs=POOL, titre="Marche normale";
@@ -1300,7 +1333,7 @@ function lancer(mode, theme){
   if (mode==="theme"){ qs=QUESTIONS.filter(q=>q.theme===theme && ouverte(q)); titre=THEMES[theme].titre; }
   if (!qs.length) return toast(mode==="erreurs" ? (erreurs().length ? "Erreurs restantes sur des pistes fermées par la météo" : "Aucune erreur à revoir") : (mode==="theme" && QUESTIONS.some(q=>q.theme===theme) ? "Pistes de ce thème fermées par la météo aujourd'hui" : "Aucune question disponible"));
   const N = mode==="technique" ? 5 : 10;
-  Z={mode,theme,titre,liste: mode==="erreurs" ? melanger(qs).slice(0,N) : mode==="normal" ? choisirAnki(qs,N) : choisir(qs,N), i:0, justes:0, debutMin:E.minutes, debutEtape:etapeAtteinte(E.minutes).n};
+  Z={mode,theme,titre,liste: mode==="erreurs" ? melanger(qs).slice(0,N) : planifier(qs,N), i:0, justes:0, debutMin:E.minutes, debutEtape:etapeAtteinte(E.minutes).n};
   aller("quiz"); afficherQuestion();
 }
 function afficherQuestion(){
@@ -1329,10 +1362,11 @@ function repondre(k, bouton){
   const ib=$("#quiz-indice"); if (ib) ib.disabled=true;
   const ok = k===q.bonne; majJour(); activite();
   maitriseTheme(q.theme);
-  const s=E.q[q.id]||{b:0,ok:0,ko:0}; E.total++;
+  const s=E.q[q.id]||{b:0,ok:0,ko:0}; E.q[q.id]=s; E.total++;
   const avant=E.minutes, kmAvant=position(avant).km;
   let note="";
   if (ok){
+    etatQ(q.id); noterQuestion(s, Z.indice?2:3);
     s.ok++; if (!Z.indice) s.b=Math.min(3,s.b+1); s.d=1; Z.justes++; E.justes++; E.jourJustes++;
     const fac=FACTEUR[METEO.cat]; const g=GAIN_SERIE[Z.mode]*fac*(Z.indice?0.5:1);
     E.minutes=Math.min(TOTAL,E.minutes+g);
@@ -1342,6 +1376,7 @@ function repondre(k, bouton){
     if (Z.indice) note = "Avec indication : gain divisé par deux. "+note;
     bouton.classList.add("juste");
   } else {
+    etatQ(q.id); noterQuestion(s, 1);
     s.ko++; s.b=0; s.d=0;
     bouton.classList.add("faux"); z.querySelector(`[data-k="${q.bonne}"]`).classList.add("juste");
     if (estProfCode(E.acces)) note="Compte professeur : vous restez au sommet.";
