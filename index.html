@@ -448,7 +448,7 @@ body.nuit .meteo.beau{background:#1C3A2E} body.nuit .meteo.mauvais{background:#4
 .bloc code,.py-cours p code,.py-cours li code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em;background:rgba(34,65,143,.08);padding:1px 5px;border-radius:5px}
 .bloc svg.graphe{display:block;width:100%;max-width:300px;height:auto;margin:10px auto 4px}
 .graphes{display:flex;gap:8px;justify-content:center}.graphes svg.graphe{max-width:150px;margin:10px 0 4px}
-.graphe .gr{stroke:#E6ECF2;stroke-width:1;fill:none}.graphe .ax{stroke:#7C8DA6;stroke-width:1.2;fill:none}
+.graphe .gr{stroke:#E6ECF2;stroke-width:1;fill:none}.graphe .bande{fill:rgba(47,100,181,.13);stroke:none}body.nuit .graphe .bande{fill:rgba(150,185,255,.18)}.graphe .ax{stroke:#7C8DA6;stroke-width:1.2;fill:none}
 .graphe path{fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .graphe .c1{stroke:var(--pente)}.graphe .c2{stroke:var(--orange)}.graphe .c3{stroke:#93A1B5;stroke-width:1.5}.graphe .c4{stroke:var(--vert)}.graphe .c5{stroke:#8A4FBF}
 .graphe .tir{stroke-dasharray:4 3}
@@ -1007,7 +1007,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script>
 (function(){
 "use strict";
-const VERSION_APP="4.6.1";
+const VERSION_APP="4.7";
 const C = window.CONTENU, CHAPS = C.chapitres;
 /* informatique : un « chapitre » de plus pour la marche (QCM, fiches), sans cours de maths ni leçons */
 if (window.INFO && !CHAPS.some(c=>c.info)) CHAPS.push({id:"info", numero:"Py", titre:"Informatique (Python)", info:true, themes:window.INFO.themes, questions:window.INFO.questions, fiches:window.INFO.fiches, cours:[], lecons:[]});
@@ -1452,7 +1452,8 @@ function rendreCours(){
 const RESUMES_MATHS={ch0:"Fractions, puissances, racines, identités remarquables, trinômes, inégalités, logarithmes, valeurs absolues.",
   ch1:"Propositions, quantificateurs, raisonnements, récurrence, borne supérieure, partie entière.",
   ch2:"Symboles somme et produit, sommes usuelles, télescopage, binôme de Newton, sommes doubles.",
-  ch3:"Domaines, parité, périodicité, polynômes, ln, exp, puissances, équations, dérivées."};
+  ch3:"Domaines, parité, périodicité, polynômes, ln, exp, puissances, équations, dérivées.",
+  ch4:"Bornes, variations, suites usuelles, limites, croissances comparées, gendarmes, limite monotone, suites récurrentes."};
 $$("#cours-matiere button").forEach(b=>b.addEventListener("click",()=>{ const m=b.dataset.m; if (m===(E.matiere||"maths")){ if (m==="maths") E.mOuvert=null; else if (m==="colles") coOuvert=null; else { pyOuvert=null; E.py.ouvert=null; } } E.matiere=m; sauver(); rendreCours(); window.scrollTo(0,0); }));
 $("#maths-liste").addEventListener("click",e=>{ const b=e.target.closest("[data-mc]"); if (!b) return; E.mOuvert=b.dataset.mc; E.modeCours="lecons"; sauver(); window.scrollTo(0,0); rendreCours(); });
 $("#maths-retour").addEventListener("click",()=>{ E.mOuvert=null; sauver(); rendreCours(); window.scrollTo(0,0); });
