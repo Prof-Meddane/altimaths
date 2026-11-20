@@ -497,9 +497,19 @@ body.nuit .bloc.culture{background:#2A2650}
 .br-outils .br-zoom{min-width:62px;font-variant-numeric:tabular-nums;font-size:13px}
 .br-sep{flex-basis:100%;height:0}.br-espace{flex:1}
 #br-feuille,#br-bande{display:block;width:100%;touch-action:none;border:1px solid var(--trait);border-radius:14px;background:#fff;cursor:crosshair}
-#br-feuille{height:260px}#br-bande{height:120px;margin-top:8px}
+#br-feuille{height:clamp(300px,54vh,540px);width:calc(100% + 40px);margin-left:-20px;border-radius:0;border-left:0;border-right:0}#br-bande{height:120px;margin-top:8px}
 .br-l-bas{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12.5px;color:var(--gris)}.br-l-bas span{flex:1}
 .br-aide{font-size:12.5px;color:var(--gris);margin:6px 2px 0}
+.br-rappel{display:none}
+.brouillon.plein{position:fixed;inset:0;z-index:40;margin:0;border:0;background:var(--neige);display:flex;flex-direction:column;padding:calc(var(--haut) + 8px) 10px calc(var(--bas) + 8px)}
+.brouillon.plein .br-ouvrir{display:none}
+.brouillon.plein .br-corps{flex:1;display:flex;flex-direction:column;min-height:0}
+.brouillon.plein .br-rappel{display:block;max-height:24vh;overflow:auto;font-size:14.5px;line-height:1.4;padding:4px 4px 6px;border-bottom:1px solid var(--trait);margin-bottom:6px}
+.brouillon.plein .br-rappel .btn-indice{display:none}
+.brouillon.plein #br-feuille{flex:1;height:auto;min-height:0;width:100%;margin:0;border-radius:14px;border:1px solid var(--trait)}
+.brouillon.plein .br-aide{display:none}
+body.br-plein-ouvert{overflow:hidden}
+body.nuit .brouillon.plein{background:var(--n-fond)}
 body.nuit .br-outils button,body.nuit .br-l-bas button,body.nuit #br-feuille,body.nuit #br-bande{background:var(--n-surf);border-color:var(--n-bord);color:var(--n-texte)}
 body.nuit .br-outils button.on{background:var(--n-texte);color:var(--n-surf)}
 body.nuit .br-ouvrir{color:var(--n-texte)}
@@ -759,6 +769,7 @@ body.nuit .serie-carnet{color:#FFB08A}
       <div class="brouillon" id="brouillon">
         <button class="br-ouvrir" id="br-ouvrir" type="button" aria-expanded="false" aria-controls="br-corps"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>Brouillon<small>ne compte pas dans les gains</small></button>
         <div class="br-corps" id="br-corps" hidden>
+          <div class="br-rappel" id="br-rappel"></div>
           <div class="br-outils" id="br-outils">
             <button type="button" data-a="crayon" class="on" aria-label="Crayon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button>
             <button type="button" data-a="gomme" aria-label="Gomme"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 20H8.5l-4.2-4.2a1.5 1.5 0 0 1 0-2.1L14 4l6 6-6.5 6.5"/><path d="M9 9l6 6"/></svg></button>
@@ -771,6 +782,7 @@ body.nuit .serie-carnet{color:#FFB08A}
             <button type="button" data-a="reel" id="br-zoom" class="br-zoom" aria-label="Taille réelle">100 %</button>
             <button type="button" data-a="plus" aria-label="Zoomer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
             <span class="br-espace"></span>
+            <button type="button" data-a="plein" aria-label="Brouillon en plein écran"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
             <button type="button" data-a="annuler" aria-label="Annuler le dernier trait"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
             <button type="button" data-a="effacer" aria-label="Tout effacer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button>
           </div>
@@ -953,6 +965,7 @@ body.nuit .serie-carnet{color:#FFB08A}
         <p style="margin:0 0 8px">Marche normale : 10 questions, pistes vertes et bleues, 1 minute de marche par bonne réponse. Comme les fiches, les questions suivent la répétition espacée d'Anki : une question réussie ne revient qu'au bout de quelques jours, puis de plus en plus tard ; une question ratée revient dans la journée. Parmi les nouvelles questions, celles des thèmes qui vous posent problème passent en premier.</p>
         <p style="margin:0 0 8px">Passage technique : 5 questions, pistes rouges et noires, 4 minutes par bonne réponse, mais chaque erreur fait reculer d'une minute. Répondre au hasard ne paie pas.</p>
         <p style="margin:0 0 8px">Entraînement par thème et révision des erreurs : une demi-minute par bonne réponse.</p>
+        <p style="margin:0 0 8px">Une question déjà réussie et pas encore à revoir ne rapporte rien : on peut s'entraîner autant qu'on veut, mais l'altitude se gagne sur les questions nouvelles, ratées ou arrivées à échéance.</p>
         <p style="margin:0 0 8px">Indications : sur les pistes rouges et noires (et les défis code), un bouton « Indication » oriente sans donner la réponse. Une bonne réponse avec indication rapporte la moitié du gain.</p>
         <p style="margin:0">Une erreur sur une piste verte fait reculer de 20 secondes de marche.</p>
       </div>
@@ -1007,7 +1020,7 @@ body.nuit .serie-carnet{color:#FFB08A}
 <script>
 (function(){
 "use strict";
-const VERSION_APP="4.7";
+const VERSION_APP="4.7.2";
 const C = window.CONTENU, CHAPS = C.chapitres;
 /* informatique : un « chapitre » de plus pour la marche (QCM, fiches), sans cours de maths ni leçons */
 if (window.INFO && !CHAPS.some(c=>c.info)) CHAPS.push({id:"info", numero:"Py", titre:"Informatique (Python)", info:true, themes:window.INFO.themes, questions:window.INFO.questions, fiches:window.INFO.fiches, cours:[], lecons:[]});
@@ -1366,14 +1379,17 @@ function repondre(k, bouton){
   const avant=E.minutes, kmAvant=position(avant).km;
   let note="";
   if (ok){
-    etatQ(q.id); noterQuestion(s, Z.indice?2:3);
+    /* déjà réussie et pas encore à revoir (répétition espacée) : on s'entraîne, mais sans gain d'altitude */
+    const r0=etatQ(q.id), aJour = r0 && s.d===1 && r0.due>auj(), dans = aJour ? joursEntre(auj(), r0.due) : 0;
+    noterQuestion(s, Z.indice?2:3);
     s.ok++; if (!Z.indice) s.b=Math.min(3,s.b+1); s.d=1; Z.justes++; E.justes++; E.jourJustes++;
-    const fac=FACTEUR[METEO.cat]; const g=GAIN_SERIE[Z.mode]*fac*(Z.indice?0.5:1);
+    const fac=FACTEUR[METEO.cat]; const g=aJour ? 0 : GAIN_SERIE[Z.mode]*fac*(Z.indice?0.5:1);
     E.minutes=Math.min(TOTAL,E.minutes+g);
     if (fac<1) note = METEO.cat==="tempete" ? "Gain divisé par quatre à cause de la tempête." : "Gain divisé par deux à cause de la météo.";
     if (Z.mode==="technique") note = "Passage technique réussi : gain quadruplé. "+note;
     else if (Z.mode==="theme"||Z.mode==="erreurs") note = (Z.mode==="theme"?"Entraînement par thème":"Révision des erreurs")+" : demi-gain. "+note;
     if (Z.indice) note = "Avec indication : gain divisé par deux. "+note;
+    if (aJour) note = "Déjà maîtrisée : pas de gain aujourd'hui (à revoir "+(dans<=1?"demain":"dans "+dans+" jours")+").";
     bouton.classList.add("juste");
   } else {
     etatQ(q.id); noterQuestion(s, 1);
@@ -2873,8 +2889,8 @@ function brInit(){
 function brTailles(){
   const B=BR, r=B.f.getBoundingClientRect(); if (!r.width) return false;
   const anc=B.W; B.W=r.width; B.H=r.height; B.f.width=Math.round(B.W*B.D); B.f.height=Math.round(B.H*B.D);
-  B.SW=B.W; B.SH=B.H*3;
-  if (anc && anc!==B.W){ const k=B.W/anc; B.groupes.forEach(g=>g.forEach(t=>{ t.p=t.p.map(q=>[q[0]*k,q[1]*k]); t.w*=k; })); B.cur={x:B.cur.x*k,y:B.cur.y*k}; }
+  B.SW=B.W*2; B.SH=B.SW*2.4;            /* feuille deux fois plus large que l'écran, et très longue */
+  if (anc && anc!==B.W){ const k=B.W/anc; B.groupes.forEach(g=>g.forEach(t=>{ t.p=t.p.map(q=>[q[0]*k,q[1]*k]); t.w*=k; })); B.cur={x:B.cur.x*k,y:B.cur.y*k}; B.v.tx*=k; B.v.ty*=k; }
   const rb=B.b.getBoundingClientRect(); if (rb.width){ B.LW=rb.width; B.LH=rb.height; B.b.width=Math.round(B.LW*B.D); B.b.height=Math.round(B.LH*B.D); }
   brBorner(); return true;
 }
@@ -2899,6 +2915,8 @@ function brDessiner(){
   /* repère de position quand la feuille dépasse la zone visible */
   c.setTransform(B.D,0,0,B.D,0,0);
   const visH=B.H/(B.SH*v.s), haut=-v.ty/(B.SH*v.s);
+  const visW=B.W/(B.SW*v.s), gauche=-v.tx/(B.SW*v.s);
+  if (visW<0.999){ c.globalAlpha=.35; c.fillStyle=encre; const x=4+gauche*(B.W-8), w=Math.max(16,visW*(B.W-8)); c.beginPath(); c.roundRect ? c.roundRect(x,B.H-6,w,3,2) : c.rect(x,B.H-6,w,3); c.fill(); c.globalAlpha=1; }
   if (visH<0.999){ c.globalAlpha=.35; c.fillStyle=encre; const y=4+haut*(B.H-8), h=Math.max(16,visH*(B.H-8)); c.beginPath(); c.roundRect ? c.roundRect(B.W-6,y,3,h,2) : c.rect(B.W-6,y,3,h); c.fill(); c.globalAlpha=1; }
   $("#br-zoom").textContent = Math.round(v.s*100)+" %";
 }
@@ -2908,11 +2926,12 @@ function brDessinerBande(){
   c.globalAlpha=.4; c.strokeStyle="#E8541C"; c.lineWidth=1; c.setLineDash([5,5]); c.beginPath(); c.moveTo(10,B.LH*.68); c.lineTo(B.LW-10,B.LH*.68); c.stroke(); c.setLineDash([]); c.globalAlpha=1;
   B.buf.forEach(t=>brTrait(c,t.p,5,encre));
 }
-function brBorner(){ const B=BR, v=B.v; v.s=Math.max(1,Math.min(4,v.s)); v.tx=Math.min(0,Math.max(B.W-B.SW*v.s,v.tx)); v.ty=Math.min(0,Math.max(B.H-B.SH*v.s,v.ty)); }
+function brSmin(){ return BR.W/BR.SW; }
+function brBorner(){ const B=BR, v=B.v; v.s=Math.max(brSmin(),Math.min(4,v.s)); v.tx=Math.min(0,Math.max(B.W-B.SW*v.s,v.tx)); v.ty=Math.min(0,Math.max(B.H-B.SH*v.s,v.ty)); }
 const brVersFeuille = (p)=>[(p[0]-BR.v.tx)/BR.v.s,(p[1]-BR.v.ty)/BR.v.s];
 function brPos(e,el){ const r=el.getBoundingClientRect(); return [e.clientX-r.left,e.clientY-r.top]; }
 function brZoomer(fac, cx, cy){ const B=BR, v=B.v; if (cx===undefined){ cx=B.W/2; cy=B.H/2; }
-  const p=brVersFeuille([cx,cy]); v.s=Math.max(1,Math.min(4,v.s*fac)); v.tx=cx-p[0]*v.s; v.ty=cy-p[1]*v.s; brBorner(); brDessiner(); }
+  const p=brVersFeuille([cx,cy]); v.s=Math.max(brSmin(),Math.min(4,v.s*fac)); v.tx=cx-p[0]*v.s; v.ty=cy-p[1]*v.s; brBorner(); brDessiner(); }
 function brVoirCurseur(){ const B=BR, v=B.v, x=B.cur.x*v.s+v.tx, y=B.cur.y*v.s+v.ty, m=30;
   if (x<m) v.tx+=m-x; if (x>B.W-m) v.tx-=x-(B.W-m); if (y<m) v.ty+=m-y; if (y>B.H-m) v.ty-=y-(B.H-m); brBorner(); }
 function brEffacerA(p){ const B=BR, r=12/B.v.s; let ch=false;
@@ -2940,7 +2959,7 @@ function brEvenements(){
   f.addEventListener("pointermove",e=>{
     if (!B.ptrs.has(e.pointerId)) return; const p=brPos(e,f); B.ptrs.set(e.pointerId,p); const g=B.geste; if (!g) return;
     if (g.pince){ if (B.ptrs.size<2) return; const [a,c]=[...B.ptrs.values()], d=Math.hypot(a[0]-c[0],a[1]-c[1]), m=[(a[0]+c[0])/2,(a[1]+c[1])/2];
-      const q=[(g.m0[0]-g.t0[0])/g.s0,(g.m0[1]-g.t0[1])/g.s0]; B.v.s=Math.max(1,Math.min(4,g.s0*d/g.d0)); B.v.tx=m[0]-q[0]*B.v.s; B.v.ty=m[1]-q[1]*B.v.s; brBorner(); brDessiner(); return; }
+      const q=[(g.m0[0]-g.t0[0])/g.s0,(g.m0[1]-g.t0[1])/g.s0]; B.v.s=Math.max(brSmin(),Math.min(4,g.s0*d/g.d0)); B.v.tx=m[0]-q[0]*B.v.s; B.v.ty=m[1]-q[1]*B.v.s; brBorner(); brDessiner(); return; }
     if (Math.hypot(p[0]-g.depart[0],p[1]-g.depart[1])>6) g.bouge=true;
     if (g.trait){ const q=brVersFeuille(p), l=g.trait.p[g.trait.p.length-1]; if (Math.hypot(q[0]-l[0],q[1]-l[1])>0.6/B.v.s){ g.trait.p.push(q); brDessiner(); } }
     else if (B.outil==="gomme") brEffacerA(brVersFeuille(p));
@@ -2975,18 +2994,30 @@ function brEvenements(){
     else if (a==="reel"){ const haut=-B.v.ty/B.v.s; B.v={s:1,tx:0,ty:-haut}; brBorner(); brDessiner(); }
     else if (a==="annuler"){ if (B.buf.length){ B.buf.pop(); brDessinerBande(); } else { B.groupes.pop(); brDessiner(); } }
     else if (a==="effacer"){ brVider(); }
+    else if (a==="plein"){ brPleinEcran(!$("#brouillon").classList.contains("plein")); }
   });
-  $("#br-ligne").addEventListener("click",()=>{ brPoser(); B.cur={x:12,y:B.cur.y+34}; brVoirCurseur(); brDessiner(); });
+  $("#br-ligne").addEventListener("click",()=>{ brPoser(); B.cur={x:Math.max(12,-B.v.tx/B.v.s+12),y:B.cur.y+34}; brVoirCurseur(); brDessiner(); });
   window.addEventListener("resize",()=>{ if (E.brouillon && BR && brTailles()) { brDessiner(); brDessinerBande(); } });
 }
 /* pose l'écriture de la bande, réduite, au curseur */
 function brPoser(){
   const B=BR; clearTimeout(B.tmr); if (!B.buf.length) return;
   const k=0.3; let mx=1e9, Mx=-1e9; B.buf.forEach(t=>t.p.forEach(q=>{ mx=Math.min(mx,q[0]); Mx=Math.max(Mx,q[0]); }));
-  const bw=(Mx-mx)*k; if (B.cur.x+bw>B.SW-8 && B.cur.x>20){ B.cur={x:12,y:B.cur.y+34}; }
+  const bw=(Mx-mx)*k, bord=Math.min(B.SW,(B.W-B.v.tx)/B.v.s)-8, debut=Math.max(12,-B.v.tx/B.v.s+12);
+  if (B.cur.x+bw>bord && B.cur.x>debut+8){ B.cur={x:debut,y:B.cur.y+34}; }
   const base=B.LH*.68, {x:cx,y:cy}=B.cur;
   B.groupes.push(B.buf.map(t=>({w:1.7,p:t.p.map(q=>[cx+(q[0]-mx)*k, cy+(q[1]-base)*k])})));
   B.cur={x:cx+bw+6,y:cy}; B.buf=[]; brVoirCurseur(); brDessinerBande(); brDessiner();
+}
+/* plein écran : la feuille occupe tout l'écran, la question reste rappelée en haut */
+function brPleinEcran(on){
+  const z=$("#brouillon"); z.classList.toggle("plein",on); document.body.classList.toggle("br-plein-ouvert",on);
+  $("#br-outils [data-a=plein]").classList.toggle("on",on);
+  $("#br-outils [data-a=plein]").setAttribute("aria-label", on?"Quitter le plein écran":"Brouillon en plein écran");
+  if (on){ const q=$("#quiz-question").cloneNode(true); q.removeAttribute("id");
+    q.querySelectorAll("button").forEach(x=>x.remove()); q.querySelectorAll("[id]").forEach(x=>x.removeAttribute("id"));
+    $("#br-rappel").replaceChildren(q); }
+  requestAnimationFrame(()=>{ if (brTailles()){ brVoirCurseur(); brDessiner(); brDessinerBande(); } });
 }
 function brVider(){ const B=BR; if (!B) return; clearTimeout(B.tmr); B.groupes=[]; B.buf=[]; B.cur={x:12,y:36}; B.v={s:1,tx:0,ty:0}; B.geste=null; B.ptrs.clear(); B.lptr=null; brDessiner(); brDessinerBande(); }
 function brAfficher(){
@@ -2994,7 +3025,7 @@ function brAfficher(){
   if (!ouvert) return; brInit(); brTailles(); brDessiner(); brDessinerBande(); brAideDefaut();
 }
 /* appelé à chaque nouvelle question */
-function brNouvelleQuestion(){ if (BR) brVider(); brAfficher(); }
+function brNouvelleQuestion(){ if (BR) brVider(); if ($("#brouillon").classList.contains("plein")) brPleinEcran(false); brAfficher(); }
 $("#br-ouvrir").addEventListener("click",()=>{ E.brouillon=!E.brouillon; sauver(); brAfficher(); if (E.brouillon) setTimeout(()=>$("#br-ouvrir").scrollIntoView({behavior:"smooth",block:"start"}),60); });
 if (window.__MOCK || location.search.includes("test")) window.__BR=()=>BR;
 
